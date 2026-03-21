@@ -1,0 +1,243 @@
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Send, ChevronDown, ChevronRight, Clock } from 'lucide-react'
+import { PageShell } from '@/components/layout/PageShell'
+import { Badge } from '@/components/ui/Badge'
+import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
+import { useBrainDumps, useSubmitBrainDump } from '@/hooks/useBrainDump'
+import { formatRelativeTime } from '@/lib/utils'
+
+export function BrainDump() {
+  const [text, setText] = useState('')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const { data: dumps, isLoading } = useBrainDumps()
+  const submitMutation = useSubmitBrainDump()
+
+  const handleSubmit = () => {
+    if (!text.trim() || submitMutation.isPending) return
+    submitMutation.mutate(text.trim(), {
+      onSuccess: () => setText(''),
+    })
+  }
+
+  const lastResult = submitMutation.data
+
+  return (
+    <PageShell title="Brain Dump" subtitle="Capture anything. Let the agent sort it out.">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+        {/* Input area */}
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          <textarea
+            className="input"
+            style={{
+              minHeight: 140,
+              resize: 'vertical',
+              border: 'none',
+              borderRadius: 0,
+              padding: '20px 24px',
+              fontSize: 15,
+              lineHeight: 1.7,
+            }}
+            placeholder="Dump your thoughts here... tasks, ideas, reminders, anything. Hit Submit and the agent will parse it into structured tasks."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.metaKey) handleSubmit()
+            }}
+          />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px 24px',
+              borderTop: '1px solid var(--border-subtle)',
+              backgroundColor: 'var(--bg-elevated)',
+            }}
+          >
+            <span className="text-caption">
+              {submitMutation.isPending ? 'Parsing with Claude...' : 'Cmd+Enter to submit'}
+            </span>
+            <button
+              className="btn-primary"
+              onClick={handleSubmit}
+              disabled={!text.trim() || submitMutation.isPending}
+              style={{ opacity: !text.trim() || submitMutation.isPending ? 0.5 : 1 }}
+            >
+              <Send size={14} />
+              {submitMutation.isPending ? 'Parsing...' : 'Submit'}
+            </button>
+          </div>
+        </div>
+
+        {/* Just-parsed result */}
+        <AnimatePresence>
+          {lastResult && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="card" style={{ borderLeft: '3px solid var(--accent-coral)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                  <span className="text-section-header">Parsed Result</span>
+                  <Badge variant="success">New</Badge>
+                </div>
+                <p className="text-body" style={{ marginBottom: 16 }}>
+                  {lastResult.parsed.summary}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {lastResult.parsed.tasks.map((task, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: idx * 0.05 }}
+                      style={{
+                        padding: '10px 14px',
+                        borderRadius: 8,
+                        backgroundColor: 'var(--bg-elevated)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 10,
+                      }}
+                    >
+                      <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: 0, fontWeight: 500 }}>
+                        {task.description}
+                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                        <Badge variant="navy">{task.project}</Badge>
+                        <Badge
+                          variant={
+                            task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'warning' : 'neutral'
+                          }
+                        >
+                          {task.priority}
+                        </Badge>
+                        {task.deadline && (
+                          <span className="text-caption">{task.deadline}</span>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Error */}
+        {submitMutation.isError && (
+          <div className="card" style={{ borderLeft: '3px solid var(--status-error)' }}>
+            <p style={{ fontSize: 13, color: 'var(--status-error)', margin: 0 }}>
+              Failed to parse: {(submitMutation.error as Error).message}
+            </p>
+          </div>
+        )}
+
+        {/* History */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <Clock size={15} style={{ color: 'var(--text-tertiary)' }} />
+            <span className="text-section-header">History</span>
+          </div>
+
+          {isLoading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[0, 1, 2].map(i => (
+                <div key={i} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <SkeletonBlock width="80%" height={14} />
+                  <SkeletonBlock width="40%" height={12} />
+                </div>
+              ))}
+            </div>
+          ) : (dumps ?? []).length === 0 ? (
+            <div className="card" style={{ textAlign: 'center', padding: '32px 24px' }}>
+              <p className="text-caption">No brain dumps yet. Start typing above.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {(dumps ?? []).map((dump) => {
+                const isExpanded = expandedId === dump.id
+                return (
+                  <motion.div
+                    key={dump.id}
+                    layout
+                    className="card"
+                    style={{ cursor: 'pointer', padding: '14px 20px' }}
+                    onClick={() => setExpandedId(isExpanded ? null : dump.id)}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
+                        {isExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} /> : <ChevronRight size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />}
+                        <p style={{
+                          fontSize: 13,
+                          color: 'var(--text-primary)',
+                          margin: 0,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: isExpanded ? 'normal' : 'nowrap',
+                        }}>
+                          {dump.raw_text}
+                        </p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginLeft: 12 }}>
+                        <Badge variant={dump.status === 'processed' ? 'success' : dump.status === 'pending' ? 'warning' : 'neutral'}>
+                          {dump.status}
+                        </Badge>
+                        <span className="text-caption">{formatRelativeTime(dump.created_at)}</span>
+                      </div>
+                    </div>
+
+                    <AnimatePresence>
+                      {isExpanded && dump.parsed_output && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border-subtle)' }}>
+                            <p className="text-body" style={{ marginBottom: 10 }}>
+                              {dump.parsed_output.summary}
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              {dump.parsed_output.tasks.map((task, idx) => (
+                                <div
+                                  key={idx}
+                                  style={{
+                                    padding: '8px 12px',
+                                    borderRadius: 6,
+                                    backgroundColor: 'var(--bg-elevated)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: 8,
+                                  }}
+                                >
+                                  <span style={{ fontSize: 12, color: 'var(--text-primary)' }}>{task.description}</span>
+                                  <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                                    <Badge variant="navy">{task.project}</Badge>
+                                    <Badge variant={task.priority === 'high' ? 'coral' : 'neutral'}>{task.priority}</Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </PageShell>
+  )
+}
