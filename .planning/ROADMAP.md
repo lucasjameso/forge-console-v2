@@ -71,7 +71,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md -- Stat tiles row, system health strip, action items cap, dashboard layout rebuild
-- [ ] 03-02-PLAN.md -- Project cards with days-since indicators, 7-day content calendar strip
+- [x] 03-02-PLAN.md -- Project cards with days-since indicators, 7-day content calendar strip
 
 ### Phase 4: Page-by-Page Visual Polish
 **Goal**: Every remaining page (Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings) meets the same premium quality bar as the dashboard
