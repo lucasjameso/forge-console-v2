@@ -53,7 +53,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Warm palette tokens, typography classes, Card/Button component fixes
+- [x] 02-01-PLAN.md -- Warm palette tokens, typography classes, Card/Button component fixes
 - [ ] 02-02-PLAN.md -- Sidebar refinement with Sheet mobile drawer, PageShell max-width
 - [ ] 02-03-PLAN.md -- Card/Button/fontSize migration sweep across all pages and components
 
