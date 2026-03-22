@@ -34,11 +34,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Navigating to a page with a simulated error shows a graceful fallback UI instead of a white screen
   4. The browser tab displays a coral F on navy background as the favicon
   5. No orphaned custom CSS component classes remain in globals.css (all replaced by shadcn primitives)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- shadcn/ui init, token bridge, font migration, favicon
+- [ ] 01-02-PLAN.md -- Install all shadcn components, Badge/Skeleton migration, CSS cleanup
+- [ ] 01-03-PLAN.md -- Toast notifications on all mutations, error boundaries
 
 ### Phase 2: Global Design Standards
 **Goal**: Every page in the app shares consistent sidebar polish, card styling, typography hierarchy, and spacing -- establishing the visual quality bar
@@ -171,7 +172,7 @@ Note: Phases 5, 6, 7 all depend on Phase 4 but not on each other. Phase 8 depend
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Component Foundation | 0/0 | Not started | - |
+| 1. Component Foundation | 0/3 | Planning complete | - |
 | 2. Global Design Standards | 0/0 | Not started | - |
 | 3. Dashboard Redesign | 0/0 | Not started | - |
 | 4. Page-by-Page Visual Polish | 0/0 | Not started | - |
