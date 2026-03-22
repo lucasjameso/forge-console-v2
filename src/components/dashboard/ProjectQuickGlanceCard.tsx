@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FolderKanban, ArrowRight } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useProjects } from '@/hooks/useProjects'
 import { formatRelativeTime } from '@/lib/utils'

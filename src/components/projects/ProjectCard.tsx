@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Github, Globe, Database } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { StatusDot } from '@/components/ui/StatusDot'
 import { formatRelativeTime } from '@/lib/utils'
 import type { Project } from '@/types/database'

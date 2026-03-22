@@ -10,7 +10,7 @@ import {
   AlertTriangle,
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useSocialPlatforms } from '@/hooks/useSocialPlatforms'
 import { formatRelativeTime } from '@/lib/utils'

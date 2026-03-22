@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { ContentCard } from '@/components/pipeline/ContentCard'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useContentReviews, useUpdateContentStatus } from '@/hooks/useContentReviews'
 import { formatShortDate } from '@/lib/utils'

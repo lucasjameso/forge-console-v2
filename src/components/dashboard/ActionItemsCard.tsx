@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { AlertCircle, CheckCircle } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useActionItems } from '@/hooks/useProjects'
 import { useProjects } from '@/hooks/useProjects'

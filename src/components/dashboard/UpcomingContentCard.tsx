@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Layers, ArrowRight, Linkedin, BookOpen, FileText, ShoppingBag } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useContentReviews } from '@/hooks/useContentReviews'
 import { formatShortDate } from '@/lib/utils'

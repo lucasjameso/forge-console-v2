@@ -18,7 +18,7 @@ import {
   Database,
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { SkeletonCard } from '@/components/ui/SkeletonBlock'
 import {
   useProject,

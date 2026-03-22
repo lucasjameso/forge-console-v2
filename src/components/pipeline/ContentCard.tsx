@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Linkedin, BookOpen, FileText, ShoppingBag } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview, ContentStatus } from '@/types/database'
 

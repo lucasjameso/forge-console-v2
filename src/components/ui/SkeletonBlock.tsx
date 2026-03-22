@@ -1,3 +1,4 @@
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
 interface SkeletonBlockProps {
@@ -8,12 +9,15 @@ interface SkeletonBlockProps {
 }
 
 export function SkeletonBlock({ width, height = 16, className, style }: SkeletonBlockProps) {
+  const w = typeof width === 'number' ? `${width}px` : width
+  const h = typeof height === 'number' ? `${height}px` : height
+
   return (
-    <div
-      className={cn('skeleton', className)}
+    <Skeleton
+      className={cn(className)}
       style={{
-        width: typeof width === 'number' ? `${width}px` : width,
-        height: typeof height === 'number' ? `${height}px` : height,
+        width: w,
+        height: h,
         ...style,
       }}
     />
@@ -22,11 +26,11 @@ export function SkeletonBlock({ width, height = 16, className, style }: Skeleton
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('card', className)} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <SkeletonBlock width="60%" height={18} />
-      <SkeletonBlock width="100%" height={12} />
-      <SkeletonBlock width="80%" height={12} />
-      <SkeletonBlock width="40%" height={12} />
+    <div className={cn('rounded-lg border bg-card p-6 shadow-card', className)} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <Skeleton className="h-[18px] w-[60%]" />
+      <Skeleton className="h-[12px] w-full" />
+      <Skeleton className="h-[12px] w-[80%]" />
+      <Skeleton className="h-[12px] w-[40%]" />
     </div>
   )
 }
