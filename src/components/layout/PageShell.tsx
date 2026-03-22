@@ -39,35 +39,41 @@ export function PageShell({ title, subtitle, actions, children }: PageShellProps
       {/* Page header */}
       <div
         className="page-shell-header"
-        style={{
-          padding: '32px 40px 0',
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: 16,
-        }}
+        style={{ padding: '32px 40px 0' }}
       >
-        <div>
-          <h1 className="text-page-title">{title}</h1>
-          {subtitle && (
-            <p
-              className="text-body"
-              style={{ marginTop: 4 }}
-            >
-              {subtitle}
-            </p>
+        <div
+          className="max-w-[1280px] mx-auto"
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: 16,
+          }}
+        >
+          <div>
+            <h1 className="text-page-title">{title}</h1>
+            {subtitle && (
+              <p
+                className="text-body"
+                style={{ marginTop: 4 }}
+              >
+                {subtitle}
+              </p>
+            )}
+          </div>
+          {actions && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 4, flexShrink: 0 }}>
+              {actions}
+            </div>
           )}
         </div>
-        {actions && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingTop: 4, flexShrink: 0 }}>
-            {actions}
-          </div>
-        )}
       </div>
 
       {/* Page content */}
       <div className="page-shell-content" style={{ padding: '24px 40px 48px', flex: 1 }}>
-        {children}
+        <div className="max-w-[1280px] mx-auto">
+          {children}
+        </div>
       </div>
 
       <style>{`
