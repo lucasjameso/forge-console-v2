@@ -17,12 +17,12 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Dashboard
 
-- [ ] **DASH-01**: Dashboard uses dense grid layout (2-3 columns at 1440px+) with clear typographic hierarchy
-- [ ] **DASH-02**: Stat numbers rendered large (36px) with small labels, scannable in 2 seconds
+- [x] **DASH-01**: Dashboard uses dense grid layout (2-3 columns at 1440px+) with clear typographic hierarchy
+- [x] **DASH-02**: Stat numbers rendered large (36px) with small labels, scannable in 2 seconds
 - [ ] **DASH-03**: Project cards show color-coded "days since" indicators (green <24h, amber 1-3 days, red >3 days)
 - [ ] **DASH-04**: 7-day content calendar strip shows upcoming posts inline on dashboard
-- [ ] **DASH-05**: Action items aggregated across all projects with urgency-based sorting
-- [ ] **DASH-06**: Dashboard has generous whitespace between sections (32-40px gaps) without wasting space
+- [x] **DASH-05**: Action items aggregated across all projects with urgency-based sorting
+- [x] **DASH-06**: Dashboard has generous whitespace between sections (32-40px gaps) without wasting space
 
 ### Visual Polish
 
@@ -129,12 +129,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUN-03 | Phase 1: Component Foundation | Complete |
 | FOUN-04 | Phase 1: Component Foundation | Complete |
 | FOUN-05 | Phase 1: Component Foundation | Complete |
-| DASH-01 | Phase 3: Dashboard Redesign | Pending |
-| DASH-02 | Phase 3: Dashboard Redesign | Pending |
+| DASH-01 | Phase 3: Dashboard Redesign | Complete |
+| DASH-02 | Phase 3: Dashboard Redesign | Complete |
 | DASH-03 | Phase 3: Dashboard Redesign | Pending |
 | DASH-04 | Phase 3: Dashboard Redesign | Pending |
-| DASH-05 | Phase 3: Dashboard Redesign | Pending |
-| DASH-06 | Phase 3: Dashboard Redesign | Pending |
+| DASH-05 | Phase 3: Dashboard Redesign | Complete |
+| DASH-06 | Phase 3: Dashboard Redesign | Complete |
 | VISL-01 | Phase 2: Global Design Standards | Complete |
 | VISL-02 | Phase 2: Global Design Standards | Complete |
 | VISL-03 | Phase 2: Global Design Standards | Complete |
