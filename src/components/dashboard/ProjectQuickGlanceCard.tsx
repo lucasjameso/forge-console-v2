@@ -5,10 +5,18 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useProjects } from '@/hooks/useProjects'
+import { useProjectLastActivity } from '@/hooks/useDashboardStats'
 import { formatRelativeTime } from '@/lib/utils'
+
+const recencyColors = {
+  green: 'hsl(var(--status-success))',
+  amber: 'hsl(var(--status-warning))',
+  red: 'hsl(var(--status-error))',
+} as const
 
 export function ProjectQuickGlanceCard() {
   const { data: projects, isLoading } = useProjects()
+  const { data: recencyData } = useProjectLastActivity()
 
   if (isLoading) {
     return (
@@ -41,7 +49,11 @@ export function ProjectQuickGlanceCard() {
       </div>
 
       <div className="project-glance-grid" style={{ display: 'grid', gap: 16 }}>
-        {data.map((project, idx) => (
+        {data.map((project, idx) => {
+          const recency = recencyData?.[project.slug]
+          const borderColor = recencyColors[recency?.recencyLevel ?? 'green']
+
+          return (
           <motion.div
             key={project.id}
             initial={{ opacity: 0, y: 12 }}
@@ -59,6 +71,7 @@ export function ProjectQuickGlanceCard() {
                   flexDirection: 'column',
                   gap: 14,
                   height: '100%',
+                  borderLeft: `3px solid ${borderColor}`,
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -134,8 +147,13 @@ export function ProjectQuickGlanceCard() {
                     marginTop: 'auto',
                   }}
                 >
-                  <span className="text-caption">
-                    Updated {formatRelativeTime(project.updated_at)}
+                  <span
+                    className="text-caption font-medium"
+                    style={{ color: borderColor }}
+                  >
+                    {recency?.lastActivityDate
+                      ? formatRelativeTime(recency.lastActivityDate)
+                      : formatRelativeTime(project.updated_at)}
                   </span>
                   <ArrowRight
                     size={14}
@@ -145,7 +163,8 @@ export function ProjectQuickGlanceCard() {
               </Card>
             </Link>
           </motion.div>
-        ))}
+          )
+        })}
       </div>
 
       <style>{`

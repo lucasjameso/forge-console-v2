@@ -536,7 +536,7 @@ export const mockActivity: ActivityEntry[] = [
     tool: 'Claude Code',
     summary: 'Completed job tracking UI. PR opened for review. Started demo data seeding script.',
     metadata: null,
-    created_at: hoursAgo(3),
+    created_at: daysAgo(4),
   },
   {
     id: 'al4',
