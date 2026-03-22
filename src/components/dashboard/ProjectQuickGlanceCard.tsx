@@ -62,7 +62,7 @@ export function ProjectQuickGlanceCard() {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span className="text-card-title" style={{ fontSize: 15 }}>
+                  <span className="text-card-title">
                     {project.name}
                   </span>
                   <Badge
@@ -89,13 +89,7 @@ export function ProjectQuickGlanceCard() {
                     }}
                   >
                     <span className="text-caption">Progress</span>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: 'hsl(var(--text-primary))',
-                      }}
-                    >
+                    <span className="text-body-sm font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>
                       {project.progress_pct}%
                     </span>
                   </div>
@@ -125,7 +119,7 @@ export function ProjectQuickGlanceCard() {
                 {project.current_phase && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span className="text-caption">Phase:</span>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: 'hsl(var(--text-secondary))' }}>
+                    <span className="text-caption font-medium" style={{ color: 'hsl(var(--text-secondary))' }}>
                       {project.current_phase}
                     </span>
                   </div>

@@ -56,7 +56,7 @@ export function SystemHealthCard() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <StatusDot status={overall.status} />
-          <span style={{ fontSize: 12, fontWeight: 500, color: overall.status === 'healthy' ? 'hsl(var(--status-success))' : overall.status === 'degraded' ? 'hsl(var(--status-warning))' : 'hsl(var(--status-error))' }}>
+          <span className="text-caption font-medium" style={{ color: overall.status === 'healthy' ? 'hsl(var(--status-success))' : overall.status === 'degraded' ? 'hsl(var(--status-warning))' : 'hsl(var(--status-error))' }}>
             {overall.label}
           </span>
         </div>
@@ -77,12 +77,12 @@ export function SystemHealthCard() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <StatusDot status={item.status} />
-              <span style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>
+              <span className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))' }}>
                 {item.service}
               </span>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 12, color: item.status === 'healthy' ? 'hsl(var(--status-success))' : item.status === 'degraded' ? 'hsl(var(--status-warning))' : 'hsl(var(--status-error))', fontWeight: 500 }}>
+              <div className="text-caption font-medium" style={{ color: item.status === 'healthy' ? 'hsl(var(--status-success))' : item.status === 'degraded' ? 'hsl(var(--status-warning))' : 'hsl(var(--status-error))' }}>
                 {statusLabel[item.status]}
               </div>
               <div className="text-caption">{formatRelativeTime(item.checked_at)}</div>

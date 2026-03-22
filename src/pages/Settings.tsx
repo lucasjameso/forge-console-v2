@@ -102,7 +102,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
             <Icon size={18} style={{ color: integration.connected ? 'hsl(var(--status-success))' : 'hsl(var(--text-tertiary))' }} />
           </div>
           <div>
-            <h3 style={{ fontSize: 15, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
+            <h3 className="text-card-title" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
               {integration.name}
             </h3>
             <span className="text-caption">{integration.description}</span>
@@ -122,7 +122,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
             ) : (
               <XCircle size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
             )}
-            <code style={{ fontSize: 11, color: 'hsl(var(--text-secondary))', fontFamily: 'monospace' }}>
+            <code className="text-[11px]" style={{ color: 'hsl(var(--text-secondary))', fontFamily: 'monospace' }}>
               {env.key}
             </code>
             <span className="text-caption">{env.set ? 'Set' : 'Missing'}</span>
@@ -136,14 +136,13 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
           href={integration.url}
           target="_blank"
           rel="noopener noreferrer"
+          className="text-caption font-medium"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 4,
-            fontSize: 12,
             color: 'hsl(var(--accent-coral))',
             textDecoration: 'none',
-            fontWeight: 500,
             marginTop: 'auto',
           }}
         >
@@ -159,7 +158,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
 export function Settings() {
   return (
     <PageShell title="Settings" subtitle="Configure integrations and preferences.">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div className="flex flex-col gap-8">
         {/* Integrations */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
@@ -182,22 +181,22 @@ export function Settings() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Application</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>Forge Console v2</span>
+                <span className="text-body font-medium" style={{ color: 'hsl(var(--text-primary))' }}>Forge Console v2</span>
               </div>
               <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Version</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>2.0.0</span>
+                <span className="text-body font-medium" style={{ color: 'hsl(var(--text-primary))' }}>2.0.0</span>
               </div>
               <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Organization</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>IAC Solutions</span>
+                <span className="text-body font-medium" style={{ color: 'hsl(var(--text-primary))' }}>IAC Solutions</span>
               </div>
               <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Stack</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>React + TypeScript + Supabase + Cloudflare Pages</span>
+                <span className="text-body font-medium" style={{ color: 'hsl(var(--text-primary))' }}>React + TypeScript + Supabase + Cloudflare Pages</span>
               </div>
               <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -221,10 +220,10 @@ export function Settings() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                 <Info size={16} style={{ color: 'hsl(var(--status-warning))', flexShrink: 0, marginTop: 2 }} />
                 <div>
-                  <p style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: '0 0 6px' }}>
+                  <p className="text-body font-medium" style={{ color: 'hsl(var(--text-primary))', margin: '0 0 6px' }}>
                     Running with mock data
                   </p>
-                  <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', margin: 0, lineHeight: 1.5 }}>
+                  <p className="text-body-sm" style={{ color: 'hsl(var(--text-secondary))', margin: 0, lineHeight: 1.5 }}>
                     To connect to a live database, add your Supabase credentials to the .env.local file and restart the dev server. Run the schema from supabase/schema.sql to create the required tables.
                   </p>
                 </div>

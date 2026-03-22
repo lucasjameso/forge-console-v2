@@ -58,14 +58,13 @@ export function UpcomingContentCard() {
         </div>
         <Link
           to="/pipeline"
+          className="text-body-sm font-medium"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 4,
-            fontSize: 13,
             color: 'hsl(var(--accent-coral))',
             textDecoration: 'none',
-            fontWeight: 500,
           }}
         >
           View all
@@ -112,12 +111,9 @@ export function UpcomingContentCard() {
                   {/* Day + date */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span
+                      className="text-overline"
                       style={{
-                        fontSize: 12,
-                        fontWeight: 600,
                         color: 'hsl(var(--accent-coral))',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
                       }}
                     >
                       {item.day_label}
@@ -131,9 +127,8 @@ export function UpcomingContentCard() {
 
                   {/* Title */}
                   <p
+                    className="text-body font-medium"
                     style={{
-                      fontSize: 14,
-                      fontWeight: 500,
                       color: 'hsl(var(--text-primary))',
                       lineHeight: 1.4,
                     }}

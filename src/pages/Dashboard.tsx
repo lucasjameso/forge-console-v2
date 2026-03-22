@@ -20,14 +20,14 @@ export function Dashboard() {
       subtitle="Here is what needs your attention today."
       actions={
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>
+          <div className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))' }}>
             {formatTime(now)}
           </div>
           <div className="text-caption">{formatDate(now)}</div>
         </div>
       }
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div className="flex flex-col gap-8">
         {/* Row 1: Action Items + System Health */}
         <div className="dashboard-top-grid">
           <ActionItemsCard />

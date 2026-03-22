@@ -26,19 +26,18 @@ export function BrainDump() {
 
   return (
     <PageShell title="Brain Dump" subtitle="Capture anything. Let the agent sort it out.">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div className="flex flex-col gap-8">
 
         {/* Input area */}
         <Card style={{ padding: 0, overflow: 'hidden' }}>
           <textarea
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-card-title text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
             style={{
               minHeight: 140,
               resize: 'vertical',
               border: 'none',
               borderRadius: 0,
               padding: '20px 24px',
-              fontSize: 15,
               lineHeight: 1.7,
             }}
             placeholder="Dump your thoughts here... tasks, ideas, reminders, anything. Hit Submit and the agent will parse it into structured tasks."
@@ -105,7 +104,7 @@ export function BrainDump() {
                         gap: 10,
                       }}
                     >
-                      <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: 0, fontWeight: 500 }}>
+                      <p className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
                         {task.description}
                       </p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -132,7 +131,7 @@ export function BrainDump() {
         {/* Error */}
         {submitMutation.isError && (
           <Card className="p-6" style={{ borderLeft: '3px solid hsl(var(--status-error))' }}>
-            <p style={{ fontSize: 13, color: 'hsl(var(--status-error))', margin: 0 }}>
+            <p className="text-body-sm" style={{ color: 'hsl(var(--status-error))', margin: 0 }}>
               Failed to parse: {(submitMutation.error as Error).message}
             </p>
           </Card>
@@ -172,8 +171,7 @@ export function BrainDump() {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                         {isExpanded ? <ChevronDown size={14} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0 }} /> : <ChevronRight size={14} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0 }} />}
-                        <p style={{
-                          fontSize: 13,
+                        <p className="text-body-sm" style={{
                           color: 'hsl(var(--text-primary))',
                           margin: 0,
                           overflow: 'hidden',
@@ -218,7 +216,7 @@ export function BrainDump() {
                                     gap: 8,
                                   }}
                                 >
-                                  <span style={{ fontSize: 12, color: 'hsl(var(--text-primary))' }}>{task.description}</span>
+                                  <span className="text-caption" style={{ color: 'hsl(var(--text-primary))' }}>{task.description}</span>
                                   <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                                     <Badge variant="navy">{task.project}</Badge>
                                     <Badge variant={task.priority === 'high' ? 'coral' : 'neutral'}>{task.priority}</Badge>

@@ -79,7 +79,7 @@ export function SocialMedia() {
                         <Icon size={18} style={{ color: 'hsl(var(--accent-navy))' }} />
                       </div>
                       <div>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
+                        <h3 className="text-card-title" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
                           {platform.platform_name}
                         </h3>
                         {platform.handle && (
@@ -95,7 +95,7 @@ export function SocialMedia() {
                     {platform.follower_count !== null && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <Users size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
-                        <span style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
+                        <span className="text-body font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>
                           {platform.follower_count.toLocaleString()}
                         </span>
                         {meta?.target && (
@@ -130,6 +130,7 @@ export function SocialMedia() {
                   {/* Setup needed alert */}
                   {platform.status === 'setup_needed' && (
                     <div
+                      className="text-caption"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -137,7 +138,6 @@ export function SocialMedia() {
                         padding: '8px 12px',
                         borderRadius: 8,
                         backgroundColor: 'hsl(var(--status-warning-bg))',
-                        fontSize: 12,
                         color: 'hsl(var(--status-warning))',
                       }}
                     >
@@ -152,14 +152,13 @@ export function SocialMedia() {
                       href={platform.profile_url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="text-caption font-medium"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 4,
-                        fontSize: 12,
                         color: 'hsl(var(--accent-coral))',
                         textDecoration: 'none',
-                        fontWeight: 500,
                         marginTop: 'auto',
                       }}
                     >

@@ -32,14 +32,14 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
+                <h3 className="text-section-header" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
                   {project.name}
                 </h3>
                 <Badge variant={statusVariant[project.status] ?? 'neutral'}>
                   {project.status}
                 </Badge>
               </div>
-              <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', lineHeight: 1.5, margin: 0 }}>
+              <p className="text-body-sm" style={{ color: 'hsl(var(--text-secondary))', lineHeight: 1.5, margin: 0 }}>
                 {project.description}
               </p>
             </div>
@@ -52,7 +52,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               <span className="text-caption">
                 {project.current_phase ?? 'No phase set'}
               </span>
-              <span style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
+              <span className="text-body font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>
                 {project.progress_pct}%
               </span>
             </div>

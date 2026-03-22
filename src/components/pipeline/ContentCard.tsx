@@ -46,12 +46,9 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: compact ? 4 : 6 }}>
               <span
+                className="text-overline"
                 style={{
-                  fontSize: 11,
-                  fontWeight: 600,
                   color: 'hsl(var(--accent-coral))',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
                 }}
               >
                 Wk {item.week_number} - {item.day_label}
@@ -60,11 +57,11 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
                 <span className="text-caption">{formatShortDate(item.scheduled_date)}</span>
               )}
             </div>
-            <p style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: 0 }}>
+            <p className="text-body font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
               {item.post_title}
             </p>
             {!compact && item.caption && (
-              <p style={{ fontSize: 12, color: 'hsl(var(--text-secondary))', margin: '6px 0 0', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p className="text-caption" style={{ color: 'hsl(var(--text-secondary))', margin: '6px 0 0', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {item.caption}
               </p>
             )}

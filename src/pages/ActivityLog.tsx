@@ -173,8 +173,7 @@ export function ActivityLog() {
                       {entry.project && (
                         <Badge variant="navy">{entry.project}</Badge>
                       )}
-                      <p style={{
-                        fontSize: 13,
+                      <p className="text-body-sm" style={{
                         color: 'hsl(var(--text-primary))',
                         margin: 0,
                         overflow: 'hidden',
@@ -203,6 +202,7 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
   return (
     <button
       onClick={onClick}
+      className={`text-[11px] ${active ? 'font-semibold' : ''}`}
       style={{
         padding: '4px 10px',
         borderRadius: 'var(--radius-pill)',
@@ -210,8 +210,6 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
         borderColor: active ? 'hsl(var(--accent-coral))' : 'hsl(var(--border-default))',
         backgroundColor: active ? 'hsl(var(--accent-coral) / 0.1)' : 'transparent',
         color: active ? 'hsl(var(--accent-coral))' : 'hsl(var(--text-secondary))',
-        fontSize: 11,
-        fontWeight: active ? 600 : 400,
         cursor: 'pointer',
         whiteSpace: 'nowrap',
         transition: 'all 0.15s ease',

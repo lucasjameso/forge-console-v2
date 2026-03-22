@@ -72,7 +72,7 @@ function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: 
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
         <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: statusColors[status] }} />
-        <span style={{ fontSize: 13, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>{title}</span>
+        <span className="text-body-sm font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>{title}</span>
         <span className="text-caption">({tasks.length})</span>
       </div>
       <div
@@ -92,15 +92,14 @@ function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: 
             key={task.id}
             draggable
             onDragStart={(e) => e.dataTransfer.setData('taskId', task.id)}
+            className="text-body-sm font-medium"
             style={{
               padding: '10px 12px',
               borderRadius: 8,
               backgroundColor: 'hsl(var(--bg-surface))',
               border: '1px solid hsl(var(--border-subtle))',
               cursor: 'grab',
-              fontSize: 13,
               color: 'hsl(var(--text-primary))',
-              fontWeight: 500,
             }}
           >
             <div style={{ marginBottom: 4 }}>{task.title}</div>
@@ -153,7 +152,7 @@ export function ProjectDetail() {
       <PageShell title="Project Not Found">
         <Card className="p-6" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p className="text-body">No project found with slug "{slug}".</p>
-          <Link to="/projects" style={{ color: 'hsl(var(--accent-coral))', fontSize: 14, marginTop: 12, display: 'inline-block' }}>
+          <Link to="/projects" className="text-body" style={{ color: 'hsl(var(--accent-coral))', marginTop: 12, display: 'inline-block' }}>
             Back to Projects
           </Link>
         </Card>
@@ -198,11 +197,11 @@ export function ProjectDetail() {
       actions={
         <Link
           to="/projects"
+          className="text-body-sm"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 6,
-            fontSize: 13,
             color: 'hsl(var(--text-secondary))',
             textDecoration: 'none',
           }}
@@ -212,7 +211,7 @@ export function ProjectDetail() {
         </Link>
       }
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+      <div className="flex flex-col gap-8">
 
         {/* Row 1: Action Items */}
         {openActions.length > 0 && (
@@ -232,7 +231,7 @@ export function ProjectDetail() {
                     gap: 12,
                   }}
                 >
-                  <p style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: 0 }}>
+                  <p className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
                     {item.description}
                   </p>
                   <Badge variant={item.urgency === 'high' ? 'error' : item.urgency === 'medium' ? 'warning' : 'neutral'}>
@@ -251,7 +250,7 @@ export function ProjectDetail() {
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span className="text-body">{project.current_phase ?? 'No phase set'}</span>
-                <span style={{ fontSize: 20, fontWeight: 700, color: 'hsl(var(--text-primary))' }}>{project.progress_pct}%</span>
+                <span className="text-xl font-bold" style={{ color: 'hsl(var(--text-primary))' }}>{project.progress_pct}%</span>
               </div>
               <div style={{ width: '100%', height: 10, borderRadius: 5, backgroundColor: 'hsl(var(--bg-elevated))', overflow: 'hidden' }}>
                 <motion.div
@@ -306,7 +305,7 @@ export function ProjectDetail() {
                         <Check size={10} style={{ color: 'white' }} />
                       )}
                     </div>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: 'hsl(var(--text-primary))', marginTop: 6, textAlign: 'center' }}>
+                    <span className="text-caption font-medium" style={{ color: 'hsl(var(--text-primary))', marginTop: 6, textAlign: 'center' }}>
                       {ms.title}
                     </span>
                     {ms.target_date && (
@@ -341,7 +340,7 @@ export function ProjectDetail() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                     <Badge variant="navy">{entry.tool ?? entry.session_type}</Badge>
-                    <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {entry.summary}
                     </p>
                   </div>
@@ -377,7 +376,7 @@ export function ProjectDetail() {
                   gap: 10,
                 }}
               >
-                <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.5 }}>
+                <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.5 }}>
                   {note.content}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -451,10 +450,11 @@ export function ProjectDetail() {
               style={{ cursor: 'pointer', position: 'relative' }}
               onClick={handleCopyPrompt}
             >
-              <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0, paddingRight: 32 }}>
+              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0, paddingRight: 32 }}>
                 {sessionPrompt.prompt_text}
               </p>
               <div
+                className="text-caption"
                 style={{
                   position: 'absolute',
                   top: 16,
@@ -463,7 +463,6 @@ export function ProjectDetail() {
                   alignItems: 'center',
                   gap: 4,
                   color: copied ? 'hsl(var(--status-success))' : 'hsl(var(--text-tertiary))',
-                  fontSize: 12,
                 }}
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}

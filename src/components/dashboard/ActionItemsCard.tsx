@@ -53,6 +53,7 @@ export function ActionItemsCard() {
           <span className="text-card-title">Action Items</span>
           {openItems.length > 0 && (
             <span
+              className="text-[11px] font-bold"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -62,8 +63,6 @@ export function ActionItemsCard() {
                 borderRadius: '50%',
                 backgroundColor: 'hsl(var(--accent-coral))',
                 color: 'white',
-                fontSize: 11,
-                fontWeight: 700,
               }}
             >
               {openItems.length}
@@ -85,7 +84,7 @@ export function ActionItemsCard() {
           }}
         >
           <CheckCircle size={24} style={{ color: 'hsl(var(--status-success))' }} />
-          <span style={{ fontSize: 13 }}>Nothing needs your attention right now</span>
+          <span className="text-body-sm">Nothing needs your attention right now</span>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -106,7 +105,7 @@ export function ActionItemsCard() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', fontWeight: 500, flex: 1 }}>
+                <p className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', flex: 1 }}>
                   {item.description}
                 </p>
                 <Badge variant={urgencyBadge(item.urgency) as 'error' | 'warning' | 'neutral'}>
