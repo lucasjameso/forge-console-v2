@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
   FolderKanban,
@@ -10,9 +10,9 @@ import {
   Activity,
   Settings,
   Menu,
-  X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, route: '/' },
@@ -50,13 +50,13 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               flexShrink: 0,
             }}
           >
-            <span style={{ color: 'white', fontWeight: 700, fontSize: 14 }}>F</span>
+            <span className="text-body" style={{ color: 'white', fontWeight: 700 }}>F</span>
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
+            <div className="text-body" style={{ fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
               Forge Console
             </div>
-            <div style={{ fontSize: 11, color: 'hsl(var(--text-tertiary))', marginTop: 1 }}>
+            <div className="text-[11px]" style={{ color: 'hsl(var(--text-tertiary))', marginTop: 1 }}>
               IAC Solutions
             </div>
           </div>
@@ -65,7 +65,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
       {/* Nav */}
       <nav style={{ flex: 1, padding: '12px 12px', overflowY: 'auto' }}>
-        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 4 }}>
           {navItems.map((item) => {
             const Icon = item.icon
             const isActive =
@@ -82,37 +82,36 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                 >
                   <motion.div
                     whileTap={{ scale: 0.97 }}
-                    className={cn('sidebar-nav-item')}
+                    className={cn(
+                      'group flex items-center gap-2.5 py-2 px-2.5 rounded-lg cursor-pointer relative transition-colors duration-150',
+                      isActive
+                        ? 'bg-[hsl(var(--bg-elevated))]'
+                        : 'hover:bg-[hsl(var(--bg-elevated))]'
+                    )}
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10,
-                      padding: '8px 10px',
-                      borderRadius: 8,
-                      cursor: 'pointer',
-                      position: 'relative',
-                      backgroundColor: isActive ? 'hsl(var(--bg-elevated))' : 'transparent',
-                      borderLeft: isActive
-                        ? '2px solid hsl(var(--accent-coral))'
-                        : '2px solid transparent',
-                      paddingLeft: isActive ? 8 : 10,
-                      transition: 'background-color 0.15s ease',
+                      borderLeft: '2px solid',
+                      borderLeftColor: isActive
+                        ? 'hsl(var(--accent-coral))'
+                        : 'transparent',
+                      paddingLeft: 8,
                     }}
                   >
                     <Icon
                       size={16}
-                      style={{
-                        color: isActive ? 'hsl(var(--accent-coral))' : 'hsl(var(--text-tertiary))',
-                        flexShrink: 0,
-                      }}
+                      className={cn(
+                        'flex-shrink-0',
+                        isActive
+                          ? 'text-[hsl(var(--accent-coral))]'
+                          : 'text-[hsl(var(--text-tertiary))] group-hover:text-[hsl(var(--text-secondary))]'
+                      )}
                     />
                     <span
-                      style={{
-                        fontSize: 13,
-                        fontWeight: isActive ? 600 : 400,
-                        color: isActive ? 'hsl(var(--text-primary))' : 'hsl(var(--text-secondary))',
-                        whiteSpace: 'nowrap',
-                      }}
+                      className={cn(
+                        'text-body-sm whitespace-nowrap',
+                        isActive
+                          ? 'text-[hsl(var(--text-primary))] font-semibold'
+                          : 'text-[hsl(var(--text-secondary))] font-normal group-hover:text-[hsl(var(--text-primary))]'
+                      )}
                     >
                       {item.label}
                     </span>
@@ -132,7 +131,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           flexShrink: 0,
         }}
       >
-        <div style={{ fontSize: 11, color: 'hsl(var(--text-tertiary))' }}>
+        <div className="text-caption text-[hsl(var(--text-tertiary))]">
           v2.0.0 &middot; March 2026
         </div>
       </div>
@@ -151,7 +150,7 @@ export function Sidebar() {
         style={{
           width: 'var(--sidebar-width)',
           minWidth: 'var(--sidebar-width)',
-          backgroundColor: 'hsl(var(--bg-surface))',
+          backgroundColor: 'hsl(var(--bg-sidebar))',
           borderRight: '1px solid hsl(var(--border-subtle))',
           display: 'flex',
           flexDirection: 'column',
@@ -189,56 +188,13 @@ export function Sidebar() {
         <Menu size={18} style={{ color: 'hsl(var(--text-primary))' }} />
       </button>
 
-      {/* Mobile overlay */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 50,
-              backgroundColor: 'rgba(0,0,0,0.4)',
-            }}
-            onClick={() => setMobileOpen(false)}
-          >
-            <motion.aside
-              initial={{ x: -260 }}
-              animate={{ x: 0 }}
-              exit={{ x: -260 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              style={{
-                width: 260,
-                backgroundColor: 'hsl(var(--bg-surface))',
-                height: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-                boxShadow: 'var(--shadow-elevated)',
-                position: 'relative',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setMobileOpen(false)}
-                style={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 4,
-                }}
-              >
-                <X size={18} style={{ color: 'hsl(var(--text-tertiary))' }} />
-              </button>
-              <SidebarContent onNavigate={() => setMobileOpen(false)} />
-            </motion.aside>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Mobile drawer */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="w-[260px] p-0 bg-[hsl(var(--bg-sidebar))]" aria-describedby={undefined}>
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+          <SidebarContent onNavigate={() => setMobileOpen(false)} />
+        </SheetContent>
+      </Sheet>
 
       <style>{`
         @media (max-width: 768px) {
