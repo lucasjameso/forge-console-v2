@@ -9,11 +9,11 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Component Foundation
 
-- [ ] **FOUN-01**: shadcn/ui adopted with CSS variable token mapping bridging existing design system to shadcn conventions
+- [x] **FOUN-01**: shadcn/ui adopted with CSS variable token mapping bridging existing design system to shadcn conventions
 - [ ] **FOUN-02**: All custom CSS component classes (buttons, cards, badges, inputs) replaced with shadcn/ui primitives
 - [ ] **FOUN-03**: Toast notifications (sonner) fire on every user action (approve, reject, save, create, delete)
 - [ ] **FOUN-04**: Error boundaries wrap every page and critical sections with graceful fallback UI
-- [ ] **FOUN-05**: Favicon shows coral F on navy background in browser tab
+- [x] **FOUN-05**: Favicon shows coral F on navy background in browser tab
 
 ### Dashboard
 
@@ -124,11 +124,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | Phase 1: Component Foundation | Pending |
+| FOUN-01 | Phase 1: Component Foundation | Complete |
 | FOUN-02 | Phase 1: Component Foundation | Pending |
 | FOUN-03 | Phase 1: Component Foundation | Pending |
 | FOUN-04 | Phase 1: Component Foundation | Pending |
-| FOUN-05 | Phase 1: Component Foundation | Pending |
+| FOUN-05 | Phase 1: Component Foundation | Complete |
 | DASH-01 | Phase 3: Dashboard Redesign | Pending |
 | DASH-02 | Phase 3: Dashboard Redesign | Pending |
 | DASH-03 | Phase 3: Dashboard Redesign | Pending |

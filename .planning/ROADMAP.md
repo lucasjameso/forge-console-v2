@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- shadcn/ui init, token bridge, font migration, favicon
+- [x] 01-01-PLAN.md -- shadcn/ui init, token bridge, font migration, favicon
 - [ ] 01-02-PLAN.md -- Install all shadcn components, Badge/Skeleton migration, CSS cleanup
 - [ ] 01-03-PLAN.md -- Toast notifications on all mutations, error boundaries
 
