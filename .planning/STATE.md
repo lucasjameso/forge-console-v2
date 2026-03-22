@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-03-22T12:47:21.703Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-22T12:51:14.707Z"
 progress:
   total_phases: 9
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Plan: 3 of 3
 *Updated after each plan completion*
 | Phase 01 P01 | 4min | 2 tasks | 22 files |
 | Phase 01 P03 | 2min | 2 tasks | 6 files |
+| Phase 01 P02 | 5min | 2 tasks | 50 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Recent decisions affecting current work:
 - [Phase 01]: All design tokens converted to bare HSL format with shadcn variable bridge pattern
 - [Phase 01]: Self-hosted Inter via @fontsource instead of Google Fonts CDN
 - [Phase 01]: Error fallbacks use FallbackProps type and raw Tailwind to avoid circular deps with shadcn components
+- [Phase 01]: shadcn CLI path alias resolved manually -- files moved from literal @/ to src/
+- [Phase 01]: className=card replaced with Tailwind utilities instead of shadcn Card components for scope control
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T12:47:21.701Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-03-22T12:51:14.705Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
