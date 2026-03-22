@@ -4,7 +4,7 @@ import { StatTilesRow } from '@/components/dashboard/StatTilesRow'
 import { SystemHealthStrip } from '@/components/dashboard/SystemHealthStrip'
 import { ActionItemsCard } from '@/components/dashboard/ActionItemsCard'
 import { ProjectQuickGlanceCard } from '@/components/dashboard/ProjectQuickGlanceCard'
-import { UpcomingContentCard } from '@/components/dashboard/UpcomingContentCard'
+import { ContentCalendarStrip } from '@/components/dashboard/ContentCalendarStrip'
 import { getGreeting, formatDate, formatTime } from '@/lib/utils'
 
 export function Dashboard() {
@@ -33,7 +33,7 @@ export function Dashboard() {
         <SystemHealthStrip />
         <ActionItemsCard />
         <ProjectQuickGlanceCard />
-        <UpcomingContentCard />
+        <ContentCalendarStrip />
       </div>
     </PageShell>
   )
