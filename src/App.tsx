@@ -6,6 +6,8 @@ import { Toaster } from 'sonner'
 import { queryClient } from '@/lib/queryClient'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { PageErrorFallback } from '@/components/ui/PageErrorFallback'
+import { AccessGate } from '@/components/AccessGate'
+import { FeedbackWidget } from '@/components/FeedbackWidget'
 import { Dashboard } from '@/pages/Dashboard'
 import { Projects } from '@/pages/Projects'
 import { ProjectDetail } from '@/pages/ProjectDetail'
@@ -57,7 +59,10 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ErrorBoundary FallbackComponent={PageErrorFallback}>
-          <AppRoutes />
+          <AccessGate>
+            <AppRoutes />
+            <FeedbackWidget />
+          </AccessGate>
         </ErrorBoundary>
         <Toaster
           position="bottom-right"

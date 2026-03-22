@@ -26,3 +26,5 @@ dist-ssr
 # Local tool configs
 .mcp.json
 .bg-shell/
+.env.local
+supabase/.temp/
