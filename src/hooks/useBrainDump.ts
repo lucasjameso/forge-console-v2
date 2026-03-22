@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { mockBrainDumps } from '@/data/mock'
 import type { BrainDump, ParsedBrainDump } from '@/types/database'
@@ -101,6 +102,10 @@ export function useSubmitBrainDump() {
     },
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['brain-dumps'] })
+      toast.success('Brain dump saved successfully')
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to save brain dump', { description: error.message })
     },
   })
 }

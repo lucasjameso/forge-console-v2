@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import {
   mockProjects,
@@ -146,6 +147,10 @@ export function useUpdateTask() {
     },
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['tasks'] })
+      toast.success('Task updated')
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to update task', { description: error.message })
     },
   })
 }
@@ -163,6 +168,10 @@ export function useAddNote() {
     },
     onSuccess: (_data, vars) => {
       void qc.invalidateQueries({ queryKey: ['notes', vars.project_id] })
+      toast.success('Note added')
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to add note', { description: error.message })
     },
   })
 }
