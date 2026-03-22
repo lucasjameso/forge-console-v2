@@ -44,13 +44,13 @@ export function ActivityLog() {
     <PageShell title="Activity Log" subtitle="Every action across your entire system.">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Filters */}
-        <div className="card" style={{ padding: '14px 20px' }}>
+        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: '14px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             {/* Search */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 200 }}>
               <Search size={14} style={{ color: 'hsl(var(--text-tertiary))' }} />
               <input
-                className="input"
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
                 style={{ border: 'none', padding: '4px 0', boxShadow: 'none' }}
                 placeholder="Search activity..."
                 value={search}
@@ -96,7 +96,7 @@ export function ActivityLog() {
         {isLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[0, 1, 2, 3, 4].map(i => (
-              <div key={i} className="card" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px' }}>
+              <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px' }}>
                 <SkeletonBlock width={8} height={8} style={{ borderRadius: '50%' }} />
                 <SkeletonBlock width="60%" height={14} />
                 <div style={{ marginLeft: 'auto' }}>
@@ -106,7 +106,7 @@ export function ActivityLog() {
             ))}
           </div>
         ) : (entries ?? []).length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
             <p className="text-body">No activity matches your filters.</p>
           </div>
         ) : (
@@ -156,7 +156,7 @@ export function ActivityLog() {
 
                   {/* Content */}
                   <div
-                    className="card"
+                    className="rounded-lg border bg-card p-6 shadow-card"
                     style={{
                       flex: 1,
                       padding: '12px 16px',

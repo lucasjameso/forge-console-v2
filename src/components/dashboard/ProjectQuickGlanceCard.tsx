@@ -18,7 +18,7 @@ export function ProjectQuickGlanceCard() {
         </div>
         <div className="project-glance-grid" style={{ display: 'grid', gap: 16 }}>
           {[0, 1, 2].map(i => (
-            <div key={i} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <SkeletonBlock width="70%" height={16} />
               <SkeletonBlock width="100%" height={8} style={{ borderRadius: 4 }} />
               <SkeletonBlock width="50%" height={12} />
@@ -52,7 +52,7 @@ export function ProjectQuickGlanceCard() {
               style={{ textDecoration: 'none', display: 'block' }}
             >
               <div
-                className="card"
+                className="rounded-lg border bg-card p-6 shadow-card"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',

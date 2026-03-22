@@ -17,7 +17,7 @@ export function Projects() {
           ))
         )}
         {!isLoading && (projects ?? []).length === 0 && (
-          <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
             <p className="text-body">No projects yet.</p>
           </div>
         )}

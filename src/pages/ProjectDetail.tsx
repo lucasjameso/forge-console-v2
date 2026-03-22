@@ -149,7 +149,7 @@ export function ProjectDetail() {
   if (!project) {
     return (
       <PageShell title="Project Not Found">
-        <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p className="text-body">No project found with slug "{slug}".</p>
           <Link to="/projects" style={{ color: 'hsl(var(--accent-coral))', fontSize: 14, marginTop: 12, display: 'inline-block' }}>
             Back to Projects
@@ -244,7 +244,7 @@ export function ProjectDetail() {
 
         {/* Row 2: Progress + Milestone Timeline */}
         <Section icon={Target} title="Progress">
-          <div className="card">
+          <div className="rounded-lg border bg-card p-6 shadow-card">
             {/* Progress bar */}
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -321,7 +321,7 @@ export function ProjectDetail() {
 
         {/* Row 3: Recent Activity */}
         <Section icon={Activity} title="Recent Activity">
-          <div className="card" style={{ padding: 0 }}>
+          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: 0 }}>
             {recentActivity.length === 0 ? (
               <p className="text-caption" style={{ textAlign: 'center', padding: 24 }}>No recent activity</p>
             ) : (
@@ -361,7 +361,7 @@ export function ProjectDetail() {
 
         {/* Row 5: Notes */}
         <Section icon={StickyNote} title="Notes & Decisions">
-          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {(notes ?? []).map((note) => (
               <div
                 key={note.id}
@@ -391,13 +391,13 @@ export function ProjectDetail() {
             {/* Add note form */}
             <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
               <input
-                className="input"
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
                 placeholder="Add a note..."
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleAddNote() }}
               />
-              <button className="btn-primary" onClick={handleAddNote} disabled={!noteText.trim()}>
+              <button className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleAddNote} disabled={!noteText.trim()}>
                 <Plus size={14} />
                 Add
               </button>
@@ -413,7 +413,7 @@ export function ProjectDetail() {
                 href={project.github_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost"
+                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
               >
                 <Github size={14} />
                 GitHub
@@ -425,7 +425,7 @@ export function ProjectDetail() {
                 href={project.cloudflare_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost"
+                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
               >
                 <Globe size={14} />
                 Cloudflare
@@ -437,7 +437,7 @@ export function ProjectDetail() {
                 href={`https://supabase.com/dashboard/project/${project.supabase_ref}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-ghost"
+                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
               >
                 <Database size={14} />
                 Supabase
@@ -454,7 +454,7 @@ export function ProjectDetail() {
         {sessionPrompt && (
           <Section icon={Copy} title="Next Session Prompt">
             <div
-              className="card"
+              className="rounded-lg border bg-card p-6 shadow-card"
               style={{ cursor: 'pointer', position: 'relative' }}
               onClick={handleCopyPrompt}
             >

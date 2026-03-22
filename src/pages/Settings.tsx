@@ -83,7 +83,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="card"
+      className="rounded-lg border bg-card p-6 shadow-card"
       style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -177,7 +177,7 @@ export function Settings() {
             <Info size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
             <span className="text-section-header">About</span>
           </div>
-          <div className="card">
+          <div className="rounded-lg border bg-card p-6 shadow-card">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Application</span>
@@ -215,7 +215,7 @@ export function Settings() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="card"
+            className="rounded-lg border bg-card p-6 shadow-card"
             style={{ borderLeft: '3px solid hsl(var(--status-warning))', backgroundColor: 'hsl(var(--status-warning-bg))' }}
           >
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>

@@ -23,7 +23,7 @@ export function SystemHealthCard() {
 
   if (isLoading) {
     return (
-      <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <SkeletonBlock width="50%" height={16} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[0, 1, 2].map(i => (
@@ -43,7 +43,7 @@ export function SystemHealthCard() {
 
   return (
     <motion.div
-      className="card"
+      className="rounded-lg border bg-card p-6 shadow-card"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}

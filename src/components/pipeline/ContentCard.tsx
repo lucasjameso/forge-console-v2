@@ -40,7 +40,7 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : undefined }}
     >
-      <div className="card" style={{ padding: compact ? '12px 16px' : '16px 20px' }}>
+      <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: compact ? '12px 16px' : '16px 20px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: compact ? 4 : 6 }}>

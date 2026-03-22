@@ -26,7 +26,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       transition={{ duration: 0.35, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
     >
       <Link to={`/projects/${project.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 16, cursor: 'pointer' }}>
+        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 16, cursor: 'pointer' }}>
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
             <div style={{ flex: 1 }}>

@@ -34,7 +34,7 @@ export function UpcomingContentCard() {
         </div>
         <div style={{ display: 'flex', gap: 16, overflowX: 'auto' }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className="card" style={{ minWidth: 240, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ minWidth: 240, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <SkeletonBlock width="40%" height={12} />
               <SkeletonBlock width="90%" height={14} />
               <SkeletonBlock width="60%" height={12} />
@@ -81,7 +81,7 @@ export function UpcomingContentCard() {
         }}
       >
         {upcoming.length === 0 ? (
-          <div className="card" style={{ width: '100%', textAlign: 'center', padding: '24px 0' }}>
+          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ width: '100%', textAlign: 'center', padding: '24px 0' }}>
             <p className="text-caption">No upcoming content scheduled</p>
           </div>
         ) : (
@@ -100,7 +100,7 @@ export function UpcomingContentCard() {
                 style={{ minWidth: 260, maxWidth: 280, flexShrink: 0 }}
               >
                 <div
-                  className="card"
+                  className="rounded-lg border bg-card p-6 shadow-card"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',

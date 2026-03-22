@@ -37,7 +37,7 @@ export function SocialMedia() {
       {isLoading ? (
         <div className="social-grid" style={{ display: 'grid', gap: 16 }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <SkeletonBlock width="50%" height={18} />
               <SkeletonBlock width="70%" height={14} />
               <SkeletonBlock width="40%" height={14} />
@@ -59,7 +59,7 @@ export function SocialMedia() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                  className="card"
+                  className="rounded-lg border bg-card p-6 shadow-card"
                   style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
                 >
                   {/* Header */}
@@ -173,7 +173,7 @@ export function SocialMedia() {
           </div>
 
           {/* Summary stats */}
-          <div className="card">
+          <div className="rounded-lg border bg-card p-6 shadow-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
               <span className="text-section-header">Overview</span>
             </div>

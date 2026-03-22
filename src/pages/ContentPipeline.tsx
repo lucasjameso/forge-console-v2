@@ -93,7 +93,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="card"
+        className="rounded-lg border bg-card p-6 shadow-card"
         style={{
           width: '100%',
           maxWidth: 560,
@@ -187,17 +187,17 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
                     <span style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>Rejection feedback</span>
                   </div>
                   <textarea
-                    className="input"
+                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
                     style={{ minHeight: 80, resize: 'vertical' }}
                     placeholder="What needs to change?"
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
                   />
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="btn-primary" onClick={handleReject} disabled={!feedback.trim()} style={{ backgroundColor: 'hsl(var(--status-error))' }}>
+                    <button className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleReject} disabled={!feedback.trim()} style={{ backgroundColor: 'hsl(var(--status-error))' }}>
                       Confirm Reject
                     </button>
-                    <button className="btn-ghost" onClick={() => setShowReject(false)}>Cancel</button>
+                    <button className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer" onClick={() => setShowReject(false)}>Cancel</button>
                   </div>
                 </div>
               </motion.div>
@@ -208,12 +208,12 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
         {/* Actions */}
         {(item.status === 'pending' || item.status === 'draft') && !showReject && (
           <div style={{ padding: '16px 24px', borderTop: '1px solid hsl(var(--border-subtle))', display: 'flex', gap: 8 }}>
-            <button className="btn-primary" onClick={handleApprove}>
+            <button className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleApprove}>
               <Check size={14} />
               Approve
             </button>
             <button
-              className="btn-ghost"
+              className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
               onClick={() => setShowReject(true)}
               style={{ color: 'hsl(var(--status-error))' }}
             >
@@ -458,7 +458,7 @@ export function ContentPipeline() {
       {isLoading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <SkeletonBlock width="30%" height={12} />
               <SkeletonBlock width="70%" height={16} />
               <SkeletonBlock width="50%" height={12} />
@@ -466,7 +466,7 @@ export function ContentPipeline() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p className="text-body">No content in the pipeline yet.</p>
         </div>
       ) : (

@@ -20,10 +20,10 @@ export function ActionItemsCard() {
 
   if (isLoading) {
     return (
-      <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <SkeletonBlock width="40%" height={18} />
         {[0, 1, 2].map(i => (
-          <div key={i} className="card" style={{ padding: '12px 16px', gap: 8, display: 'flex', flexDirection: 'column' }}>
+          <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: '12px 16px', gap: 8, display: 'flex', flexDirection: 'column' }}>
             <SkeletonBlock width="80%" height={14} />
             <SkeletonBlock width="40%" height={11} />
           </div>
@@ -41,7 +41,7 @@ export function ActionItemsCard() {
 
   return (
     <motion.div
-      className="card"
+      className="rounded-lg border bg-card p-6 shadow-card"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}

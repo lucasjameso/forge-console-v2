@@ -27,9 +27,9 @@ export function BrainDump() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
 
         {/* Input area */}
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: 0, overflow: 'hidden' }}>
           <textarea
-            className="input"
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
             style={{
               minHeight: 140,
               resize: 'vertical',
@@ -60,7 +60,7 @@ export function BrainDump() {
               {submitMutation.isPending ? 'Parsing with Claude...' : 'Cmd+Enter to submit'}
             </span>
             <button
-              className="btn-primary"
+              className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleSubmit}
               disabled={!text.trim() || submitMutation.isPending}
               style={{ opacity: !text.trim() || submitMutation.isPending ? 0.5 : 1 }}
@@ -80,7 +80,7 @@ export function BrainDump() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="card" style={{ borderLeft: '3px solid hsl(var(--accent-coral))' }}>
+              <div className="rounded-lg border bg-card p-6 shadow-card" style={{ borderLeft: '3px solid hsl(var(--accent-coral))' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
                   <span className="text-section-header">Parsed Result</span>
                   <Badge variant="success">New</Badge>
@@ -131,7 +131,7 @@ export function BrainDump() {
 
         {/* Error */}
         {submitMutation.isError && (
-          <div className="card" style={{ borderLeft: '3px solid hsl(var(--status-error))' }}>
+          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ borderLeft: '3px solid hsl(var(--status-error))' }}>
             <p style={{ fontSize: 13, color: 'hsl(var(--status-error))', margin: 0 }}>
               Failed to parse: {(submitMutation.error as Error).message}
             </p>
@@ -148,14 +148,14 @@ export function BrainDump() {
           {isLoading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[0, 1, 2].map(i => (
-                <div key={i} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <SkeletonBlock width="80%" height={14} />
                   <SkeletonBlock width="40%" height={12} />
                 </div>
               ))}
             </div>
           ) : (dumps ?? []).length === 0 ? (
-            <div className="card" style={{ textAlign: 'center', padding: '32px 24px' }}>
+            <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '32px 24px' }}>
               <p className="text-caption">No brain dumps yet. Start typing above.</p>
             </div>
           ) : (
@@ -166,7 +166,7 @@ export function BrainDump() {
                   <motion.div
                     key={dump.id}
                     layout
-                    className="card"
+                    className="rounded-lg border bg-card p-6 shadow-card"
                     style={{ cursor: 'pointer', padding: '14px 20px' }}
                     onClick={() => setExpandedId(isExpanded ? null : dump.id)}
                   >
