@@ -7,14 +7,14 @@
   /* Backgrounds */
   --bg-root: 30 33% 94%;
   --bg-surface: 0 0% 100%;
-  --bg-elevated: 30 26% 89%;
+  --bg-elevated: 30 15% 96%;
   --bg-active: 32 22% 86%;
-  --bg-sidebar: 33 28% 92%;
+  --bg-sidebar: 30 20% 91%;
 
-  /* Borders (solid HSL equivalents of rgba originals) */
-  --border-subtle: 30 10% 94%;
-  --border-default: 30 10% 91%;
-  --border-strong: 30 10% 87%;
+  /* Borders (must be visible against cream bg -- ~80% lightness on warm hue) */
+  --border-subtle: 28 15% 82%;
+  --border-default: 28 14% 76%;
+  --border-strong: 28 14% 68%;
 
   /* Text */
   --text-primary: 223 17% 8%;
@@ -38,11 +38,11 @@
   --status-info: 221 83% 53%;
   --status-info-bg: 214 100% 97%;
 
-  /* Shadows (keep as full CSS values -- not consumed by hsl()) */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  --shadow-elevated: 0 4px 16px rgba(0,0,0,0.08);
-  --shadow-modal: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
+  /* Shadows (warm-tinted, visible depth) */
+  --shadow-card: 0 1px 4px rgba(120,90,60,0.08), 0 2px 8px rgba(120,90,60,0.04);
+  --shadow-card-hover: 0 4px 16px rgba(120,90,60,0.12), 0 2px 4px rgba(120,90,60,0.06);
+  --shadow-elevated: 0 4px 16px rgba(120,90,60,0.10);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.10);
 
   /* Sidebar */
   --sidebar-width: 220px;

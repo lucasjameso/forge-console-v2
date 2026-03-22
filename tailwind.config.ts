@@ -21,6 +21,40 @@ const config: Config = {
           DEFAULT: 'hsl(var(--accent-navy))',
           light: 'hsl(var(--accent-navy-light))',
         },
+        /* shadcn/ui color bridge -- makes bg-card, bg-background, text-foreground etc. work */
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
       },
       borderRadius: {
         DEFAULT: 'var(--radius)',
@@ -29,9 +63,9 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       boxShadow: {
-        card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-        'card-hover': '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
-        elevated: '0 4px 16px rgba(0,0,0,0.08)',
+        'forge-card': '0 1px 4px rgba(120,90,60,0.08), 0 2px 8px rgba(120,90,60,0.04)',
+        'forge-card-hover': '0 4px 16px rgba(120,90,60,0.12), 0 2px 4px rgba(120,90,60,0.06)',
+        'forge-elevated': '0 4px 16px rgba(120,90,60,0.10)',
       },
     },
   },
