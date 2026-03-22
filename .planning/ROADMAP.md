@@ -67,11 +67,11 @@ Plans:
   3. Project cards show color-coded "days since last activity" indicators (green under 24h, amber 1-3 days, red over 3 days)
   4. A 7-day content calendar strip shows upcoming scheduled posts inline on the dashboard
   5. Action items from all projects appear aggregated and sorted by urgency
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md -- Stat tiles row, system health strip, action items cap, dashboard layout rebuild
+- [ ] 03-02-PLAN.md -- Project cards with days-since indicators, 7-day content calendar strip
 
 ### Phase 4: Page-by-Page Visual Polish
 **Goal**: Every remaining page (Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings) meets the same premium quality bar as the dashboard
