@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Database,
@@ -9,11 +10,16 @@ import {
   CheckCircle,
   XCircle,
   Info,
+  MessageSquarePlus,
+  Wrench,
+  Lightbulb,
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { isSupabaseConfigured } from '@/lib/supabase'
+import { usePageFeedback } from '@/hooks/usePageFeedback'
+import { formatRelativeTime } from '@/lib/utils'
 
 interface Integration {
   name: string
@@ -155,6 +161,129 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
   )
 }
 
+type FeedbackFilter = 'all' | 'open' | 'done'
+
+function FeedbackLog() {
+  const [filter, setFilter] = useState<FeedbackFilter>('all')
+  const queryFilter = filter === 'all' ? undefined : filter
+  const { data: feedback, isLoading } = usePageFeedback(queryFilter)
+  const items = feedback ?? []
+
+  const filters: { key: FeedbackFilter; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'open', label: 'Open' },
+    { key: 'done', label: 'Done' },
+  ]
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <MessageSquarePlus size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
+          <span className="text-section-header">Feedback Log</span>
+          {items.length > 0 && <Badge variant="neutral">{items.length}</Badge>}
+        </div>
+        <div style={{ display: 'flex', gap: 4, backgroundColor: 'hsl(var(--bg-elevated))', borderRadius: 'var(--radius-pill)', padding: 3 }}>
+          {filters.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className="text-caption"
+              style={{
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-pill)',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: filter === f.key ? 600 : 400,
+                color: filter === f.key ? 'hsl(var(--text-primary))' : 'hsl(var(--text-tertiary))',
+                backgroundColor: filter === f.key ? 'hsl(var(--bg-surface))' : 'transparent',
+                boxShadow: filter === f.key ? 'var(--shadow-card)' : 'none',
+                transition: 'all 0.15s',
+              }}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Card style={{ overflow: 'hidden' }}>
+        {isLoading ? (
+          <div style={{ padding: '24px', textAlign: 'center' }}>
+            <span className="text-caption">Loading feedback...</span>
+          </div>
+        ) : items.length === 0 ? (
+          <div style={{ padding: '32px 24px', textAlign: 'center' }}>
+            <span className="text-body" style={{ color: 'hsl(var(--text-tertiary))' }}>
+              {filter === 'all' ? 'No feedback yet. Use the coral button on any page to submit.' : `No ${filter} feedback.`}
+            </span>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {items.map((item, idx) => {
+              const isDone = item.status === 'done'
+              return (
+                <div
+                  key={item.id}
+                  style={{
+                    padding: '10px 16px',
+                    borderBottom: idx < items.length - 1 ? '1px solid hsl(var(--border-subtle))' : 'none',
+                    opacity: isDone ? 0.6 : 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 4,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {item.feedback_type === 'fix' ? (
+                      <Wrench size={12} style={{ color: 'hsl(var(--status-error))', flexShrink: 0 }} />
+                    ) : (
+                      <Lightbulb size={12} style={{ color: 'hsl(var(--status-info))', flexShrink: 0 }} />
+                    )}
+                    <Badge variant={item.feedback_type === 'fix' ? 'error' : 'info'}>
+                      {item.feedback_type === 'fix' ? 'Fix' : 'Suggestion'}
+                    </Badge>
+                    <span className="text-caption" style={{ color: 'hsl(var(--accent-coral))' }}>{item.page}</span>
+                    <span style={{ flex: 1 }} />
+                    <Badge variant={item.status === 'done' ? 'success' : item.status === 'in_progress' ? 'warning' : 'neutral'}>
+                      {item.status === 'in_progress' ? 'In Progress' : item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                    </Badge>
+                    <span className="text-caption">{formatRelativeTime(item.created_at)}</span>
+                  </div>
+                  <p
+                    className="text-body-sm"
+                    style={{
+                      color: 'hsl(var(--text-primary))',
+                      margin: 0,
+                      textDecoration: isDone ? 'line-through' : 'none',
+                      paddingLeft: 20,
+                    }}
+                  >
+                    {item.content}
+                  </p>
+                  {isDone && item.resolution && (
+                    <p
+                      className="text-caption"
+                      style={{
+                        margin: 0,
+                        paddingLeft: 20,
+                        color: 'hsl(var(--status-success))',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      Resolution: {item.resolution}
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </Card>
+    </div>
+  )
+}
+
 export function Settings() {
   return (
     <PageShell title="Settings" subtitle="Configure integrations and preferences.">
@@ -170,6 +299,9 @@ export function Settings() {
             ))}
           </div>
         </div>
+
+        {/* Feedback Log */}
+        <FeedbackLog />
 
         {/* About */}
         <div>
