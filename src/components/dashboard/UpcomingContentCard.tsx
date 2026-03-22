@@ -52,7 +52,7 @@ export function UpcomingContentCard() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Layers size={15} style={{ color: 'var(--text-tertiary)' }} />
+          <Layers size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
           <span className="text-section-header">Upcoming Content</span>
         </div>
         <Link
@@ -62,7 +62,7 @@ export function UpcomingContentCard() {
             alignItems: 'center',
             gap: 4,
             fontSize: 13,
-            color: 'var(--accent-coral)',
+            color: 'hsl(var(--accent-coral))',
             textDecoration: 'none',
             fontWeight: 500,
           }}
@@ -114,7 +114,7 @@ export function UpcomingContentCard() {
                       style={{
                         fontSize: 12,
                         fontWeight: 600,
-                        color: 'var(--accent-coral)',
+                        color: 'hsl(var(--accent-coral))',
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
                       }}
@@ -133,7 +133,7 @@ export function UpcomingContentCard() {
                     style={{
                       fontSize: 14,
                       fontWeight: 500,
-                      color: 'var(--text-primary)',
+                      color: 'hsl(var(--text-primary))',
                       lineHeight: 1.4,
                     }}
                   >
@@ -143,7 +143,7 @@ export function UpcomingContentCard() {
                   {/* Meta row */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 'auto' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <PlatformIcon size={13} style={{ color: 'var(--text-tertiary)' }} />
+                      <PlatformIcon size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
                       <span className="text-caption">{item.slide_count} slides</span>
                     </div>
                     <span className="text-caption">Rev {item.revision}</span>

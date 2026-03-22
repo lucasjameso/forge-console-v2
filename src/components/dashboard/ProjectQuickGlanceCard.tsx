@@ -35,7 +35,7 @@ export function ProjectQuickGlanceCard() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-        <FolderKanban size={15} style={{ color: 'var(--text-tertiary)' }} />
+        <FolderKanban size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
         <span className="text-section-header">Projects</span>
       </div>
 
@@ -93,7 +93,7 @@ export function ProjectQuickGlanceCard() {
                       style={{
                         fontSize: 13,
                         fontWeight: 600,
-                        color: 'var(--text-primary)',
+                        color: 'hsl(var(--text-primary))',
                       }}
                     >
                       {project.progress_pct}%
@@ -104,7 +104,7 @@ export function ProjectQuickGlanceCard() {
                       width: '100%',
                       height: 6,
                       borderRadius: 3,
-                      backgroundColor: 'var(--bg-elevated)',
+                      backgroundColor: 'hsl(var(--bg-elevated))',
                       overflow: 'hidden',
                     }}
                   >
@@ -115,7 +115,7 @@ export function ProjectQuickGlanceCard() {
                       style={{
                         height: '100%',
                         borderRadius: 3,
-                        backgroundColor: 'var(--accent-coral)',
+                        backgroundColor: 'hsl(var(--accent-coral))',
                       }}
                     />
                   </div>
@@ -125,7 +125,7 @@ export function ProjectQuickGlanceCard() {
                 {project.current_phase && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span className="text-caption">Phase:</span>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: 'hsl(var(--text-secondary))' }}>
                       {project.current_phase}
                     </span>
                   </div>
@@ -145,7 +145,7 @@ export function ProjectQuickGlanceCard() {
                   </span>
                   <ArrowRight
                     size={14}
-                    style={{ color: 'var(--text-tertiary)' }}
+                    style={{ color: 'hsl(var(--text-tertiary))' }}
                   />
                 </div>
               </div>

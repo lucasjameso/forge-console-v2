@@ -48,7 +48,7 @@ export function ActivityLog() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             {/* Search */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 200 }}>
-              <Search size={14} style={{ color: 'var(--text-tertiary)' }} />
+              <Search size={14} style={{ color: 'hsl(var(--text-tertiary))' }} />
               <input
                 className="input"
                 style={{ border: 'none', padding: '4px 0', boxShadow: 'none' }}
@@ -60,7 +60,7 @@ export function ActivityLog() {
 
             {/* Project filter */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Filter size={13} style={{ color: 'var(--text-tertiary)' }} />
+              <Filter size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
               <div style={{ display: 'flex', gap: 4 }}>
                 <FilterChip
                   label="All Projects"
@@ -119,7 +119,7 @@ export function ActivityLog() {
                 top: 24,
                 bottom: 24,
                 width: 2,
-                backgroundColor: 'var(--border-subtle)',
+                backgroundColor: 'hsl(var(--border-subtle))',
                 zIndex: 0,
               }}
             />
@@ -146,8 +146,8 @@ export function ActivityLog() {
                       width: 10,
                       height: 10,
                       borderRadius: '50%',
-                      backgroundColor: 'var(--accent-coral)',
-                      border: '3px solid var(--bg-root)',
+                      backgroundColor: 'hsl(var(--accent-coral))',
+                      border: '3px solid hsl(var(--bg-root))',
                       flexShrink: 0,
                       marginTop: 5,
                       marginLeft: 14,
@@ -175,7 +175,7 @@ export function ActivityLog() {
                       )}
                       <p style={{
                         fontSize: 13,
-                        color: 'var(--text-primary)',
+                        color: 'hsl(var(--text-primary))',
                         margin: 0,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -207,9 +207,9 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
         padding: '4px 10px',
         borderRadius: 'var(--radius-pill)',
         border: '1px solid',
-        borderColor: active ? 'var(--accent-coral)' : 'var(--border-default)',
-        backgroundColor: active ? 'rgba(199, 91, 63, 0.10)' : 'transparent',
-        color: active ? 'var(--accent-coral)' : 'var(--text-secondary)',
+        borderColor: active ? 'hsl(var(--accent-coral))' : 'hsl(var(--border-default))',
+        backgroundColor: active ? 'hsl(var(--accent-coral) / 0.1)' : 'transparent',
+        color: active ? 'hsl(var(--accent-coral))' : 'hsl(var(--text-secondary))',
         fontSize: 11,
         fontWeight: active ? 600 : 400,
         cursor: 'pointer',

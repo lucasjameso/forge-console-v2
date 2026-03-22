@@ -93,16 +93,16 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
               width: 36,
               height: 36,
               borderRadius: 10,
-              backgroundColor: integration.connected ? 'var(--status-success-bg)' : 'var(--bg-elevated)',
+              backgroundColor: integration.connected ? 'hsl(var(--status-success-bg))' : 'hsl(var(--bg-elevated))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Icon size={18} style={{ color: integration.connected ? 'var(--status-success)' : 'var(--text-tertiary)' }} />
+            <Icon size={18} style={{ color: integration.connected ? 'hsl(var(--status-success))' : 'hsl(var(--text-tertiary))' }} />
           </div>
           <div>
-            <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
               {integration.name}
             </h3>
             <span className="text-caption">{integration.description}</span>
@@ -118,11 +118,11 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
         {integration.envVars.map(env => (
           <div key={env.key} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {env.set ? (
-              <CheckCircle size={13} style={{ color: 'var(--status-success)' }} />
+              <CheckCircle size={13} style={{ color: 'hsl(var(--status-success))' }} />
             ) : (
-              <XCircle size={13} style={{ color: 'var(--text-tertiary)' }} />
+              <XCircle size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
             )}
-            <code style={{ fontSize: 11, color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+            <code style={{ fontSize: 11, color: 'hsl(var(--text-secondary))', fontFamily: 'monospace' }}>
               {env.key}
             </code>
             <span className="text-caption">{env.set ? 'Set' : 'Missing'}</span>
@@ -141,7 +141,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
             alignItems: 'center',
             gap: 4,
             fontSize: 12,
-            color: 'var(--accent-coral)',
+            color: 'hsl(var(--accent-coral))',
             textDecoration: 'none',
             fontWeight: 500,
             marginTop: 'auto',
@@ -174,31 +174,31 @@ export function Settings() {
         {/* About */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <Info size={15} style={{ color: 'var(--text-tertiary)' }} />
+            <Info size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
             <span className="text-section-header">About</span>
           </div>
           <div className="card">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Application</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>Forge Console v2</span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>Forge Console v2</span>
               </div>
-              <div style={{ borderTop: '1px solid var(--border-subtle)' }} />
+              <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Version</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>2.0.0</span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>2.0.0</span>
               </div>
-              <div style={{ borderTop: '1px solid var(--border-subtle)' }} />
+              <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Organization</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>IAC Solutions</span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>IAC Solutions</span>
               </div>
-              <div style={{ borderTop: '1px solid var(--border-subtle)' }} />
+              <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Stack</span>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>React + TypeScript + Supabase + Cloudflare Pages</span>
+                <span style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>React + TypeScript + Supabase + Cloudflare Pages</span>
               </div>
-              <div style={{ borderTop: '1px solid var(--border-subtle)' }} />
+              <div style={{ borderTop: '1px solid hsl(var(--border-subtle))' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Data Mode</span>
                 <Badge variant={isSupabaseConfigured ? 'success' : 'warning'}>
@@ -216,15 +216,15 @@ export function Settings() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             className="card"
-            style={{ borderLeft: '3px solid var(--status-warning)', backgroundColor: 'var(--status-warning-bg)' }}
+            style={{ borderLeft: '3px solid hsl(var(--status-warning))', backgroundColor: 'hsl(var(--status-warning-bg))' }}
           >
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <Info size={16} style={{ color: 'var(--status-warning)', flexShrink: 0, marginTop: 2 }} />
+              <Info size={16} style={{ color: 'hsl(var(--status-warning))', flexShrink: 0, marginTop: 2 }} />
               <div>
-                <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', margin: '0 0 6px' }}>
+                <p style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: '0 0 6px' }}>
                   Running with mock data
                 </p>
-                <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', margin: 0, lineHeight: 1.5 }}>
                   To connect to a live database, add your Supabase credentials to the .env.local file and restart the dev server. Run the schema from supabase/schema.sql to create the required tables.
                 </p>
               </div>

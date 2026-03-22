@@ -33,7 +33,7 @@ export function PageShell({ title, subtitle, actions, children }: PageShellProps
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
-        backgroundColor: 'var(--bg-root)',
+        backgroundColor: 'hsl(var(--bg-root))',
       }}
     >
       {/* Page header */}

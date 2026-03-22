@@ -20,7 +20,7 @@ function AppRoutes() {
       style={{
         display: 'flex',
         minHeight: '100vh',
-        backgroundColor: 'var(--bg-root)',
+        backgroundColor: 'hsl(var(--bg-root))',
       }}
     >
       <Sidebar />

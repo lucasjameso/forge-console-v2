@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import tailwindAnimate from 'tailwindcss-animate'
 
 const config: Config = {
   content: [
@@ -12,20 +13,20 @@ const config: Config = {
       },
       colors: {
         coral: {
-          DEFAULT: '#C75B3F',
-          light: '#d97c63',
-          dark: '#a64a31',
+          DEFAULT: 'hsl(var(--accent-coral))',
+          light: 'hsl(var(--accent-coral-light))',
+          dark: 'hsl(var(--accent-coral-dark))',
         },
         navy: {
-          DEFAULT: '#1B3A52',
-          light: '#254e6e',
-          dark: '#122840',
+          DEFAULT: 'hsl(var(--accent-navy))',
+          light: 'hsl(var(--accent-navy-light))',
         },
       },
       borderRadius: {
-        DEFAULT: '10px',
-        lg: '14px',
-        xl: '18px',
+        DEFAULT: 'var(--radius)',
+        lg: 'calc(var(--radius) + 4px)',
+        xl: 'calc(var(--radius) + 8px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
       boxShadow: {
         card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
@@ -34,7 +35,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [tailwindAnimate],
 }
 
 export default config

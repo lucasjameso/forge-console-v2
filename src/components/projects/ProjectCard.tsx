@@ -31,18 +31,18 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
                   {project.name}
                 </h3>
                 <Badge variant={statusVariant[project.status] ?? 'neutral'}>
                   {project.status}
                 </Badge>
               </div>
-              <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', lineHeight: 1.5, margin: 0 }}>
                 {project.description}
               </p>
             </div>
-            <ArrowRight size={18} style={{ color: 'var(--text-tertiary)', flexShrink: 0, marginTop: 4 }} />
+            <ArrowRight size={18} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0, marginTop: 4 }} />
           </div>
 
           {/* Progress */}
@@ -51,7 +51,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               <span className="text-caption">
                 {project.current_phase ?? 'No phase set'}
               </span>
-              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
                 {project.progress_pct}%
               </span>
             </div>
@@ -60,7 +60,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 width: '100%',
                 height: 8,
                 borderRadius: 4,
-                backgroundColor: 'var(--bg-elevated)',
+                backgroundColor: 'hsl(var(--bg-elevated))',
                 overflow: 'hidden',
               }}
             >
@@ -71,7 +71,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 style={{
                   height: '100%',
                   borderRadius: 4,
-                  backgroundColor: 'var(--accent-coral)',
+                  backgroundColor: 'hsl(var(--accent-coral))',
                 }}
               />
             </div>
@@ -84,9 +84,9 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 <StatusDot status={project.priority === 'high' ? 'error' : project.priority === 'medium' ? 'warning' : 'info'} />
                 <span className="text-caption" style={{ textTransform: 'capitalize' }}>{project.priority} priority</span>
               </div>
-              {project.github_url && <Github size={13} style={{ color: 'var(--text-tertiary)' }} />}
-              {project.cloudflare_url && <Globe size={13} style={{ color: 'var(--text-tertiary)' }} />}
-              {project.supabase_ref && <Database size={13} style={{ color: 'var(--text-tertiary)' }} />}
+              {project.github_url && <Github size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />}
+              {project.cloudflare_url && <Globe size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />}
+              {project.supabase_ref && <Database size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />}
             </div>
             <span className="text-caption">Updated {formatRelativeTime(project.updated_at)}</span>
           </div>

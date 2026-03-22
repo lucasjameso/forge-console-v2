@@ -70,16 +70,16 @@ export function SocialMedia() {
                           width: 36,
                           height: 36,
                           borderRadius: 10,
-                          backgroundColor: 'var(--bg-elevated)',
+                          backgroundColor: 'hsl(var(--bg-elevated))',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}
                       >
-                        <Icon size={18} style={{ color: 'var(--accent-navy)' }} />
+                        <Icon size={18} style={{ color: 'hsl(var(--accent-navy))' }} />
                       </div>
                       <div>
-                        <h3 style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                        <h3 style={{ fontSize: 15, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
                           {platform.platform_name}
                         </h3>
                         {platform.handle && (
@@ -94,8 +94,8 @@ export function SocialMedia() {
                   <div style={{ display: 'flex', gap: 20 }}>
                     {platform.follower_count !== null && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Users size={13} style={{ color: 'var(--text-tertiary)' }} />
-                        <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>
+                        <Users size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
+                        <span style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
                           {platform.follower_count.toLocaleString()}
                         </span>
                         {meta?.target && (
@@ -105,7 +105,7 @@ export function SocialMedia() {
                     )}
                     {platform.last_post_date && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Clock size={13} style={{ color: 'var(--text-tertiary)' }} />
+                        <Clock size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
                         <span className="text-caption">
                           Last post {formatRelativeTime(platform.last_post_date)}
                         </span>
@@ -116,12 +116,12 @@ export function SocialMedia() {
                   {/* Progress bar for follower goal */}
                   {platform.follower_count !== null && meta?.target && (
                     <div>
-                      <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: 'var(--bg-elevated)', overflow: 'hidden' }}>
+                      <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: 'hsl(var(--bg-elevated))', overflow: 'hidden' }}>
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${Math.min((platform.follower_count / meta.target) * 100, 100)}%` }}
                           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                          style={{ height: '100%', borderRadius: 3, backgroundColor: 'var(--accent-coral)' }}
+                          style={{ height: '100%', borderRadius: 3, backgroundColor: 'hsl(var(--accent-coral))' }}
                         />
                       </div>
                     </div>
@@ -136,9 +136,9 @@ export function SocialMedia() {
                         gap: 8,
                         padding: '8px 12px',
                         borderRadius: 8,
-                        backgroundColor: 'var(--status-warning-bg)',
+                        backgroundColor: 'hsl(var(--status-warning-bg))',
                         fontSize: 12,
-                        color: 'var(--status-warning)',
+                        color: 'hsl(var(--status-warning))',
                       }}
                     >
                       <AlertTriangle size={13} />
@@ -157,7 +157,7 @@ export function SocialMedia() {
                         alignItems: 'center',
                         gap: 4,
                         fontSize: 12,
-                        color: 'var(--accent-coral)',
+                        color: 'hsl(var(--accent-coral))',
                         textDecoration: 'none',
                         fontWeight: 500,
                         marginTop: 'auto',

@@ -33,7 +33,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div
         style={{
           padding: '24px 20px 20px',
-          borderBottom: '1px solid var(--border-subtle)',
+          borderBottom: '1px solid hsl(var(--border-subtle))',
           flexShrink: 0,
         }}
       >
@@ -43,7 +43,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               width: 32,
               height: 32,
               borderRadius: 8,
-              backgroundColor: 'var(--accent-coral)',
+              backgroundColor: 'hsl(var(--accent-coral))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -53,10 +53,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             <span style={{ color: 'white', fontWeight: 700, fontSize: 14 }}>F</span>
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>
               Forge Console
             </div>
-            <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 1 }}>
+            <div style={{ fontSize: 11, color: 'hsl(var(--text-tertiary))', marginTop: 1 }}>
               IAC Solutions
             </div>
           </div>
@@ -91,9 +91,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                       borderRadius: 8,
                       cursor: 'pointer',
                       position: 'relative',
-                      backgroundColor: isActive ? 'var(--bg-elevated)' : 'transparent',
+                      backgroundColor: isActive ? 'hsl(var(--bg-elevated))' : 'transparent',
                       borderLeft: isActive
-                        ? '2px solid var(--accent-coral)'
+                        ? '2px solid hsl(var(--accent-coral))'
                         : '2px solid transparent',
                       paddingLeft: isActive ? 8 : 10,
                       transition: 'background-color 0.15s ease',
@@ -102,7 +102,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     <Icon
                       size={16}
                       style={{
-                        color: isActive ? 'var(--accent-coral)' : 'var(--text-tertiary)',
+                        color: isActive ? 'hsl(var(--accent-coral))' : 'hsl(var(--text-tertiary))',
                         flexShrink: 0,
                       }}
                     />
@@ -110,7 +110,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                       style={{
                         fontSize: 13,
                         fontWeight: isActive ? 600 : 400,
-                        color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        color: isActive ? 'hsl(var(--text-primary))' : 'hsl(var(--text-secondary))',
                         whiteSpace: 'nowrap',
                       }}
                     >
@@ -128,11 +128,11 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div
         style={{
           padding: '16px 20px',
-          borderTop: '1px solid var(--border-subtle)',
+          borderTop: '1px solid hsl(var(--border-subtle))',
           flexShrink: 0,
         }}
       >
-        <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>
+        <div style={{ fontSize: 11, color: 'hsl(var(--text-tertiary))' }}>
           v2.0.0 &middot; March 2026
         </div>
       </div>
@@ -151,8 +151,8 @@ export function Sidebar() {
         style={{
           width: 'var(--sidebar-width)',
           minWidth: 'var(--sidebar-width)',
-          backgroundColor: 'var(--bg-surface)',
-          borderRight: '1px solid var(--border-subtle)',
+          backgroundColor: 'hsl(var(--bg-surface))',
+          borderRight: '1px solid hsl(var(--border-subtle))',
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
@@ -178,15 +178,15 @@ export function Sidebar() {
           width: 40,
           height: 40,
           borderRadius: 10,
-          backgroundColor: 'var(--bg-surface)',
-          border: '1px solid var(--border-default)',
+          backgroundColor: 'hsl(var(--bg-surface))',
+          border: '1px solid hsl(var(--border-default))',
           boxShadow: 'var(--shadow-card)',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
         }}
       >
-        <Menu size={18} style={{ color: 'var(--text-primary)' }} />
+        <Menu size={18} style={{ color: 'hsl(var(--text-primary))' }} />
       </button>
 
       {/* Mobile overlay */}
@@ -211,7 +211,7 @@ export function Sidebar() {
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               style={{
                 width: 260,
-                backgroundColor: 'var(--bg-surface)',
+                backgroundColor: 'hsl(var(--bg-surface))',
                 height: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
@@ -232,7 +232,7 @@ export function Sidebar() {
                   padding: 4,
                 }}
               >
-                <X size={18} style={{ color: 'var(--text-tertiary)' }} />
+                <X size={18} style={{ color: 'hsl(var(--text-tertiary))' }} />
               </button>
               <SidebarContent onNavigate={() => setMobileOpen(false)} />
             </motion.aside>

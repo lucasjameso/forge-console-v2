@@ -105,15 +105,15 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid hsl(var(--border-subtle))', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent-coral)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'hsl(var(--accent-coral))', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Week {item.week_number} - {item.day_label}
               </span>
               <Badge variant={badge.variant}>{badge.label}</Badge>
             </div>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 600, color: 'hsl(var(--text-primary))', margin: 0 }}>
               {item.post_title}
             </h3>
           </div>
@@ -121,7 +121,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
             onClick={onClose}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
           >
-            <X size={18} style={{ color: 'var(--text-tertiary)' }} />
+            <X size={18} style={{ color: 'hsl(var(--text-tertiary))' }} />
           </button>
         </div>
 
@@ -131,7 +131,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
           {item.caption && (
             <div>
               <span className="text-caption" style={{ marginBottom: 4, display: 'block' }}>Caption</span>
-              <p style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 14, color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0 }}>
                 {item.caption}
               </p>
             </div>
@@ -142,33 +142,33 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
             <div>
               <span className="text-caption">Platform</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                <PlatformIcon size={14} style={{ color: 'var(--text-secondary)' }} />
-                <span style={{ fontSize: 13, color: 'var(--text-primary)', textTransform: 'capitalize' }}>
+                <PlatformIcon size={14} style={{ color: 'hsl(var(--text-secondary))' }} />
+                <span style={{ fontSize: 13, color: 'hsl(var(--text-primary))', textTransform: 'capitalize' }}>
                   {item.platforms.join(', ')}
                 </span>
               </div>
             </div>
             <div>
               <span className="text-caption">Slides</span>
-              <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: '4px 0 0' }}>{item.slide_count}</p>
+              <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{item.slide_count}</p>
             </div>
             <div>
               <span className="text-caption">Revision</span>
-              <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: '4px 0 0' }}>{item.revision}</p>
+              <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{item.revision}</p>
             </div>
             {item.scheduled_date && (
               <div>
                 <span className="text-caption">Scheduled</span>
-                <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: '4px 0 0' }}>{formatShortDate(item.scheduled_date)}</p>
+                <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{formatShortDate(item.scheduled_date)}</p>
               </div>
             )}
           </div>
 
           {/* Feedback if rejected */}
           {item.feedback && (
-            <div style={{ padding: '12px 14px', borderRadius: 8, backgroundColor: 'var(--status-error-bg)', border: '1px solid var(--status-error)' }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--status-error)', textTransform: 'uppercase' }}>Feedback</span>
-              <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: '4px 0 0' }}>{item.feedback}</p>
+            <div style={{ padding: '12px 14px', borderRadius: 8, backgroundColor: 'hsl(var(--status-error-bg))', border: '1px solid hsl(var(--status-error))' }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'hsl(var(--status-error))', textTransform: 'uppercase' }}>Feedback</span>
+              <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{item.feedback}</p>
             </div>
           )}
 
@@ -183,8 +183,8 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
               >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <MessageSquare size={14} style={{ color: 'var(--text-tertiary)' }} />
-                    <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Rejection feedback</span>
+                    <MessageSquare size={14} style={{ color: 'hsl(var(--text-tertiary))' }} />
+                    <span style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>Rejection feedback</span>
                   </div>
                   <textarea
                     className="input"
@@ -194,7 +194,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
                     onChange={(e) => setFeedback(e.target.value)}
                   />
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="btn-primary" onClick={handleReject} disabled={!feedback.trim()} style={{ backgroundColor: 'var(--status-error)' }}>
+                    <button className="btn-primary" onClick={handleReject} disabled={!feedback.trim()} style={{ backgroundColor: 'hsl(var(--status-error))' }}>
                       Confirm Reject
                     </button>
                     <button className="btn-ghost" onClick={() => setShowReject(false)}>Cancel</button>
@@ -207,7 +207,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
 
         {/* Actions */}
         {(item.status === 'pending' || item.status === 'draft') && !showReject && (
-          <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 8 }}>
+          <div style={{ padding: '16px 24px', borderTop: '1px solid hsl(var(--border-subtle))', display: 'flex', gap: 8 }}>
             <button className="btn-primary" onClick={handleApprove}>
               <Check size={14} />
               Approve
@@ -215,7 +215,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
             <button
               className="btn-ghost"
               onClick={() => setShowReject(true)}
-              style={{ color: 'var(--status-error)' }}
+              style={{ color: 'hsl(var(--status-error))' }}
             >
               <XCircle size={14} />
               Reject
@@ -291,7 +291,7 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
       <div style={{ display: 'grid', gridTemplateColumns: `80px repeat(7, 1fr)`, gap: 1, marginBottom: 1 }}>
         <div style={{ padding: '8px 12px' }} />
         {days.map(d => (
-          <div key={d} style={{ padding: '8px 12px', fontSize: 12, fontWeight: 600, color: 'var(--text-tertiary)', textAlign: 'center' }}>
+          <div key={d} style={{ padding: '8px 12px', fontSize: 12, fontWeight: 600, color: 'hsl(var(--text-tertiary))', textAlign: 'center' }}>
             {d}
           </div>
         ))}
@@ -301,7 +301,7 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
       {sortedWeeks.map(([weekNum, weekItems]) => (
         <div key={weekNum} style={{ display: 'grid', gridTemplateColumns: `80px repeat(7, 1fr)`, gap: 1, marginBottom: 1 }}>
           <div style={{ padding: '12px', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Wk {weekNum}</span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'hsl(var(--text-secondary))' }}>Wk {weekNum}</span>
           </div>
           {days.map((_, dayIdx) => {
             const dayItem = weekItems.find(i => dayMap[i.day_label] === dayIdx)
@@ -312,15 +312,15 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
                   padding: 6,
                   minHeight: 80,
                   borderRadius: 8,
-                  backgroundColor: dayItem ? 'var(--bg-surface)' : 'var(--bg-elevated)',
-                  border: '1px solid var(--border-subtle)',
+                  backgroundColor: dayItem ? 'hsl(var(--bg-surface))' : 'hsl(var(--bg-elevated))',
+                  border: '1px solid hsl(var(--border-subtle))',
                   cursor: dayItem ? 'pointer' : undefined,
                 }}
                 onClick={() => dayItem && onSelect(dayItem)}
               >
                 {dayItem && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <p style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
+                    <p style={{ fontSize: 11, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.3 }}>
                       {dayItem.post_title.length > 30 ? dayItem.post_title.slice(0, 30) + '...' : dayItem.post_title}
                     </p>
                     <Badge variant={badge[dayItem.status].variant}>
@@ -346,7 +346,7 @@ function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (it
         return (
           <div key={col.status}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{col.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>{col.label}</span>
               <Badge variant={colBadge.variant}>{colItems.length}</Badge>
             </div>
             <div
@@ -357,7 +357,7 @@ function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (it
                 minHeight: 100,
                 padding: 8,
                 borderRadius: 10,
-                backgroundColor: 'var(--bg-elevated)',
+                backgroundColor: 'hsl(var(--bg-elevated))',
                 border: '1px dashed var(--border-subtle)',
               }}
             >
@@ -373,16 +373,16 @@ function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (it
                     style={{
                       padding: '10px 12px',
                       borderRadius: 8,
-                      backgroundColor: 'var(--bg-surface)',
-                      border: '1px solid var(--border-subtle)',
+                      backgroundColor: 'hsl(var(--bg-surface))',
+                      border: '1px solid hsl(var(--border-subtle))',
                       cursor: 'pointer',
                     }}
                   >
-                    <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', margin: '0 0 6px' }}>
+                    <p style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: '0 0 6px' }}>
                       {item.post_title}
                     </p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <PIcon size={12} style={{ color: 'var(--text-tertiary)' }} />
+                      <PIcon size={12} style={{ color: 'hsl(var(--text-tertiary))' }} />
                       <span className="text-caption">{item.slide_count} slides</span>
                       {item.scheduled_date && (
                         <span className="text-caption">{formatShortDate(item.scheduled_date)}</span>
@@ -418,7 +418,7 @@ export function ContentPipeline() {
         <div
           style={{
             display: 'flex',
-            backgroundColor: 'var(--bg-elevated)',
+            backgroundColor: 'hsl(var(--bg-elevated))',
             borderRadius: 'var(--radius-md)',
             padding: 3,
             gap: 2,
@@ -441,8 +441,8 @@ export function ContentPipeline() {
                   cursor: 'pointer',
                   fontSize: 12,
                   fontWeight: isActive ? 600 : 400,
-                  color: isActive ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                  backgroundColor: isActive ? 'var(--bg-surface)' : 'transparent',
+                  color: isActive ? 'hsl(var(--text-primary))' : 'hsl(var(--text-tertiary))',
+                  backgroundColor: isActive ? 'hsl(var(--bg-surface))' : 'transparent',
                   boxShadow: isActive ? 'var(--shadow-card)' : 'none',
                   transition: 'all 0.15s ease',
                 }}

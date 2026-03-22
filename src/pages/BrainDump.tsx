@@ -52,8 +52,8 @@ export function BrainDump() {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '12px 24px',
-              borderTop: '1px solid var(--border-subtle)',
-              backgroundColor: 'var(--bg-elevated)',
+              borderTop: '1px solid hsl(var(--border-subtle))',
+              backgroundColor: 'hsl(var(--bg-elevated))',
             }}
           >
             <span className="text-caption">
@@ -80,7 +80,7 @@ export function BrainDump() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="card" style={{ borderLeft: '3px solid var(--accent-coral)' }}>
+              <div className="card" style={{ borderLeft: '3px solid hsl(var(--accent-coral))' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
                   <span className="text-section-header">Parsed Result</span>
                   <Badge variant="success">New</Badge>
@@ -98,14 +98,14 @@ export function BrainDump() {
                       style={{
                         padding: '10px 14px',
                         borderRadius: 8,
-                        backgroundColor: 'var(--bg-elevated)',
+                        backgroundColor: 'hsl(var(--bg-elevated))',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: 10,
                       }}
                     >
-                      <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: 0, fontWeight: 500 }}>
+                      <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: 0, fontWeight: 500 }}>
                         {task.description}
                       </p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -131,8 +131,8 @@ export function BrainDump() {
 
         {/* Error */}
         {submitMutation.isError && (
-          <div className="card" style={{ borderLeft: '3px solid var(--status-error)' }}>
-            <p style={{ fontSize: 13, color: 'var(--status-error)', margin: 0 }}>
+          <div className="card" style={{ borderLeft: '3px solid hsl(var(--status-error))' }}>
+            <p style={{ fontSize: 13, color: 'hsl(var(--status-error))', margin: 0 }}>
               Failed to parse: {(submitMutation.error as Error).message}
             </p>
           </div>
@@ -141,7 +141,7 @@ export function BrainDump() {
         {/* History */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <Clock size={15} style={{ color: 'var(--text-tertiary)' }} />
+            <Clock size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
             <span className="text-section-header">History</span>
           </div>
 
@@ -172,10 +172,10 @@ export function BrainDump() {
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-                        {isExpanded ? <ChevronDown size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} /> : <ChevronRight size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />}
+                        {isExpanded ? <ChevronDown size={14} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0 }} /> : <ChevronRight size={14} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0 }} />}
                         <p style={{
                           fontSize: 13,
-                          color: 'var(--text-primary)',
+                          color: 'hsl(var(--text-primary))',
                           margin: 0,
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -201,7 +201,7 @@ export function BrainDump() {
                           transition={{ duration: 0.2 }}
                           style={{ overflow: 'hidden' }}
                         >
-                          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border-subtle)' }}>
+                          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid hsl(var(--border-subtle))' }}>
                             <p className="text-body" style={{ marginBottom: 10 }}>
                               {dump.parsed_output.summary}
                             </p>
@@ -212,14 +212,14 @@ export function BrainDump() {
                                   style={{
                                     padding: '8px 12px',
                                     borderRadius: 6,
-                                    backgroundColor: 'var(--bg-elevated)',
+                                    backgroundColor: 'hsl(var(--bg-elevated))',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
                                     gap: 8,
                                   }}
                                 >
-                                  <span style={{ fontSize: 12, color: 'var(--text-primary)' }}>{task.description}</span>
+                                  <span style={{ fontSize: 12, color: 'hsl(var(--text-primary))' }}>{task.description}</span>
                                   <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                                     <Badge variant="navy">{task.project}</Badge>
                                     <Badge variant={task.priority === 'high' ? 'coral' : 'neutral'}>{task.priority}</Badge>

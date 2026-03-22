@@ -20,7 +20,7 @@ export function Dashboard() {
       subtitle="Here is what needs your attention today."
       actions={
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>
             {formatTime(now)}
           </div>
           <div className="text-caption">{formatDate(now)}</div>

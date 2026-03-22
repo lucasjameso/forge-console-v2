@@ -50,12 +50,12 @@ export function SystemHealthCard() {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Server size={15} style={{ color: 'var(--text-tertiary)' }} />
+          <Server size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
           <span className="text-card-title">System Health</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <StatusDot status={overall.status} />
-          <span style={{ fontSize: 12, fontWeight: 500, color: overall.status === 'healthy' ? 'var(--status-success)' : overall.status === 'degraded' ? 'var(--status-warning)' : 'var(--status-error)' }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: overall.status === 'healthy' ? 'hsl(var(--status-success))' : overall.status === 'degraded' ? 'hsl(var(--status-warning))' : 'hsl(var(--status-error))' }}>
             {overall.label}
           </span>
         </div>
@@ -71,17 +71,17 @@ export function SystemHealthCard() {
               justifyContent: 'space-between',
               padding: '8px 12px',
               borderRadius: 8,
-              backgroundColor: 'var(--bg-elevated)',
+              backgroundColor: 'hsl(var(--bg-elevated))',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <StatusDot status={item.status} />
-              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))' }}>
                 {item.service}
               </span>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 12, color: item.status === 'healthy' ? 'var(--status-success)' : item.status === 'degraded' ? 'var(--status-warning)' : 'var(--status-error)', fontWeight: 500 }}>
+              <div style={{ fontSize: 12, color: item.status === 'healthy' ? 'hsl(var(--status-success))' : item.status === 'degraded' ? 'hsl(var(--status-warning))' : 'hsl(var(--status-error))', fontWeight: 500 }}>
                 {statusLabel[item.status]}
               </div>
               <div className="text-caption">{formatRelativeTime(item.checked_at)}</div>

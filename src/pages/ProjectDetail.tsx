@@ -43,7 +43,7 @@ function Section({ icon: Icon, title, children }: { icon: React.ComponentType<{ 
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-        <Icon size={15} style={{ color: 'var(--text-tertiary)' }} />
+        <Icon size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
         <span className="text-section-header">{title}</span>
       </div>
       {children}
@@ -54,9 +54,9 @@ function Section({ icon: Icon, title, children }: { icon: React.ComponentType<{ 
 // ----- Kanban Column -----
 function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: Task[]; status: TaskStatus; onDrop: (taskId: string, newStatus: TaskStatus) => void }) {
   const statusColors: Record<TaskStatus, string> = {
-    todo: 'var(--text-tertiary)',
-    in_progress: 'var(--status-warning)',
-    done: 'var(--status-success)',
+    todo: 'hsl(var(--text-tertiary))',
+    in_progress: 'hsl(var(--status-warning))',
+    done: 'hsl(var(--status-success))',
   }
 
   return (
@@ -70,7 +70,7 @@ function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: 
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
         <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: statusColors[status] }} />
-        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{title}</span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: 'hsl(var(--text-primary))' }}>{title}</span>
         <span className="text-caption">({tasks.length})</span>
       </div>
       <div
@@ -81,7 +81,7 @@ function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: 
           minHeight: 60,
           padding: 8,
           borderRadius: 10,
-          backgroundColor: 'var(--bg-elevated)',
+          backgroundColor: 'hsl(var(--bg-elevated))',
           border: '1px dashed var(--border-subtle)',
         }}
       >
@@ -93,11 +93,11 @@ function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: 
             style={{
               padding: '10px 12px',
               borderRadius: 8,
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
+              backgroundColor: 'hsl(var(--bg-surface))',
+              border: '1px solid hsl(var(--border-subtle))',
               cursor: 'grab',
               fontSize: 13,
-              color: 'var(--text-primary)',
+              color: 'hsl(var(--text-primary))',
               fontWeight: 500,
             }}
           >
@@ -151,7 +151,7 @@ export function ProjectDetail() {
       <PageShell title="Project Not Found">
         <div className="card" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p className="text-body">No project found with slug "{slug}".</p>
-          <Link to="/projects" style={{ color: 'var(--accent-coral)', fontSize: 14, marginTop: 12, display: 'inline-block' }}>
+          <Link to="/projects" style={{ color: 'hsl(var(--accent-coral))', fontSize: 14, marginTop: 12, display: 'inline-block' }}>
             Back to Projects
           </Link>
         </div>
@@ -184,9 +184,9 @@ export function ProjectDetail() {
   }
 
   const milestoneStatusColor: Record<MilestoneStatus, string> = {
-    done: 'var(--status-success)',
-    in_progress: 'var(--accent-coral)',
-    upcoming: 'var(--text-tertiary)',
+    done: 'hsl(var(--status-success))',
+    in_progress: 'hsl(var(--accent-coral))',
+    upcoming: 'hsl(var(--text-tertiary))',
   }
 
   return (
@@ -201,7 +201,7 @@ export function ProjectDetail() {
             alignItems: 'center',
             gap: 6,
             fontSize: 13,
-            color: 'var(--text-secondary)',
+            color: 'hsl(var(--text-secondary))',
             textDecoration: 'none',
           }}
         >
@@ -222,15 +222,15 @@ export function ProjectDetail() {
                   style={{
                     padding: '12px 16px',
                     borderRadius: 10,
-                    border: '1px solid var(--border-subtle)',
-                    backgroundColor: item.urgency === 'high' ? 'var(--status-error-bg)' : 'var(--bg-elevated)',
+                    border: '1px solid hsl(var(--border-subtle))',
+                    backgroundColor: item.urgency === 'high' ? 'hsl(var(--status-error-bg))' : 'hsl(var(--bg-elevated))',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     gap: 12,
                   }}
                 >
-                  <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: 0 }}>
                     {item.description}
                   </p>
                   <Badge variant={item.urgency === 'high' ? 'error' : item.urgency === 'medium' ? 'warning' : 'neutral'}>
@@ -249,14 +249,14 @@ export function ProjectDetail() {
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span className="text-body">{project.current_phase ?? 'No phase set'}</span>
-                <span style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>{project.progress_pct}%</span>
+                <span style={{ fontSize: 20, fontWeight: 700, color: 'hsl(var(--text-primary))' }}>{project.progress_pct}%</span>
               </div>
-              <div style={{ width: '100%', height: 10, borderRadius: 5, backgroundColor: 'var(--bg-elevated)', overflow: 'hidden' }}>
+              <div style={{ width: '100%', height: 10, borderRadius: 5, backgroundColor: 'hsl(var(--bg-elevated))', overflow: 'hidden' }}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${project.progress_pct}%` }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ height: '100%', borderRadius: 5, backgroundColor: 'var(--accent-coral)' }}
+                  style={{ height: '100%', borderRadius: 5, backgroundColor: 'hsl(var(--accent-coral))' }}
                 />
               </div>
             </div>
@@ -272,7 +272,7 @@ export function ProjectDetail() {
                     left: 10,
                     right: 10,
                     height: 2,
-                    backgroundColor: 'var(--bg-elevated)',
+                    backgroundColor: 'hsl(var(--bg-elevated))',
                     zIndex: 0,
                   }}
                 />
@@ -294,7 +294,7 @@ export function ProjectDetail() {
                         height: 20,
                         borderRadius: '50%',
                         backgroundColor: milestoneStatusColor[ms.status],
-                        border: '3px solid var(--bg-surface)',
+                        border: '3px solid hsl(var(--bg-surface))',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -304,7 +304,7 @@ export function ProjectDetail() {
                         <Check size={10} style={{ color: 'white' }} />
                       )}
                     </div>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)', marginTop: 6, textAlign: 'center' }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, color: 'hsl(var(--text-primary))', marginTop: 6, textAlign: 'center' }}>
                       {ms.title}
                     </span>
                     {ms.target_date && (
@@ -334,12 +334,12 @@ export function ProjectDetail() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     gap: 12,
-                    borderBottom: idx < recentActivity.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+                    borderBottom: idx < recentActivity.length - 1 ? '1px solid hsl(var(--border-subtle))' : 'none',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
                     <Badge variant="navy">{entry.tool ?? entry.session_type}</Badge>
-                    <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {entry.summary}
                     </p>
                   </div>
@@ -368,14 +368,14 @@ export function ProjectDetail() {
                 style={{
                   padding: '10px 14px',
                   borderRadius: 8,
-                  backgroundColor: 'var(--bg-elevated)',
+                  backgroundColor: 'hsl(var(--bg-elevated))',
                   display: 'flex',
                   alignItems: 'flex-start',
                   justifyContent: 'space-between',
                   gap: 10,
                 }}
               >
-                <p style={{ fontSize: 13, color: 'var(--text-primary)', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.5 }}>
                   {note.content}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -458,7 +458,7 @@ export function ProjectDetail() {
               style={{ cursor: 'pointer', position: 'relative' }}
               onClick={handleCopyPrompt}
             >
-              <p style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.6, margin: 0, paddingRight: 32 }}>
+              <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0, paddingRight: 32 }}>
                 {sessionPrompt.prompt_text}
               </p>
               <div
@@ -469,7 +469,7 @@ export function ProjectDetail() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 4,
-                  color: copied ? 'var(--status-success)' : 'var(--text-tertiary)',
+                  color: copied ? 'hsl(var(--status-success))' : 'hsl(var(--text-tertiary))',
                   fontSize: 12,
                 }}
               >

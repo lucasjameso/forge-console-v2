@@ -48,7 +48,7 @@ export function ActionItemsCard() {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <AlertCircle size={15} style={{ color: 'var(--text-tertiary)' }} />
+          <AlertCircle size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
           <span className="text-card-title">Action Items</span>
           {openItems.length > 0 && (
             <span
@@ -59,7 +59,7 @@ export function ActionItemsCard() {
                 width: 20,
                 height: 20,
                 borderRadius: '50%',
-                backgroundColor: 'var(--accent-coral)',
+                backgroundColor: 'hsl(var(--accent-coral))',
                 color: 'white',
                 fontSize: 11,
                 fontWeight: 700,
@@ -80,10 +80,10 @@ export function ActionItemsCard() {
             justifyContent: 'center',
             gap: 8,
             padding: '24px 0',
-            color: 'var(--text-tertiary)',
+            color: 'hsl(var(--text-tertiary))',
           }}
         >
-          <CheckCircle size={24} style={{ color: 'var(--status-success)' }} />
+          <CheckCircle size={24} style={{ color: 'hsl(var(--status-success))' }} />
           <span style={{ fontSize: 13 }}>Nothing needs your attention right now</span>
         </div>
       ) : (
@@ -97,15 +97,15 @@ export function ActionItemsCard() {
               style={{
                 padding: '12px 14px',
                 borderRadius: 10,
-                border: '1px solid var(--border-subtle)',
-                backgroundColor: 'var(--bg-elevated)',
+                border: '1px solid hsl(var(--border-subtle))',
+                backgroundColor: 'hsl(var(--bg-elevated))',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 6,
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-                <p style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 500, flex: 1 }}>
+                <p style={{ fontSize: 13, color: 'hsl(var(--text-primary))', fontWeight: 500, flex: 1 }}>
                   {item.description}
                 </p>
                 <Badge variant={urgencyBadge(item.urgency) as 'error' | 'warning' | 'neutral'}>

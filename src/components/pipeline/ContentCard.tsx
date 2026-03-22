@@ -48,7 +48,7 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
                 style={{
                   fontSize: 11,
                   fontWeight: 600,
-                  color: 'var(--accent-coral)',
+                  color: 'hsl(var(--accent-coral))',
                   textTransform: 'uppercase',
                   letterSpacing: '0.04em',
                 }}
@@ -59,11 +59,11 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
                 <span className="text-caption">{formatShortDate(item.scheduled_date)}</span>
               )}
             </div>
-            <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
+            <p style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: 0 }}>
               {item.post_title}
             </p>
             {!compact && item.caption && (
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '6px 0 0', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p style={{ fontSize: 12, color: 'hsl(var(--text-secondary))', margin: '6px 0 0', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {item.caption}
               </p>
             )}
@@ -73,7 +73,7 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: compact ? 6 : 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <PlatformIcon size={13} style={{ color: 'var(--text-tertiary)' }} />
+            <PlatformIcon size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
             {item.platforms.map(p => (
               <span key={p} className="text-caption" style={{ textTransform: 'capitalize' }}>{p}</span>
             ))}
