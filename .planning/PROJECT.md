@@ -26,7 +26,7 @@ Every page should feel like a premium, Apple-quality product that Lucas wants to
 
 ### Active
 
-- [ ] Adopt shadcn/ui as component base, customized to design system
+- [x] Adopt shadcn/ui as component base, customized to design system -- Validated in Phase 01
 - [ ] Visual quality pass on every page: spacing, padding, typography hierarchy, whitespace
 - [ ] Dashboard redesign: dense but clear, proper information hierarchy
 - [ ] Sidebar polish: proper spacing, visual refinement, premium feel
@@ -41,8 +41,8 @@ Every page should feel like a premium, Apple-quality product that Lucas wants to
 - [ ] Agent dispatch from project quick actions (n8n integration)
 - [ ] Settings persistence to Supabase
 - [ ] Activity log export capability
-- [ ] Error boundaries around the entire app
-- [ ] Favicon (coral F on navy background)
+- [x] Error boundaries around the entire app -- Validated in Phase 01
+- [x] Favicon (coral F on navy background) -- Validated in Phase 01
 - [ ] Seed Supabase with real data
 - [ ] Cloudflare Pages deployment with production env vars
 
@@ -80,7 +80,7 @@ Every page should feel like a premium, Apple-quality product that Lucas wants to
 |----------|-----------|---------|
 | Visuals before integrations | Premium feel is the top priority; wiring can happen on a solid visual foundation | -- Pending |
 | Mock data during redesign | Supabase seeding is a separate step; mock data mirrors real structure | -- Pending |
-| shadcn/ui adoption | Original spec called for it; provides consistent, accessible base components | -- Pending |
+| shadcn/ui adoption | Original spec called for it; provides consistent, accessible base components | Phase 01 complete |
 | Desktop-first, mobile capture-only | Full app is desktop; mobile is purpose-built quick-capture, not responsive desktop | -- Pending |
 | Dense but clear visual direction | Lucas wants information density with beautiful organization, not minimal/sparse | -- Pending |
 
@@ -102,4 +102,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after initialization*
+*Last updated: 2026-03-22 after Phase 01 completion*
