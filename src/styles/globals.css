@@ -5,15 +5,16 @@
 :root {
   /* Forge Console tokens (HSL format for shadcn compatibility) */
   /* Backgrounds */
-  --bg-root: 220 27% 98%;
+  --bg-root: 30 33% 94%;
   --bg-surface: 0 0% 100%;
-  --bg-elevated: 220 27% 96%;
-  --bg-active: 218 21% 93%;
+  --bg-elevated: 30 26% 89%;
+  --bg-active: 32 22% 86%;
+  --bg-sidebar: 33 28% 92%;
 
   /* Borders (solid HSL equivalents of rgba originals) */
-  --border-subtle: 220 6% 92%;
-  --border-default: 220 6% 88%;
-  --border-strong: 216 6% 83%;
+  --border-subtle: 30 10% 94%;
+  --border-default: 30 10% 91%;
+  --border-strong: 30 10% 87%;
 
   /* Text */
   --text-primary: 223 17% 8%;
@@ -142,6 +143,20 @@
     letter-spacing: -0.02em;
   }
 
+  .text-body-sm {
+    font-size: 13px;
+    font-weight: 400;
+    color: hsl(var(--text-primary));
+  }
+
+  .text-overline {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--text-tertiary));
+  }
+
   /* Status dot */
   .status-dot {
     width: 8px;
@@ -200,5 +215,9 @@
 
   .text-stat {
     font-size: 28px;
+  }
+
+  .text-body-sm {
+    font-size: 12px;
   }
 }
