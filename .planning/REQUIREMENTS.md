@@ -26,10 +26,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Visual Polish
 
-- [ ] **VISL-01**: Sidebar has proper spacing, visual refinement, and premium feel
+- [x] **VISL-01**: Sidebar has proper spacing, visual refinement, and premium feel
 - [x] **VISL-02**: All cards use 24px padding, 14px radius, 1px subtle border, hover shadow (0 2px 8px rgba(0,0,0,0.06))
 - [x] **VISL-03**: Typography hierarchy consistent across all pages (28px titles, 18px section headers, 15px card titles, 14px body, 12px meta)
-- [ ] **VISL-04**: Section gaps 32-40px, card gaps 20-24px across all pages
+- [x] **VISL-04**: Section gaps 32-40px, card gaps 20-24px across all pages
 - [ ] **VISL-05**: Projects page polished with proper spacing, card breathing room, and visual refinement
 - [ ] **VISL-06**: ProjectDetail page polished with command-center depth and proper information density
 - [ ] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
@@ -135,10 +135,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DASH-04 | Phase 3: Dashboard Redesign | Pending |
 | DASH-05 | Phase 3: Dashboard Redesign | Pending |
 | DASH-06 | Phase 3: Dashboard Redesign | Pending |
-| VISL-01 | Phase 2: Global Design Standards | Pending |
+| VISL-01 | Phase 2: Global Design Standards | Complete |
 | VISL-02 | Phase 2: Global Design Standards | Complete |
 | VISL-03 | Phase 2: Global Design Standards | Complete |
-| VISL-04 | Phase 2: Global Design Standards | Pending |
+| VISL-04 | Phase 2: Global Design Standards | Complete |
 | VISL-05 | Phase 4: Page-by-Page Visual Polish | Pending |
 | VISL-06 | Phase 4: Page-by-Page Visual Polish | Pending |
 | VISL-07 | Phase 4: Page-by-Page Visual Polish | Pending |
