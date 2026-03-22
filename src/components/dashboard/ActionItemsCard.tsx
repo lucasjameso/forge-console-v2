@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { AlertCircle, CheckCircle } from 'lucide-react'
+import { AlertCircle, ArrowRight, CheckCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
@@ -34,6 +35,7 @@ export function ActionItemsCard() {
   }
 
   const openItems = (items ?? []).filter(i => i.status === 'open')
+  const visibleItems = openItems.slice(0, 4)
 
   const getProjectBadge = (projectId: string) => {
     const proj = (projects ?? []).find(p => p.id === projectId)
@@ -88,7 +90,7 @@ export function ActionItemsCard() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {openItems.map((item, idx) => (
+          {visibleItems.map((item, idx) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 6 }}
@@ -121,6 +123,18 @@ export function ActionItemsCard() {
               </div>
             </motion.div>
           ))}
+          {openItems.length > 4 && (
+            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
+              <Link
+                to="/activity"
+                className="text-body-sm font-medium"
+                style={{ color: 'hsl(var(--accent-coral))', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                View all ({openItems.length})
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </Card>

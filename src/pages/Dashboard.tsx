@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { PageShell } from '@/components/layout/PageShell'
+import { StatTilesRow } from '@/components/dashboard/StatTilesRow'
+import { SystemHealthStrip } from '@/components/dashboard/SystemHealthStrip'
 import { ActionItemsCard } from '@/components/dashboard/ActionItemsCard'
-import { SystemHealthCard } from '@/components/dashboard/SystemHealthCard'
 import { ProjectQuickGlanceCard } from '@/components/dashboard/ProjectQuickGlanceCard'
 import { UpcomingContentCard } from '@/components/dashboard/UpcomingContentCard'
 import { getGreeting, formatDate, formatTime } from '@/lib/utils'
@@ -27,32 +28,13 @@ export function Dashboard() {
         </div>
       }
     >
-      <div className="flex flex-col gap-8">
-        {/* Row 1: Action Items + System Health */}
-        <div className="dashboard-top-grid">
-          <ActionItemsCard />
-          <SystemHealthCard />
-        </div>
-
-        {/* Row 2: Project Quick Glance */}
+      <div className="flex flex-col" style={{ gap: 32 }}>
+        <StatTilesRow />
+        <SystemHealthStrip />
+        <ActionItemsCard />
         <ProjectQuickGlanceCard />
-
-        {/* Row 3: Upcoming Content */}
         <UpcomingContentCard />
       </div>
-
-      <style>{`
-        .dashboard-top-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 20px;
-        }
-        @media (max-width: 768px) {
-          .dashboard-top-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </PageShell>
   )
 }
