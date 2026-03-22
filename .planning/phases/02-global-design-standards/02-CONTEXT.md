@@ -13,6 +13,20 @@ Establish consistent sidebar polish, card styling, typography hierarchy, and spa
 <decisions>
 ## Implementation Decisions
 
+### Warm Color Palette
+- **D-18:** Replace all cool gray background tokens with warm cream/beige tones matching Claude's UI aesthetic. The app should feel warm, not cold like a generic SaaS dashboard.
+- **D-19:** Exact token values:
+  - `--bg-root`: `#f5f0eb` (warm cream, replaces current cool gray `#f8f9fb`)
+  - `--bg-surface`: `#ffffff` (white cards stay unchanged)
+  - `--bg-elevated`: `#ece5de` (warm beige hover state, replaces cool gray)
+  - `--bg-active`: `#e4ddd5` (warm pressed state)
+  - `--bg-sidebar`: `#f0ebe5` (warm sidebar background)
+- **D-20:** Border tokens shift to warm tint:
+  - `--border-subtle`: `rgba(120, 90, 60, 0.08)` (warm tint, not pure black alpha)
+  - `--border-default`: `rgba(120, 90, 60, 0.12)`
+- **D-21:** Text colors stay unchanged (dark text on warm backgrounds works fine). Accent coral `#C75B3F` and navy `#1B3A52` stay unchanged.
+- **D-22:** All HSL conversions for shadcn bridge variables must use the warm palette values, not the old cool grays.
+
 ### Sidebar Refinement
 - **D-01:** Add hover state to nav items: elevated background (`bg-elevated`) + text shifts from `text-secondary` to `text-primary`. No color accent on hover -- coral is reserved for the active state.
 - **D-02:** Active nav item gets full-width subtle elevated background + coral left border (2px). Clean up the current padding-shift hack so active/inactive items have identical padding.
