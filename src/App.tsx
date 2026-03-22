@@ -1,8 +1,11 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { ErrorBoundary } from 'react-error-boundary'
 import { AnimatePresence } from 'framer-motion'
+import { Toaster } from 'sonner'
 import { queryClient } from '@/lib/queryClient'
 import { Sidebar } from '@/components/layout/Sidebar'
+import { PageErrorFallback } from '@/components/ui/PageErrorFallback'
 import { Dashboard } from '@/pages/Dashboard'
 import { Projects } from '@/pages/Projects'
 import { ProjectDetail } from '@/pages/ProjectDetail'
@@ -53,7 +56,15 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AppRoutes />
+        <ErrorBoundary FallbackComponent={PageErrorFallback}>
+          <AppRoutes />
+        </ErrorBoundary>
+        <Toaster
+          position="bottom-right"
+          duration={3000}
+          richColors
+          closeButton
+        />
       </BrowserRouter>
     </QueryClientProvider>
   )
