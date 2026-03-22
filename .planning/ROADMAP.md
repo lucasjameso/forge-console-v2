@@ -50,11 +50,12 @@ Plans:
   2. All cards across every page use 24px padding, 14px radius, 1px border, and subtle hover shadow (0 2px 8px rgba(0,0,0,0.06))
   3. Typography hierarchy is consistent everywhere: 28px page titles, 18px section headers, 15px card titles, 14px body text, 12px meta text
   4. Section gaps are 32-40px and card gaps are 20-24px uniformly across all pages
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- Warm palette tokens, typography classes, Card/Button component fixes
+- [ ] 02-02-PLAN.md -- Sidebar refinement with Sheet mobile drawer, PageShell max-width
+- [ ] 02-03-PLAN.md -- Card/Button/fontSize migration sweep across all pages and components
 
 ### Phase 3: Dashboard Redesign
 **Goal**: The dashboard is a dense, scannable command center that surfaces project health, action items, and upcoming content at a glance
@@ -173,7 +174,7 @@ Note: Phases 5, 6, 7 all depend on Phase 4 but not on each other. Phase 8 depend
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Component Foundation | 0/3 | Planning complete | - |
-| 2. Global Design Standards | 0/0 | Not started | - |
+| 2. Global Design Standards | 0/3 | Planning complete | - |
 | 3. Dashboard Redesign | 0/0 | Not started | - |
 | 4. Page-by-Page Visual Polish | 0/0 | Not started | - |
 | 5. Brain Dump Task Flow | 0/0 | Not started | - |
