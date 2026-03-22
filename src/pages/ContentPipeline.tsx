@@ -101,20 +101,22 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
         }}
         onClick={(e) => e.stopPropagation()}
       >
-      <Card
+      <div
         style={{
           maxHeight: '80vh',
           overflowY: 'auto',
-          boxShadow: 'var(--shadow-modal)',
-          padding: 0,
+          backgroundColor: 'hsl(var(--bg-surface))',
+          borderRadius: 'var(--radius-lg)',
+          border: '1px solid hsl(var(--border-default))',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         }}
       >
         {/* Header */}
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid hsl(var(--border-subtle))', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <div>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid hsl(var(--border-subtle))', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
               <span className="text-overline" style={{ color: 'hsl(var(--accent-coral))' }}>
-                Week {item.week_number} - {item.day_label}
+                Week {item.week_number} &middot; {item.day_label}
               </span>
               <Badge variant={badge.variant}>{badge.label}</Badge>
             </div>
@@ -124,56 +126,54 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, marginTop: 2 }}
           >
             <X size={18} style={{ color: 'hsl(var(--text-tertiary))' }} />
           </button>
         </div>
 
         {/* Body */}
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
           {/* Caption */}
           {item.caption && (
             <div>
-              <span className="text-caption" style={{ marginBottom: 4, display: 'block' }}>Caption</span>
-              <p className="text-body" style={{ color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0 }}>
+              <span className="text-overline" style={{ color: 'hsl(var(--text-tertiary))', marginBottom: 6, display: 'block' }}>Caption</span>
+              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0 }}>
                 {item.caption}
               </p>
             </div>
           )}
 
-          {/* Meta */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+          {/* Meta row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, padding: '14px 16px', borderRadius: 'var(--radius-md)', backgroundColor: 'hsl(var(--bg-elevated))' }}>
             <div>
-              <span className="text-caption">Platform</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+              <span className="text-overline" style={{ color: 'hsl(var(--text-tertiary))', display: 'block', marginBottom: 4 }}>Platform</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <PlatformIcon size={14} style={{ color: 'hsl(var(--text-secondary))' }} />
-                <span className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', textTransform: 'capitalize' }}>
+                <span className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', textTransform: 'capitalize' }}>
                   {item.platforms.join(', ')}
                 </span>
               </div>
             </div>
             <div>
-              <span className="text-caption">Slides</span>
-              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{item.slide_count}</p>
+              <span className="text-overline" style={{ color: 'hsl(var(--text-tertiary))', display: 'block', marginBottom: 4 }}>Slides</span>
+              <span className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))' }}>{item.slide_count}</span>
             </div>
             <div>
-              <span className="text-caption">Revision</span>
-              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{item.revision}</p>
+              <span className="text-overline" style={{ color: 'hsl(var(--text-tertiary))', display: 'block', marginBottom: 4 }}>Revision</span>
+              <span className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))' }}>{item.revision}</span>
             </div>
-            {item.scheduled_date && (
-              <div>
-                <span className="text-caption">Scheduled</span>
-                <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{formatShortDate(item.scheduled_date)}</p>
-              </div>
-            )}
+            <div>
+              <span className="text-overline" style={{ color: 'hsl(var(--text-tertiary))', display: 'block', marginBottom: 4 }}>Scheduled</span>
+              <span className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))' }}>{item.scheduled_date ? formatShortDate(item.scheduled_date) : 'Not set'}</span>
+            </div>
           </div>
 
           {/* Feedback if rejected */}
           {item.feedback && (
-            <div style={{ padding: '12px 14px', borderRadius: 8, backgroundColor: 'hsl(var(--status-error-bg))', border: '1px solid hsl(var(--status-error))' }}>
-              <span className="text-overline" style={{ color: 'hsl(var(--status-error))' }}>Feedback</span>
-              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: '4px 0 0' }}>{item.feedback}</p>
+            <div style={{ padding: '14px 16px', borderRadius: 'var(--radius-md)', backgroundColor: 'hsl(0 80% 97%)', border: '1px solid hsl(var(--status-error) / 0.3)' }}>
+              <span className="text-overline" style={{ color: 'hsl(var(--status-error))', display: 'block', marginBottom: 6 }}>Feedback</span>
+              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.5 }}>{item.feedback}</p>
             </div>
           )}
 
@@ -186,7 +186,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
                 exit={{ opacity: 0, height: 0 }}
                 style={{ overflow: 'hidden' }}
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <MessageSquare size={14} style={{ color: 'hsl(var(--text-tertiary))' }} />
                     <span className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))' }}>Rejection feedback</span>
@@ -227,7 +227,7 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
             </Button>
           </div>
         )}
-      </Card>
+      </div>
       </motion.div>
     </motion.div>
   )
@@ -291,10 +291,12 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
 
   const sortedWeeks = Array.from(weeks.entries()).sort((a, b) => a[0] - b[0])
 
+  const weekCount = sortedWeeks.length || 1
+
   return (
-    <div style={{ overflowX: 'auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 200px)' }}>
       {/* Header */}
-      <div style={{ display: 'grid', gridTemplateColumns: `80px repeat(7, 1fr)`, gap: 1, marginBottom: 1 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `64px repeat(7, 1fr)`, gap: 2, marginBottom: 2, flexShrink: 0 }}>
         <div style={{ padding: '8px 12px' }} />
         {days.map(d => (
           <div key={d} className="text-caption font-semibold" style={{ padding: '8px 12px', color: 'hsl(var(--text-tertiary))', textAlign: 'center' }}>
@@ -303,42 +305,50 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
         ))}
       </div>
 
-      {/* Rows */}
-      {sortedWeeks.map(([weekNum, weekItems]) => (
-        <div key={weekNum} style={{ display: 'grid', gridTemplateColumns: `80px repeat(7, 1fr)`, gap: 1, marginBottom: 1 }}>
-          <div style={{ padding: '12px', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
-            <span className="text-caption font-semibold" style={{ color: 'hsl(var(--text-secondary))' }}>Wk {weekNum}</span>
+      {/* Rows -- expand to fill available height */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {sortedWeeks.map(([weekNum, weekItems]) => (
+          <div key={weekNum} style={{ flex: 1, display: 'grid', gridTemplateColumns: `64px repeat(7, 1fr)`, gap: 2, minHeight: `${Math.max(150, 700 / weekCount)}px` }}>
+            <div style={{ padding: '12px 8px', display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
+              <span className="text-caption font-semibold" style={{ color: 'hsl(var(--text-secondary))' }}>Wk {weekNum}</span>
+            </div>
+            {days.map((_, dayIdx) => {
+              const dayItem = weekItems.find(i => dayMap[i.day_label] === dayIdx)
+              return (
+                <div
+                  key={dayIdx}
+                  style={{
+                    padding: 8,
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: dayItem ? 'hsl(var(--bg-surface))' : 'hsl(var(--bg-elevated))',
+                    border: `1px solid hsl(var(${dayItem ? '--border-default' : '--border-subtle'}))`,
+                    cursor: dayItem ? 'pointer' : undefined,
+                    transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
+                    boxShadow: dayItem ? 'var(--shadow-card)' : 'none',
+                  }}
+                  onClick={() => dayItem && onSelect(dayItem)}
+                  onMouseEnter={(e) => { if (dayItem) e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)' }}
+                  onMouseLeave={(e) => { if (dayItem) e.currentTarget.style.boxShadow = 'var(--shadow-card)' }}
+                >
+                  {dayItem && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <p className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.3 }}>
+                        {dayItem.post_title.length > 40 ? dayItem.post_title.slice(0, 40) + '...' : dayItem.post_title}
+                      </p>
+                      <Badge variant={badge[dayItem.status].variant}>
+                        {badge[dayItem.status].label}
+                      </Badge>
+                      {dayItem.scheduled_date && (
+                        <span className="text-caption">{formatShortDate(dayItem.scheduled_date)}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
-          {days.map((_, dayIdx) => {
-            const dayItem = weekItems.find(i => dayMap[i.day_label] === dayIdx)
-            return (
-              <div
-                key={dayIdx}
-                style={{
-                  padding: 6,
-                  minHeight: 80,
-                  borderRadius: 8,
-                  backgroundColor: dayItem ? 'hsl(var(--bg-surface))' : 'hsl(var(--bg-elevated))',
-                  border: '1px solid hsl(var(--border-subtle))',
-                  cursor: dayItem ? 'pointer' : undefined,
-                }}
-                onClick={() => dayItem && onSelect(dayItem)}
-              >
-                {dayItem && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <p className="text-[11px] font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.3 }}>
-                      {dayItem.post_title.length > 30 ? dayItem.post_title.slice(0, 30) + '...' : dayItem.post_title}
-                    </p>
-                    <Badge variant={badge[dayItem.status].variant}>
-                      {badge[dayItem.status].label}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
