@@ -39,7 +39,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md -- shadcn/ui init, token bridge, font migration, favicon
 - [ ] 01-02-PLAN.md -- Install all shadcn components, Badge/Skeleton migration, CSS cleanup
-- [ ] 01-03-PLAN.md -- Toast notifications on all mutations, error boundaries
+- [x] 01-03-PLAN.md -- Toast notifications on all mutations, error boundaries
 
 ### Phase 2: Global Design Standards
 **Goal**: Every page in the app shares consistent sidebar polish, card styling, typography hierarchy, and spacing -- establishing the visual quality bar
