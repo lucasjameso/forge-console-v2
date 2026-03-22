@@ -1,79 +1,115 @@
-# RESUME HERE -- Forge Console v2
+# Forge Console v2 -- Resume Here
 
-## Current Status (March 21, 2026 -- end of day)
+**Last session:** 2026-03-22 (afternoon)
+**Version:** 2.2.0
+**Live URL:** https://forge-console-v2.pages.dev/
+**Access code:** 170426
+**Status:** Deployed to Cloudflare Pages with live Supabase data
 
-Phases 1-7 COMPLETE. All 7 pages fully built and functional. Build passes with zero errors. All 5 integrations configured in `.env.local`. Supabase schema deployed (14 tables + RLS). Repo pushed to https://github.com/lucasjameso/forge-console-v2.
+## What Was Done This Session
 
-**What works right now:** Run `npm run dev`, open http://localhost:5173. All pages render with mock data. Settings page shows all integrations connected. Supabase is live but tables are empty.
+### Phase 3: Dashboard Redesign (COMPLETE)
+- StatTilesRow: 5 hero stat tiles (project progress, pending approvals, CLARITY countdown)
+- SystemHealthStrip: compact horizontal health bar with colored dots
+- ActionItemsCard: capped at 4 items with View all link
+- ProjectQuickGlanceCard: recency indicators (green/amber/red borders)
+- ContentCalendarStrip: 7-day Mon-Sun with today highlight
+- Verified 11/11 must-haves, phase marked complete
 
----
+### Supabase: New Project + Schema + Seed Data
+- Created dedicated forge-console Supabase project: yusxiwplgxgqujapibhj
+- Deployed schema (14 tables + RLS + anon policies)
+- Seeded 294 rows of real data across all 14 tables
+- 5 projects: Ridgeline (72%), CLARITY/BWL (30%), Forge Console (33%), Meridian (82%), Atlas (75%)
+- Updated .env.local to point to new Supabase project
 
-## Morning TODO (in order)
+### Access Code Gate
+- Full-screen PIN entry wrapping entire app
+- VITE_ACCESS_CODE env var (170426)
+- sessionStorage persistence, CSS shake on wrong code
+- Skips gate when env var not set (local dev)
 
-### 1. Seed Supabase with real data
-The 14 tables exist but are empty. The app falls back to mock data when `isSupabaseConfigured` is true but tables return nothing -- so right now you see empty states on the live connection.
+### Card Contrast Fix
+- ROOT CAUSE: shadcn color utilities (bg-card, border-border, text-foreground) were never registered in tailwind.config.ts
+- Cards had no background color (transparent) and no border color
+- Fixed: added all 12 shadcn color mappings to Tailwind config
+- Renamed shadow classes to avoid collision (shadow-forge-card)
+- Borders now visible warm-tinted hsl(28 15% 82%)
 
-**Tasks:**
-- [ ] Create `supabase/seed.sql` with INSERT statements for the 3 projects, tasks, milestones, action items, notes, content reviews, social platforms, activity log, system health, brain dumps, and next session prompts
-- [ ] Run the seed SQL in Supabase dashboard SQL Editor
-- [ ] Verify the Dashboard, Projects, and Content Pipeline all show real data from Supabase
+### Content Pipeline Fixes
+- Detail modal: replaced Card wrapper with styled div, 4-col meta grid
+- Month view: rows fill viewport height, day cells get shadows and hover
 
-### 2. Deploy to Cloudflare Pages
-**Tasks:**
-- [ ] Install wrangler if needed: `npm install -g wrangler`
-- [ ] Authenticate: `wrangler login`
-- [ ] Create the Pages project: `wrangler pages project create forge-console-v2`
-- [ ] Build and deploy: `npm run build && wrangler pages deploy dist`
-- [ ] Set env vars in Cloudflare Pages dashboard (Settings > Environment Variables) -- same values as `.env.local`
-- [ ] Smoke test the live URL
+### Social Media Fixes
+- Equal-height cards via flex stretch
+- Added 6 missing platform icons (Facebook, Youtube, Camera, etc.)
+- Needs profile link placeholder for cards without URLs
+- No followers yet for cards without follower data
 
-### 3. Wire up n8n integration
-The env vars are set but nothing calls n8n yet.
+### Page Feedback System
+- Supabase table: page_feedback (fix/suggestion types, open/in_progress/done statuses)
+- Floating coral button on every page (auto-detects page from route)
+- Slide-up panel with type toggle and text area
+- Feedback Log in Settings with All/Open/Done filter tabs
+- Done items show strikethrough + resolution note
 
-**Tasks:**
-- [ ] Add a "Dispatch to n8n" button on ProjectDetail quick actions
-- [ ] Create a `useN8n` hook that calls the n8n API to trigger workflows
-- [ ] Test triggering a workflow from the console
+### Cloudflare Pages Deployment
+- Project: forge-console-v2
+- URL: https://forge-console-v2.pages.dev/
+- Env vars baked into build (Vite static site)
+- CF API token has Pages permissions
 
-### 4. Wire up Slack notifications
-The webhook URL is set but nothing sends to Slack yet.
+## Infrastructure
 
-**Tasks:**
-- [ ] On content approve/reject in ContentPipeline, POST to the Slack webhook
-- [ ] Include post title, status, and feedback in the Slack message
-- [ ] Test approve/reject flow sends to `#content-queue`
+| Service | ID/URL |
+|---|---|
+| Supabase project | yusxiwplgxgqujapibhj |
+| Supabase URL | https://yusxiwplgxgqujapibhj.supabase.co |
+| Cloudflare Pages | forge-console-v2 |
+| Live URL | https://forge-console-v2.pages.dev/ |
+| GitHub | https://github.com/lucasjameso/forge-console-v2 |
 
-### 5. Polish + remaining items
-- [ ] Fix: hooks currently return mock data when `isSupabaseConfigured` is false, but show empty when true and tables have no rows. Decide on behavior (always fall back to mock, or show empty states).
-- [ ] Add error boundary to App.tsx so runtime errors show a friendly message instead of blank screen
-- [ ] Consider adding a favicon that matches the coral "F" logo in the sidebar
+## What to Do Next
 
----
+### Immediate (Tonight)
+1. Lucas: Submit feedback via the coral button on every page this afternoon
+2. Start Phase 4: Page-by-Page Visual Polish via /gsd:discuss-phase 4
+   - Apply premium quality to Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings
+   - Use the feedback items from page_feedback table as input
+3. Fix any feedback items marked as fix in the page_feedback table
 
-## Quick Start
+### Remaining GSD Phases
+- Phase 4: Page-by-Page Visual Polish
+- Phase 5: Brain Dump Task Flow (wire parsed tasks into project boards)
+- Phase 6: Content Pipeline Features (caption editing, Slack webhook, kanban DnD)
+- Phase 7: Social Media and Podcast (cross-platform calendar, podcast tracker)
+- Phase 8: Mobile Capture (/capture route for iPhone)
+- Phase 9: Deployment and Hardening (Claude API proxy, final smoke test)
+
+### Known Issues
+- Content Pipeline month view: some dates may not align perfectly with the Tue-Sat posting cadence
+- Dashboard stat tiles reference slug clarity (matches the merged CLARITY/BWL project)
+- Cloudflare env vars are baked at build time (Vite), not runtime. Must rebuild+redeploy after any env change.
+
+## How to Resume
 
 ```bash
 cd ~/Forge/Projects/forge-console-v2
-npm run dev    # http://localhost:5173
-npm run build  # verify zero errors
+npm run dev
+# Open http://localhost:5173 (no access code needed locally unless VITE_ACCESS_CODE is set)
+
+# To deploy:
+npm run build
+export CLOUDFLARE_API_TOKEN=cfat_gZMKlgU34bOgvfbmAo5lwslYA19Y834aj9Ym9qnDddf3e5b7
+export CLOUDFLARE_ACCOUNT_ID=dae540d1c9880eb0d8fe720705f05080
+npx wrangler pages deploy dist --project-name forge-console-v2 --commit-dirty=true
+
+# To query feedback items:
+# SELECT * FROM page_feedback ORDER BY created_at DESC;
 ```
 
-## Key Files
-
-| File | Purpose |
-|------|---------|
-| `.env.local` | All 7 env vars (Supabase, Claude, n8n, CF, Slack) |
-| `supabase/schema.sql` | 14 table definitions + RLS |
-| `src/data/mock.ts` | Mock data (use as seed reference) |
-| `src/lib/supabase.ts` | Supabase client (null when not configured) |
-| `PROGRESS.md` | Full build log for all phases |
-| `SETUP_CHECKLIST.md` | Integration config status (all done) |
-
-## Rules (NEVER BREAK)
-- NO em dashes anywhere (use "---" or rephrase)
-- NO spinners (skeleton shimmer only)
-- NO `any` in TypeScript (minimized, eslint-disable where needed)
-- NO hardcoded colors (CSS variables only)
-- Framer Motion for ALL animations
-- React Query for ALL data fetching
-- `npm run build` must pass after every change
+## GSD Entry Point
+```
+/gsd:progress
+```
+This will show Phase 4 as next up and route you to /gsd:discuss-phase 4.
