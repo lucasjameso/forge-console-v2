@@ -124,55 +124,55 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | TBD | Pending |
-| FOUN-02 | TBD | Pending |
-| FOUN-03 | TBD | Pending |
-| FOUN-04 | TBD | Pending |
-| FOUN-05 | TBD | Pending |
-| DASH-01 | TBD | Pending |
-| DASH-02 | TBD | Pending |
-| DASH-03 | TBD | Pending |
-| DASH-04 | TBD | Pending |
-| DASH-05 | TBD | Pending |
-| DASH-06 | TBD | Pending |
-| VISL-01 | TBD | Pending |
-| VISL-02 | TBD | Pending |
-| VISL-03 | TBD | Pending |
-| VISL-04 | TBD | Pending |
-| VISL-05 | TBD | Pending |
-| VISL-06 | TBD | Pending |
-| VISL-07 | TBD | Pending |
-| VISL-08 | TBD | Pending |
-| VISL-09 | TBD | Pending |
-| VISL-10 | TBD | Pending |
-| VISL-11 | TBD | Pending |
-| CONT-01 | TBD | Pending |
-| CONT-02 | TBD | Pending |
-| CONT-03 | TBD | Pending |
-| CONT-04 | TBD | Pending |
-| BRAIN-01 | TBD | Pending |
-| BRAIN-02 | TBD | Pending |
-| BRAIN-03 | TBD | Pending |
-| BRAIN-04 | TBD | Pending |
-| BRAIN-05 | TBD | Pending |
-| SOCL-01 | TBD | Pending |
-| SOCL-02 | TBD | Pending |
-| SOCL-03 | TBD | Pending |
-| SOCL-04 | TBD | Pending |
-| MOBL-01 | TBD | Pending |
-| MOBL-02 | TBD | Pending |
-| MOBL-03 | TBD | Pending |
-| MOBL-04 | TBD | Pending |
-| DEPL-01 | TBD | Pending |
-| DEPL-02 | TBD | Pending |
-| DEPL-03 | TBD | Pending |
-| DEPL-04 | TBD | Pending |
+| FOUN-01 | Phase 1: Component Foundation | Pending |
+| FOUN-02 | Phase 1: Component Foundation | Pending |
+| FOUN-03 | Phase 1: Component Foundation | Pending |
+| FOUN-04 | Phase 1: Component Foundation | Pending |
+| FOUN-05 | Phase 1: Component Foundation | Pending |
+| DASH-01 | Phase 3: Dashboard Redesign | Pending |
+| DASH-02 | Phase 3: Dashboard Redesign | Pending |
+| DASH-03 | Phase 3: Dashboard Redesign | Pending |
+| DASH-04 | Phase 3: Dashboard Redesign | Pending |
+| DASH-05 | Phase 3: Dashboard Redesign | Pending |
+| DASH-06 | Phase 3: Dashboard Redesign | Pending |
+| VISL-01 | Phase 2: Global Design Standards | Pending |
+| VISL-02 | Phase 2: Global Design Standards | Pending |
+| VISL-03 | Phase 2: Global Design Standards | Pending |
+| VISL-04 | Phase 2: Global Design Standards | Pending |
+| VISL-05 | Phase 4: Page-by-Page Visual Polish | Pending |
+| VISL-06 | Phase 4: Page-by-Page Visual Polish | Pending |
+| VISL-07 | Phase 4: Page-by-Page Visual Polish | Pending |
+| VISL-08 | Phase 4: Page-by-Page Visual Polish | Pending |
+| VISL-09 | Phase 4: Page-by-Page Visual Polish | Pending |
+| VISL-10 | Phase 4: Page-by-Page Visual Polish | Pending |
+| VISL-11 | Phase 4: Page-by-Page Visual Polish | Pending |
+| CONT-01 | Phase 6: Content Pipeline Features | Pending |
+| CONT-02 | Phase 6: Content Pipeline Features | Pending |
+| CONT-03 | Phase 6: Content Pipeline Features | Pending |
+| CONT-04 | Phase 6: Content Pipeline Features | Pending |
+| BRAIN-01 | Phase 5: Brain Dump Task Flow | Pending |
+| BRAIN-02 | Phase 5: Brain Dump Task Flow | Pending |
+| BRAIN-03 | Phase 5: Brain Dump Task Flow | Pending |
+| BRAIN-04 | Phase 5: Brain Dump Task Flow | Pending |
+| BRAIN-05 | Phase 5: Brain Dump Task Flow | Pending |
+| SOCL-01 | Phase 7: Social Media and Podcast | Pending |
+| SOCL-02 | Phase 7: Social Media and Podcast | Pending |
+| SOCL-03 | Phase 7: Social Media and Podcast | Pending |
+| SOCL-04 | Phase 7: Social Media and Podcast | Pending |
+| MOBL-01 | Phase 8: Mobile Capture | Pending |
+| MOBL-02 | Phase 8: Mobile Capture | Pending |
+| MOBL-03 | Phase 8: Mobile Capture | Pending |
+| MOBL-04 | Phase 8: Mobile Capture | Pending |
+| DEPL-01 | Phase 9: Deployment and Hardening | Pending |
+| DEPL-02 | Phase 9: Deployment and Hardening | Pending |
+| DEPL-03 | Phase 9: Deployment and Hardening | Pending |
+| DEPL-04 | Phase 9: Deployment and Hardening | Pending |
 
 **Coverage:**
-- v1 requirements: 42 total
-- Mapped to phases: 0
-- Unmapped: 42
+- v1 requirements: 43 total
+- Mapped to phases: 43
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-22*
-*Last updated: 2026-03-22 after initial definition*
+*Last updated: 2026-03-22 after roadmap creation*
