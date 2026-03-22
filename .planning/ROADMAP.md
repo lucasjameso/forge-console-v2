@@ -55,7 +55,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md -- Warm palette tokens, typography classes, Card/Button component fixes
 - [x] 02-02-PLAN.md -- Sidebar refinement with Sheet mobile drawer, PageShell max-width
-- [ ] 02-03-PLAN.md -- Card/Button/fontSize migration sweep across all pages and components
+- [x] 02-03-PLAN.md -- Card/Button/fontSize migration sweep across all pages and components
 
 ### Phase 3: Dashboard Redesign
 **Goal**: The dashboard is a dense, scannable command center that surfaces project health, action items, and upcoming content at a glance
