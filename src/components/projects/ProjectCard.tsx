@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Github, Globe, Database } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { StatusDot } from '@/components/ui/StatusDot'
 import { formatRelativeTime } from '@/lib/utils'
 import type { Project } from '@/types/database'
@@ -26,7 +27,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       transition={{ duration: 0.35, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
     >
       <Link to={`/projects/${project.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 16, cursor: 'pointer' }}>
+        <Card className="p-6 transition-shadow hover:shadow-card-hover cursor-pointer" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
             <div style={{ flex: 1 }}>
@@ -90,7 +91,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             </div>
             <span className="text-caption">Updated {formatRelativeTime(project.updated_at)}</span>
           </div>
-        </div>
+        </Card>
       </Link>
     </motion.div>
   )

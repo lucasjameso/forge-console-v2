@@ -17,6 +17,8 @@ import {
 import { PageShell } from '@/components/layout/PageShell'
 import { ContentCard } from '@/components/pipeline/ContentCard'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useContentReviews, useUpdateContentStatus } from '@/hooks/useContentReviews'
 import { formatShortDate } from '@/lib/utils'
@@ -93,16 +95,19 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="rounded-lg border bg-card p-6 shadow-card"
         style={{
           width: '100%',
           maxWidth: 560,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+      <Card
+        style={{
           maxHeight: '80vh',
           overflowY: 'auto',
           boxShadow: 'var(--shadow-modal)',
           padding: 0,
         }}
-        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{ padding: '20px 24px', borderBottom: '1px solid hsl(var(--border-subtle))', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -194,10 +199,10 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
                     onChange={(e) => setFeedback(e.target.value)}
                   />
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleReject} disabled={!feedback.trim()} style={{ backgroundColor: 'hsl(var(--status-error))' }}>
+                    <Button variant="destructive" onClick={handleReject} disabled={!feedback.trim()}>
                       Confirm Reject
-                    </button>
-                    <button className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer" onClick={() => setShowReject(false)}>Cancel</button>
+                    </Button>
+                    <Button variant="outline" onClick={() => setShowReject(false)}>Cancel</Button>
                   </div>
                 </div>
               </motion.div>
@@ -208,20 +213,21 @@ function ContentDetail({ item, onClose }: { item: ContentReview; onClose: () => 
         {/* Actions */}
         {(item.status === 'pending' || item.status === 'draft') && !showReject && (
           <div style={{ padding: '16px 24px', borderTop: '1px solid hsl(var(--border-subtle))', display: 'flex', gap: 8 }}>
-            <button className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleApprove}>
+            <Button onClick={handleApprove}>
               <Check size={14} />
               Approve
-            </button>
-            <button
-              className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
+            </Button>
+            <Button
+              variant="outline"
               onClick={() => setShowReject(true)}
               style={{ color: 'hsl(var(--status-error))' }}
             >
               <XCircle size={14} />
               Reject
-            </button>
+            </Button>
           </div>
         )}
+      </Card>
       </motion.div>
     </motion.div>
   )
@@ -458,17 +464,17 @@ export function ContentPipeline() {
       {isLoading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Card key={i} className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <SkeletonBlock width="30%" height={12} />
               <SkeletonBlock width="70%" height={16} />
               <SkeletonBlock width="50%" height={12} />
-            </div>
+            </Card>
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+        <Card className="p-6" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p className="text-body">No content in the pipeline yet.</p>
-        </div>
+        </Card>
       ) : (
         <>
           {view === 'list' && <ListView items={items} onSelect={setSelected} />}

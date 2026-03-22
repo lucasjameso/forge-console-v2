@@ -1,4 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton'
+import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 interface SkeletonBlockProps {
@@ -26,11 +27,11 @@ export function SkeletonBlock({ width, height = 16, className, style }: Skeleton
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-lg border bg-card p-6 shadow-card', className)} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <Card className={cn('p-6', className)} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <Skeleton className="h-[18px] w-[60%]" />
       <Skeleton className="h-[12px] w-full" />
       <Skeleton className="h-[12px] w-[80%]" />
       <Skeleton className="h-[12px] w-[40%]" />
-    </div>
+    </Card>
   )
 }

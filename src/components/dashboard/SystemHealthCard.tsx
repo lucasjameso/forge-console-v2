@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Server } from 'lucide-react'
+import { Card } from '@/components/ui/card'
 import { StatusDot } from '@/components/ui/StatusDot'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useSystemHealth } from '@/hooks/useSystemHealth'
@@ -23,7 +24,7 @@ export function SystemHealthCard() {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <SkeletonBlock width="50%" height={16} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[0, 1, 2].map(i => (
@@ -33,7 +34,7 @@ export function SystemHealthCard() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     )
   }
 
@@ -43,11 +44,11 @@ export function SystemHealthCard() {
 
   return (
     <motion.div
-      className="rounded-lg border bg-card p-6 shadow-card"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
+    <Card className="p-6">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Server size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
@@ -94,6 +95,7 @@ export function SystemHealthCard() {
           </p>
         )}
       </div>
+    </Card>
     </motion.div>
   )
 }

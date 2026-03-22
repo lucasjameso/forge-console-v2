@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useActionItems } from '@/hooks/useProjects'
 import { useProjects } from '@/hooks/useProjects'
@@ -20,15 +21,15 @@ export function ActionItemsCard() {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <SkeletonBlock width="40%" height={18} />
         {[0, 1, 2].map(i => (
-          <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: '12px 16px', gap: 8, display: 'flex', flexDirection: 'column' }}>
+          <Card key={i} className="px-4 py-3" style={{ gap: 8, display: 'flex', flexDirection: 'column' }}>
             <SkeletonBlock width="80%" height={14} />
             <SkeletonBlock width="40%" height={11} />
-          </div>
+          </Card>
         ))}
-      </div>
+      </Card>
     )
   }
 
@@ -41,11 +42,11 @@ export function ActionItemsCard() {
 
   return (
     <motion.div
-      className="rounded-lg border bg-card p-6 shadow-card"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
+    <Card className="p-6">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertCircle size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
@@ -123,6 +124,7 @@ export function ActionItemsCard() {
           ))}
         </div>
       )}
+    </Card>
     </motion.div>
   )
 }

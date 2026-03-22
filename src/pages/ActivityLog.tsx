@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Search, Filter } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useActivityLog } from '@/hooks/useActivityLog'
 import { useProjects } from '@/hooks/useProjects'
@@ -44,7 +45,7 @@ export function ActivityLog() {
     <PageShell title="Activity Log" subtitle="Every action across your entire system.">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Filters */}
-        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: '14px 20px' }}>
+        <Card className="px-5 py-3.5">
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             {/* Search */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 200 }}>
@@ -90,25 +91,25 @@ export function ActivityLog() {
               ))}
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Timeline */}
         {isLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[0, 1, 2, 3, 4].map(i => (
-              <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px' }}>
+              <Card key={i} className="px-5 py-3" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <SkeletonBlock width={8} height={8} style={{ borderRadius: '50%' }} />
                 <SkeletonBlock width="60%" height={14} />
                 <div style={{ marginLeft: 'auto' }}>
                   <SkeletonBlock width={60} height={12} />
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         ) : (entries ?? []).length === 0 ? (
-          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <Card className="p-6" style={{ textAlign: 'center', padding: '48px 24px' }}>
             <p className="text-body">No activity matches your filters.</p>
-          </div>
+          </Card>
         ) : (
           <div style={{ position: 'relative' }}>
             {/* Vertical timeline line */}
@@ -155,11 +156,10 @@ export function ActivityLog() {
                   />
 
                   {/* Content */}
-                  <div
-                    className="rounded-lg border bg-card p-6 shadow-card"
+                  <Card
+                    className="px-4 py-3"
                     style={{
                       flex: 1,
-                      padding: '12px 16px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
@@ -187,7 +187,7 @@ export function ActivityLog() {
                     <span className="text-caption" style={{ flexShrink: 0 }}>
                       {formatRelativeTime(entry.created_at)}
                     </span>
-                  </div>
+                  </Card>
                 </motion.div>
               ))}
             </div>

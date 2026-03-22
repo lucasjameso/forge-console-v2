@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FolderKanban, ArrowRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useProjects } from '@/hooks/useProjects'
 import { formatRelativeTime } from '@/lib/utils'
@@ -18,12 +19,12 @@ export function ProjectQuickGlanceCard() {
         </div>
         <div className="project-glance-grid" style={{ display: 'grid', gap: 16 }}>
           {[0, 1, 2].map(i => (
-            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Card key={i} className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <SkeletonBlock width="70%" height={16} />
               <SkeletonBlock width="100%" height={8} style={{ borderRadius: 4 }} />
               <SkeletonBlock width="50%" height={12} />
               <SkeletonBlock width="60%" height={12} />
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -51,13 +52,12 @@ export function ProjectQuickGlanceCard() {
               to={`/projects/${project.slug}`}
               style={{ textDecoration: 'none', display: 'block' }}
             >
-              <div
-                className="rounded-lg border bg-card p-6 shadow-card"
+              <Card
+                className="p-6 transition-shadow hover:shadow-card-hover cursor-pointer"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 14,
-                  cursor: 'pointer',
                   height: '100%',
                 }}
               >
@@ -148,7 +148,7 @@ export function ProjectQuickGlanceCard() {
                     style={{ color: 'hsl(var(--text-tertiary))' }}
                   />
                 </div>
-              </div>
+              </Card>
             </Link>
           </motion.div>
         ))}

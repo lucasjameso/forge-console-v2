@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { isSupabaseConfigured } from '@/lib/supabase'
 
 interface Integration {
@@ -83,9 +84,8 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="rounded-lg border bg-card p-6 shadow-card"
-      style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
     >
+    <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div
@@ -151,6 +151,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
           <ExternalLink size={11} />
         </a>
       )}
+    </Card>
     </motion.div>
   )
 }
@@ -177,7 +178,7 @@ export function Settings() {
             <Info size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
             <span className="text-section-header">About</span>
           </div>
-          <div className="rounded-lg border bg-card p-6 shadow-card">
+          <Card className="p-6">
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body">Application</span>
@@ -206,7 +207,7 @@ export function Settings() {
                 </Badge>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Instructions for .env */}
@@ -215,20 +216,20 @@ export function Settings() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="rounded-lg border bg-card p-6 shadow-card"
-            style={{ borderLeft: '3px solid hsl(var(--status-warning))', backgroundColor: 'hsl(var(--status-warning-bg))' }}
           >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <Info size={16} style={{ color: 'hsl(var(--status-warning))', flexShrink: 0, marginTop: 2 }} />
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: '0 0 6px' }}>
-                  Running with mock data
-                </p>
-                <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', margin: 0, lineHeight: 1.5 }}>
-                  To connect to a live database, add your Supabase credentials to the .env.local file and restart the dev server. Run the schema from supabase/schema.sql to create the required tables.
-                </p>
+            <Card className="p-6" style={{ borderLeft: '3px solid hsl(var(--status-warning))', backgroundColor: 'hsl(var(--status-warning-bg))' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <Info size={16} style={{ color: 'hsl(var(--status-warning))', flexShrink: 0, marginTop: 2 }} />
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 500, color: 'hsl(var(--text-primary))', margin: '0 0 6px' }}>
+                    Running with mock data
+                  </p>
+                  <p style={{ fontSize: 13, color: 'hsl(var(--text-secondary))', margin: 0, lineHeight: 1.5 }}>
+                    To connect to a live database, add your Supabase credentials to the .env.local file and restart the dev server. Run the schema from supabase/schema.sql to create the required tables.
+                  </p>
+                </div>
               </div>
-            </div>
+            </Card>
           </motion.div>
         )}
       </div>

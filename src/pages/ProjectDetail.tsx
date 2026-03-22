@@ -19,6 +19,8 @@ import {
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { SkeletonCard } from '@/components/ui/SkeletonBlock'
 import {
   useProject,
@@ -149,12 +151,12 @@ export function ProjectDetail() {
   if (!project) {
     return (
       <PageShell title="Project Not Found">
-        <div className="rounded-lg border bg-card p-6 shadow-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+        <Card className="p-6" style={{ textAlign: 'center', padding: '48px 24px' }}>
           <p className="text-body">No project found with slug "{slug}".</p>
           <Link to="/projects" style={{ color: 'hsl(var(--accent-coral))', fontSize: 14, marginTop: 12, display: 'inline-block' }}>
             Back to Projects
           </Link>
-        </div>
+        </Card>
       </PageShell>
     )
   }
@@ -244,7 +246,7 @@ export function ProjectDetail() {
 
         {/* Row 2: Progress + Milestone Timeline */}
         <Section icon={Target} title="Progress">
-          <div className="rounded-lg border bg-card p-6 shadow-card">
+          <Card className="p-6">
             {/* Progress bar */}
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
@@ -316,12 +318,12 @@ export function ProjectDetail() {
                 ))}
               </div>
             )}
-          </div>
+          </Card>
         </Section>
 
         {/* Row 3: Recent Activity */}
         <Section icon={Activity} title="Recent Activity">
-          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: 0 }}>
+          <Card style={{ padding: 0 }}>
             {recentActivity.length === 0 ? (
               <p className="text-caption" style={{ textAlign: 'center', padding: 24 }}>No recent activity</p>
             ) : (
@@ -347,7 +349,7 @@ export function ProjectDetail() {
                 </div>
               ))
             )}
-          </div>
+          </Card>
         </Section>
 
         {/* Row 4: Mini Kanban */}
@@ -361,7 +363,7 @@ export function ProjectDetail() {
 
         {/* Row 5: Notes */}
         <Section icon={StickyNote} title="Notes & Decisions">
-          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {(notes ?? []).map((note) => (
               <div
                 key={note.id}
@@ -397,52 +399,43 @@ export function ProjectDetail() {
                 onChange={(e) => setNoteText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleAddNote() }}
               />
-              <button className="inline-flex items-center gap-1.5 rounded-md bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-dark cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleAddNote} disabled={!noteText.trim()}>
+              <Button onClick={handleAddNote} disabled={!noteText.trim()}>
                 <Plus size={14} />
                 Add
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         </Section>
 
         {/* Row 6: Quick Actions / Linked Resources */}
         <Section icon={Zap} title="Linked Resources">
           <div style={{ display: 'flex', gap: 12 }}>
             {project.github_url && (
-              <a
-                href={project.github_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
-              >
-                <Github size={14} />
-                GitHub
-                <ExternalLink size={12} />
-              </a>
+              <Button variant="outline" asChild>
+                <a href={project.github_url} target="_blank" rel="noopener noreferrer">
+                  <Github size={14} />
+                  GitHub
+                  <ExternalLink size={12} />
+                </a>
+              </Button>
             )}
             {project.cloudflare_url && (
-              <a
-                href={project.cloudflare_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
-              >
-                <Globe size={14} />
-                Cloudflare
-                <ExternalLink size={12} />
-              </a>
+              <Button variant="outline" asChild>
+                <a href={project.cloudflare_url} target="_blank" rel="noopener noreferrer">
+                  <Globe size={14} />
+                  Cloudflare
+                  <ExternalLink size={12} />
+                </a>
+              </Button>
             )}
             {project.supabase_ref && (
-              <a
-                href={`https://supabase.com/dashboard/project/${project.supabase_ref}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary cursor-pointer"
-              >
-                <Database size={14} />
-                Supabase
-                <ExternalLink size={12} />
-              </a>
+              <Button variant="outline" asChild>
+                <a href={`https://supabase.com/dashboard/project/${project.supabase_ref}`} target="_blank" rel="noopener noreferrer">
+                  <Database size={14} />
+                  Supabase
+                  <ExternalLink size={12} />
+                </a>
+              </Button>
             )}
             {!project.github_url && !project.cloudflare_url && !project.supabase_ref && (
               <p className="text-caption">No linked resources</p>
@@ -453,8 +446,8 @@ export function ProjectDetail() {
         {/* Row 7: Next Session Prompt */}
         {sessionPrompt && (
           <Section icon={Copy} title="Next Session Prompt">
-            <div
-              className="rounded-lg border bg-card p-6 shadow-card"
+            <Card
+              className="p-6"
               style={{ cursor: 'pointer', position: 'relative' }}
               onClick={handleCopyPrompt}
             >
@@ -476,7 +469,7 @@ export function ProjectDetail() {
                 {copied ? <Check size={14} /> : <Copy size={14} />}
                 {copied ? 'Copied' : 'Click to copy'}
               </div>
-            </div>
+            </Card>
           </Section>
         )}
       </div>

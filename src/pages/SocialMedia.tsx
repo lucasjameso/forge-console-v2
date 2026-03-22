@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useSocialPlatforms } from '@/hooks/useSocialPlatforms'
 import { formatRelativeTime } from '@/lib/utils'
@@ -37,11 +38,11 @@ export function SocialMedia() {
       {isLoading ? (
         <div className="social-grid" style={{ display: 'grid', gap: 16 }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Card key={i} className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <SkeletonBlock width="50%" height={18} />
               <SkeletonBlock width="70%" height={14} />
               <SkeletonBlock width="40%" height={14} />
-            </div>
+            </Card>
           ))}
         </div>
       ) : (
@@ -59,9 +60,8 @@ export function SocialMedia() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                  className="rounded-lg border bg-card p-6 shadow-card"
-                  style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
                 >
+                <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {/* Header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -167,13 +167,14 @@ export function SocialMedia() {
                       <ExternalLink size={11} />
                     </a>
                   )}
+                </Card>
                 </motion.div>
               )
             })}
           </div>
 
           {/* Summary stats */}
-          <div className="rounded-lg border bg-card p-6 shadow-card">
+          <Card className="p-6">
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
               <span className="text-section-header">Overview</span>
             </div>
@@ -197,7 +198,7 @@ export function SocialMedia() {
                 <span className="text-caption">Need Setup</span>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 

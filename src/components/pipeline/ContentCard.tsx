@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Linkedin, BookOpen, FileText, ShoppingBag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview, ContentStatus } from '@/types/database'
 
@@ -40,7 +41,7 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : undefined }}
     >
-      <div className="rounded-lg border bg-card p-6 shadow-card" style={{ padding: compact ? '12px 16px' : '16px 20px' }}>
+      <Card className={`transition-shadow hover:shadow-card-hover ${compact ? 'px-4 py-3' : 'px-5 py-4'}`}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: compact ? 4 : 6 }}>
@@ -81,7 +82,7 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
           <span className="text-caption">{item.slide_count} slides</span>
           <span className="text-caption">Rev {item.revision}</span>
         </div>
-      </div>
+      </Card>
     </motion.div>
   )
 }

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Layers, ArrowRight, Linkedin, BookOpen, FileText, ShoppingBag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useContentReviews } from '@/hooks/useContentReviews'
 import { formatShortDate } from '@/lib/utils'
@@ -34,12 +35,12 @@ export function UpcomingContentCard() {
         </div>
         <div style={{ display: 'flex', gap: 16, overflowX: 'auto' }}>
           {[0, 1, 2, 3].map(i => (
-            <div key={i} className="rounded-lg border bg-card p-6 shadow-card" style={{ minWidth: 240, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <Card key={i} className="p-6" style={{ minWidth: 240, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <SkeletonBlock width="40%" height={12} />
               <SkeletonBlock width="90%" height={14} />
               <SkeletonBlock width="60%" height={12} />
               <SkeletonBlock width="30%" height={20} />
-            </div>
+            </Card>
           ))}
         </div>
       </div>
@@ -81,9 +82,9 @@ export function UpcomingContentCard() {
         }}
       >
         {upcoming.length === 0 ? (
-          <div className="rounded-lg border bg-card p-6 shadow-card" style={{ width: '100%', textAlign: 'center', padding: '24px 0' }}>
+          <Card className="p-6" style={{ width: '100%', textAlign: 'center', padding: '24px 0' }}>
             <p className="text-caption">No upcoming content scheduled</p>
-          </div>
+          </Card>
         ) : (
           upcoming.map((item, idx) => {
             const PlatformIcon = item.platforms[0]
@@ -99,8 +100,8 @@ export function UpcomingContentCard() {
                 transition={{ duration: 0.3, delay: idx * 0.05, ease: [0.16, 1, 0.3, 1] }}
                 style={{ minWidth: 260, maxWidth: 280, flexShrink: 0 }}
               >
-                <div
-                  className="rounded-lg border bg-card p-6 shadow-card"
+                <Card
+                  className="p-6"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -151,7 +152,7 @@ export function UpcomingContentCard() {
 
                   {/* Status badge */}
                   <Badge variant={badge.variant}>{badge.label}</Badge>
-                </div>
+                </Card>
               </motion.div>
             )
           })
