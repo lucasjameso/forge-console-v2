@@ -8,6 +8,13 @@ import {
   Users,
   Clock,
   AlertTriangle,
+  Facebook,
+  Youtube,
+  Camera,
+  MessageCircle,
+  Hash,
+  Video,
+  Link2,
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
@@ -22,6 +29,12 @@ const platformIcons: Record<string, React.ComponentType<{ size?: number; style?:
   BookOpen: BookOpen,
   FileText: FileText,
   ShoppingBag: ShoppingBag,
+  Facebook: Facebook,
+  Youtube: Youtube,
+  Camera: Camera,
+  MessageCircle: MessageCircle,
+  Hash: Hash,
+  Video: Video,
 }
 
 const statusBadge: Record<SocialPlatformStatus, { variant: 'success' | 'warning' | 'neutral'; label: string }> = {
@@ -48,11 +61,13 @@ export function SocialMedia() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Platform cards */}
-          <div className="social-grid" style={{ display: 'grid', gap: 16 }}>
+          <div className="social-grid" style={{ display: 'grid', gap: 16, alignItems: 'stretch' }}>
             {(platforms ?? []).map((platform, idx) => {
               const Icon = platformIcons[platform.icon_name] ?? FileText
               const badge = statusBadge[platform.status]
-              const meta = platform.metadata as Record<string, number> | null
+              const meta = platform.metadata as Record<string, unknown> | null
+              const target = typeof meta?.target === 'number' ? meta.target : null
+              const hasUrl = Boolean(platform.profile_url)
 
               return (
                 <motion.div
@@ -60,8 +75,9 @@ export function SocialMedia() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ display: 'flex' }}
                 >
-                <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
                   {/* Header */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -90,17 +106,22 @@ export function SocialMedia() {
                     <Badge variant={badge.variant}>{badge.label}</Badge>
                   </div>
 
-                  {/* Stats */}
-                  <div style={{ display: 'flex', gap: 20 }}>
-                    {platform.follower_count !== null && (
+                  {/* Stats -- always render row for consistent height */}
+                  <div style={{ display: 'flex', gap: 20, minHeight: 20 }}>
+                    {platform.follower_count !== null ? (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <Users size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
                         <span className="text-body font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>
                           {platform.follower_count.toLocaleString()}
                         </span>
-                        {meta?.target && (
-                          <span className="text-caption">/ {meta.target.toLocaleString()} goal</span>
+                        {target && (
+                          <span className="text-caption">/ {target.toLocaleString()} goal</span>
                         )}
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Users size={13} style={{ color: 'hsl(var(--text-tertiary))' }} />
+                        <span className="text-caption" style={{ fontStyle: 'italic' }}>No followers yet</span>
                       </div>
                     )}
                     {platform.last_post_date && (
@@ -114,17 +135,19 @@ export function SocialMedia() {
                   </div>
 
                   {/* Progress bar for follower goal */}
-                  {platform.follower_count !== null && meta?.target && (
+                  {platform.follower_count !== null && target ? (
                     <div>
                       <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: 'hsl(var(--bg-elevated))', overflow: 'hidden' }}>
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: `${Math.min((platform.follower_count / meta.target) * 100, 100)}%` }}
+                          animate={{ width: `${Math.min((platform.follower_count / target) * 100, 100)}%` }}
                           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                           style={{ height: '100%', borderRadius: 3, backgroundColor: 'hsl(var(--accent-coral))' }}
                         />
                       </div>
                     </div>
+                  ) : (
+                    <div style={{ height: 6 }} />
                   )}
 
                   {/* Setup needed alert */}
@@ -146,10 +169,13 @@ export function SocialMedia() {
                     </div>
                   )}
 
-                  {/* Link */}
-                  {platform.profile_url && (
+                  {/* Spacer to push link to bottom */}
+                  <div style={{ flex: 1 }} />
+
+                  {/* Link -- always present, grayed out if no URL */}
+                  {hasUrl ? (
                     <a
-                      href={platform.profile_url}
+                      href={platform.profile_url!}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-caption font-medium"
@@ -159,12 +185,24 @@ export function SocialMedia() {
                         gap: 4,
                         color: 'hsl(var(--accent-coral))',
                         textDecoration: 'none',
-                        marginTop: 'auto',
                       }}
                     >
                       View profile
                       <ExternalLink size={11} />
                     </a>
+                  ) : (
+                    <span
+                      className="text-caption"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        color: 'hsl(var(--text-tertiary))',
+                      }}
+                    >
+                      <Link2 size={11} />
+                      Needs profile link
+                    </span>
                   )}
                 </Card>
                 </motion.div>
