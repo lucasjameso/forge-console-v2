@@ -104,7 +104,7 @@ Plans:
 **Goal:** Close all 51 UAT gaps from Phase 4 testing -- fix both blockers (Brain Dump API parsing, Content Pipeline review modal), resolve 30 major visual/UX issues, and polish 19 minor items across all 7 pages
 **Requirements**: UAT-GLOBAL-BORDER-RADIUS, UAT-DEPS, UAT-DASH-STAT-TILES-GRID, UAT-DASH-STAT-TILES-LEFT-BORDER, UAT-DASH-CLARITY-PULSE, UAT-DASH-ACTION-ITEMS-INTERACTIVE, UAT-DASH-ACTION-ITEMS-COMPACT, UAT-DASH-CALENDAR-HEIGHT, UAT-DASH-CALENDAR-TYPE, UAT-DASH-GREETING-INSIGHTS, UAT-BRAIN-API-BLOCKER, UAT-BRAIN-ADD-PROJECT, UAT-BRAIN-SUBMIT-STATE, UAT-BRAIN-STEP-PROGRESS, UAT-BRAIN-INLINE-ACTIONS, UAT-BRAIN-PROJECT-BORDERS, UAT-BRAIN-STICKY-HEADERS, UAT-CONTENT-REVIEW-MODAL-BLOCKER, UAT-CONTENT-REJECT-WORKFLOW, UAT-CONTENT-APPROVE-WORKFLOW, UAT-CONTENT-CALENDAR-RESPONSIVE, UAT-CONTENT-BORDER-RADIUS, UAT-CONTENT-ADD-MODAL, UAT-CONTENT-KANBAN-DRAG, UAT-CONTENT-MULTI-PLATFORM, UAT-CONTENT-DETAIL-ALL-VIEWS, UAT-SOCIAL-BRAND-ICONS, UAT-SOCIAL-MEDIUM-DATA, UAT-SOCIAL-CARD-SIZE, UAT-SOCIAL-SETUP-MODAL, UAT-SOCIAL-ACTIVE-DATA, UAT-SOCIAL-HERO-READINESS, UAT-SOCIAL-EXTERNAL-LINKS, UAT-SOCIAL-BORDER-RADIUS, UAT-SETTINGS-TEST-BUTTONS, UAT-SETTINGS-FEEDBACK-MARKDOWN, UAT-SETTINGS-FEEDBACK-ACTIONS, UAT-SETTINGS-SYSTEM-TAB, UAT-SETTINGS-GRAYED-TABS, UAT-SETTINGS-BRAND-ICONS, UAT-SETTINGS-BORDER-RADIUS, UAT-ACTIVITY-DENSITY-CHART, UAT-ACTIVITY-TIERS, UAT-ACTIVITY-CLICKABLE, UAT-ACTIVITY-DOT-LEGEND, UAT-ACTIVITY-DATE-FILTER, UAT-ACTIVITY-ALIGNMENT, UAT-ACTIVITY-MANUAL-ENTRY, UAT-ACTIVITY-STICKY-HEADERS, UAT-ACTIVITY-BORDER-RADIUS, UAT-ACTIVITY-LOAD-MORE
 **Depends on:** Phase 4
-**Plans:** 6/8 plans executed
+**Plans:** 7/8 plans executed
 **Success Criteria** (what must be TRUE):
   1. Border radius halved globally -- clean and modern across all pages
   2. Brain Dump Claude API parsing works reliably (BLOCKER resolved)
@@ -123,7 +123,7 @@ Plans:
 - [x] 04.1-05-PLAN.md -- Activity Log fixes: density chart, tiers, filters, manual entry
 - [x] 04.1-06-PLAN.md -- Content Pipeline: review modal blocker, approve/reject, responsive calendar
 - [ ] 04.1-07-PLAN.md -- Content Pipeline: Add Content modal, Kanban drag, multi-platform
-- [ ] 04.1-08-PLAN.md -- Settings fixes: integration tests, feedback markdown, system tab
+- [x] 04.1-08-PLAN.md -- Settings fixes: integration tests, feedback markdown, system tab
 
 ### Phase 5: Brain Dump Depth
 **Goal**: Transform Brain Dump from a simple capture tool into a full thought-to-action pipeline with project routing, AI refinement, task creation, and analytics
