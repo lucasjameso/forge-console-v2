@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { isToday, isYesterday, format } from 'date-fns'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -49,5 +50,30 @@ export function formatTime(date: string | Date): string {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
+  })
+}
+
+export interface DayGroup<T> {
+  label: string
+  date: Date
+  items: T[]
+}
+
+export function groupByDay<T extends { created_at: string }>(items: T[]): DayGroup<T>[] {
+  const groups = new Map<string, T[]>()
+  for (const item of items) {
+    const date = new Date(item.created_at)
+    const key = format(date, 'yyyy-MM-dd')
+    const existing = groups.get(key) ?? []
+    existing.push(item)
+    groups.set(key, existing)
+  }
+  return Array.from(groups.entries()).map(([key, groupItems]) => {
+    const date = new Date(key)
+    let label: string
+    if (isToday(date)) label = 'Today'
+    else if (isYesterday(date)) label = 'Yesterday'
+    else label = format(date, 'MMMM d, yyyy')
+    return { label, date, items: groupItems }
   })
 }

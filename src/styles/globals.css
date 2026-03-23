@@ -38,6 +38,27 @@
   --status-info: 221 83% 53%;
   --status-info-bg: 214 100% 97%;
 
+  /* Project identity colors */
+  --project-ridgeline: 142 76% 36%;
+  --project-clarity: 12 55% 51%;
+  --project-forge: 206 50% 21%;
+  --project-meridian: 221 83% 53%;
+  --project-atlas: 218 10% 64%;
+  --project-ridgeline-bg: 138 76% 97%;
+  --project-clarity-bg: 13 61% 97%;
+  --project-forge-bg: 206 50% 97%;
+  --project-meridian-bg: 221 83% 97%;
+  --project-atlas-bg: 218 10% 97%;
+
+  /* Page identity colors */
+  --page-dashboard: 12 55% 51%;
+  --page-projects: 206 50% 21%;
+  --page-brain-dump: 280 60% 50%;
+  --page-content-pipeline: 142 76% 36%;
+  --page-social-media: 221 83% 53%;
+  --page-activity-log: 32 95% 44%;
+  --page-settings: 218 10% 64%;
+
   /* Shadows (warm-tinted, visible depth) */
   --shadow-card: 0 1px 4px rgba(120,90,60,0.08), 0 2px 8px rgba(120,90,60,0.04);
   --shadow-card-hover: 0 4px 16px rgba(120,90,60,0.12), 0 2px 4px rgba(120,90,60,0.06);

@@ -71,6 +71,11 @@ export interface Database {
         Insert: Omit<NextSessionPrompt, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<NextSessionPrompt, 'id' | 'created_at'>>
       }
+      page_feedback: {
+        Row: PageFeedback
+        Insert: Omit<PageFeedback, 'id' | 'created_at'>
+        Update: Partial<Omit<PageFeedback, 'id' | 'created_at'>>
+      }
     }
   }
 }
@@ -89,6 +94,16 @@ export type PodcastStatus = 'outreach' | 'scheduled' | 'recorded' | 'published'
 export type SessionType = 'claude_code' | 'n8n' | 'slack' | 'cowork' | 'system' | 'manual'
 export type HealthStatus = 'healthy' | 'degraded' | 'down'
 
+export interface PageFeedback {
+  id: string
+  page: string
+  type: 'fix' | 'suggestion'
+  content: string
+  status: 'open' | 'done' | 'deferred'
+  priority?: string
+  created_at: string
+}
+
 export interface Project {
   id: string
   name: string
@@ -97,6 +112,7 @@ export interface Project {
   status: ProjectStatus
   priority: ProjectPriority
   progress_pct: number
+  color?: string
   current_phase: string | null
   metadata: Record<string, unknown> | null
   github_url: string | null
