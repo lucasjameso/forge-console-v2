@@ -28,3 +28,4 @@ dist-ssr
 .bg-shell/
 .env.local
 supabase/.temp/
+.env
