@@ -147,12 +147,12 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **CSUG-04**: Inline caption editing with character count and AI refinement
 - [ ] **CSUG-05**: Bulk actions via floating action bar (approve all, reschedule, delete)
 - [ ] **CSUG-06**: Content performance tracking post-publish (impressions, engagement)
-- [ ] **CSUG-07**: Content templates and recurring series with tags
+- [x] **CSUG-07**: Content templates and recurring series with tags
 - [ ] **CSUG-08**: Multi-platform content management with per-platform tabs
 - [ ] **CSUG-09**: Content approval workflow with two-way Slack integration
 - [ ] **CSUG-10**: Publishing scheduler with optimal time suggestions
 - [ ] **CSUG-11**: Revision history with side-by-side diff and revert
-- [ ] **CSUG-12**: Content calendar analytics strip (monthly summary, cadence, gap alerts)
+- [x] **CSUG-12**: Content calendar analytics strip (monthly summary, cadence, gap alerts)
 
 ### Social Media + Activity Log (Phase 7)
 

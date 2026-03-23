@@ -157,8 +157,8 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md -- Data foundation: Supabase tables, TypeScript types, hooks scaffold
 - [ ] 06-02-PLAN.md -- Drag-and-drop Kanban + Month views, bulk selection with floating action bar
-- [ ] 06-03-PLAN.md -- Modal depth: caption editing, AI refinement, n8n webhooks, revision history, performance
-- [ ] 06-04-PLAN.md -- Templates tab with weekly arc generation, analytics strip
+- [x] 06-03-PLAN.md -- Modal depth: caption editing, AI refinement, n8n webhooks, revision history, performance
+- [x] 06-04-PLAN.md -- Templates tab with weekly arc generation, analytics strip
 - [ ] 06-05-PLAN.md -- Integration polish: calendar animations, top performer badge, visual QA
 
 ### Phase 7: Social Media + Activity Log
