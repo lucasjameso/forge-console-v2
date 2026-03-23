@@ -70,10 +70,15 @@ ${text}`,
   const content = result.content?.[0]?.text ?? '{}'
 
   try {
-    return JSON.parse(content) as ParsedBrainDump
+    // Strip markdown code fencing if Claude wrapped the response
+    let jsonStr = content.trim()
+    if (jsonStr.startsWith('```')) {
+      jsonStr = jsonStr.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?\s*```$/, '')
+    }
+    return JSON.parse(jsonStr) as ParsedBrainDump
   } catch {
     return {
-      summary: 'Could not parse response from Claude.',
+      summary: text.slice(0, 100) + (text.length > 100 ? '...' : ''),
       tasks: [{ description: text, project: 'unassigned', priority: 'medium', deadline: null }],
     }
   }

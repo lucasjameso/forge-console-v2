@@ -164,8 +164,10 @@ export function BrainDump() {
               onClick={handleSubmit}
               disabled={!text.trim() || submitMutation.isPending}
               className={cn(
-                'w-full md:w-auto md:min-w-[120px]',
-                text.trim() && 'shadow-[0_0_12px_hsl(var(--accent-coral)/0.3)]',
+                'w-full md:w-auto md:min-w-[120px] transition-all duration-200',
+                text.trim()
+                  ? 'bg-[hsl(var(--accent-coral))] shadow-[0_0_12px_hsl(var(--accent-coral)/0.4)] hover:shadow-[0_0_20px_hsl(var(--accent-coral)/0.5)] scale-[1.02]'
+                  : 'opacity-50 cursor-not-allowed',
               )}
             >
               <Send size={14} />
