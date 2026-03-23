@@ -143,15 +143,15 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [x] **CSUG-01**: Full calendar navigation with month/year browsing and slide animations
 - [x] **CSUG-02**: Drag-and-drop content rescheduling in month and week views
-- [ ] **CSUG-03**: Carousel slide preview with image thumbnails in detail modal
-- [ ] **CSUG-04**: Inline caption editing with character count and AI refinement
+- [x] **CSUG-03**: Carousel slide preview with image thumbnails in detail modal
+- [x] **CSUG-04**: Inline caption editing with character count and AI refinement
 - [ ] **CSUG-05**: Bulk actions via floating action bar (approve all, reschedule, delete)
-- [ ] **CSUG-06**: Content performance tracking post-publish (impressions, engagement)
+- [x] **CSUG-06**: Content performance tracking post-publish (impressions, engagement)
 - [x] **CSUG-07**: Content templates and recurring series with tags
-- [ ] **CSUG-08**: Multi-platform content management with per-platform tabs
-- [ ] **CSUG-09**: Content approval workflow with two-way Slack integration
-- [ ] **CSUG-10**: Publishing scheduler with optimal time suggestions
-- [ ] **CSUG-11**: Revision history with side-by-side diff and revert
+- [x] **CSUG-08**: Multi-platform content management with per-platform tabs
+- [x] **CSUG-09**: Content approval workflow with two-way Slack integration
+- [x] **CSUG-10**: Publishing scheduler with optimal time suggestions
+- [x] **CSUG-11**: Revision history with side-by-side diff and revert
 - [x] **CSUG-12**: Content calendar analytics strip (monthly summary, cadence, gap alerts)
 
 ### Social Media + Activity Log (Phase 7)
