@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { formatDistanceToNow } from 'date-fns'
 import {
   Database,
   Workflow,
@@ -16,6 +18,8 @@ import {
   ChevronDown,
   ChevronRight,
   Settings2,
+  Check,
+  X,
   HardDrive,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -23,6 +27,7 @@ import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
@@ -346,6 +351,30 @@ function FeedbackLog() {
   const doneCount = allItems.filter(i => i.status === 'done').length
 
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [addingNoteTo, setAddingNoteTo] = useState<string | null>(null)
+  const [feedbackNote, setFeedbackNote] = useState('')
+  const [localStatuses, setLocalStatuses] = useState<Record<string, string>>({})
+
+  function markFeedbackDone(id: string) {
+    setLocalStatuses(prev => ({ ...prev, [id]: 'done' }))
+    if (isSupabaseConfigured) {
+      supabase.from('page_feedback').update({ status: 'done', resolved_at: new Date().toISOString() } as never).eq('id', id).then()
+    }
+  }
+
+  function markFeedbackWontFix(id: string) {
+    setLocalStatuses(prev => ({ ...prev, [id]: 'wont_fix' }))
+    if (isSupabaseConfigured) {
+      supabase.from('page_feedback').update({ status: 'done', resolution: "Won't fix" } as never).eq('id', id).then()
+    }
+  }
+
+  function saveFeedbackNote(id: string, note: string) {
+    if (isSupabaseConfigured) {
+      supabase.from('page_feedback').update({ resolution: note } as never).eq('id', id).then()
+    }
+    toast.success('Note added')
+  }
 
   const filters: { key: FeedbackFilter; label: string; count: number }[] = [
     { key: 'all', label: 'All', count: allItems.length },
@@ -437,14 +466,57 @@ function FeedbackLog() {
 
                   {/* Expanded content */}
                   {isExpanded && (
-                    <div className="px-4 pb-3 pl-9">
-                      <div className="text-body-sm text-[hsl(var(--text-primary))] leading-relaxed [&_p]:my-1 [&_ul]:pl-4 [&_ul]:my-1 [&_li]:my-0.5 [&_code]:bg-[hsl(var(--bg-elevated))] [&_code]:px-1 [&_code]:rounded [&_code]:text-[12px]">
-                        <Markdown>{item.content}</Markdown>
+                    <div className="px-4 pb-3 pl-9" onClick={e => e.stopPropagation()}>
+                      <div className="prose-custom mt-2">
+                        <Markdown remarkPlugins={[remarkGfm]}
+                          components={{
+                            h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1">{children}</h1>,
+                            h2: ({ children }) => <h2 className="text-sm font-bold mt-2.5 mb-1">{children}</h2>,
+                            h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-0.5">{children}</h3>,
+                            p: ({ children }) => <p className="text-sm leading-relaxed mb-2">{children}</p>,
+                            ul: ({ children }) => <ul className="list-disc pl-4 text-sm space-y-1 mb-2">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal pl-4 text-sm space-y-1 mb-2">{children}</ol>,
+                            li: ({ children }) => <li className="text-sm">{children}</li>,
+                            strong: ({ children }) => <strong className="font-semibold text-[hsl(var(--text-primary))]">{children}</strong>,
+                            code: ({ children }) => <code className="px-1 py-0.5 bg-[hsl(var(--bg-elevated))] rounded text-xs font-mono">{children}</code>,
+                          }}>
+                          {item.content}
+                        </Markdown>
                       </div>
                       {isDone && item.resolution && (
                         <p className="mt-2 text-caption text-[hsl(var(--status-success))] italic">
                           Resolution: {item.resolution}
                         </p>
+                      )}
+                      {/* Action controls */}
+                      {localStatuses[item.id] === 'done' ? (
+                        <div className="mt-2 text-xs text-[hsl(var(--status-success))] italic">Marked as done</div>
+                      ) : localStatuses[item.id] === 'wont_fix' ? (
+                        <div className="mt-2 text-xs text-[hsl(var(--text-tertiary))] italic">Marked as won&apos;t fix</div>
+                      ) : (
+                        <div className="flex items-center gap-2 mt-3 pt-2 border-t border-[hsl(var(--border-subtle))]">
+                          <Button variant="outline" size="sm"
+                            onClick={() => { markFeedbackDone(item.id); toast.success('Marked as done') }}
+                            className="text-xs h-7">
+                            <Check className="w-3 h-3 mr-1" /> Done
+                          </Button>
+                          <Button variant="outline" size="sm"
+                            onClick={() => setAddingNoteTo(item.id)}
+                            className="text-xs h-7">
+                            <MessageSquare className="w-3 h-3 mr-1" /> Add Note
+                          </Button>
+                          <Button variant="outline" size="sm"
+                            onClick={() => { markFeedbackWontFix(item.id); toast.success("Marked as won't fix") }}
+                            className="text-xs h-7 text-[hsl(var(--text-tertiary))]">
+                            <X className="w-3 h-3 mr-1" /> Won&apos;t Fix
+                          </Button>
+                        </div>
+                      )}
+                      {addingNoteTo === item.id && (
+                        <div className="mt-2 flex gap-2">
+                          <Input placeholder="Add a note..." value={feedbackNote} onChange={e => setFeedbackNote(e.target.value)} className="flex-1 h-8 text-sm" />
+                          <Button size="sm" className="h-8" onClick={() => { saveFeedbackNote(item.id, feedbackNote); setAddingNoteTo(null); setFeedbackNote('') }}>Save</Button>
+                        </div>
                       )}
                     </div>
                   )}
@@ -460,58 +532,98 @@ function FeedbackLog() {
 
 // ---- System Info ----
 
+const APP_START_TIME = new Date()
+
 function SystemInfo() {
+  const [now, setNow] = useState(new Date())
+
+  // Update uptime every 60s
+  React.useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 60_000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Suppress unused variable warning -- `now` is used to trigger re-render for uptime
+  void now
+
   return (
-    <Card className="p-6">
-      <div className="flex flex-col gap-3">
-        <div className="flex justify-between">
-          <span className="text-body">Application</span>
-          <span className="text-body font-medium text-[hsl(var(--text-primary))]">Forge Console v2</span>
-        </div>
-        <div className="border-t border-[hsl(var(--border-subtle))]" />
-        <div className="flex justify-between">
-          <span className="text-body">Version</span>
-          <span className="text-body font-medium text-[hsl(var(--text-primary))]">v2.0</span>
-        </div>
-        <div className="border-t border-[hsl(var(--border-subtle))]" />
-        <div className="flex justify-between">
-          <span className="text-body">Environment</span>
-          <Badge variant={import.meta.env.PROD ? 'success' : 'neutral'}>
-            {import.meta.env.PROD ? 'Production' : 'Development'}
-          </Badge>
-        </div>
-        <div className="border-t border-[hsl(var(--border-subtle))]" />
-        <div className="flex justify-between">
-          <span className="text-body">Organization</span>
-          <span className="text-body font-medium text-[hsl(var(--text-primary))]">IAC Solutions</span>
-        </div>
-        <div className="border-t border-[hsl(var(--border-subtle))]" />
-        <div className="flex justify-between">
-          <span className="text-body">Stack</span>
-          <span className="text-body font-medium text-[hsl(var(--text-primary))]">React + TypeScript + Supabase + Cloudflare Pages</span>
-        </div>
-        <div className="border-t border-[hsl(var(--border-subtle))]" />
-        <div className="flex justify-between">
-          <span className="text-body">Data Mode</span>
-          <Badge variant={isSupabaseConfigured ? 'success' : 'warning'}>
-            {isSupabaseConfigured ? 'Live (Supabase)' : 'Mock Data'}
-          </Badge>
-        </div>
-        <div className="border-t border-[hsl(var(--border-subtle))]" />
-        <div className="flex justify-between items-center">
-          <span className="text-body">Repository</span>
-          <a
-            href="https://github.com/lucasoliver/forge-console-v2"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[13px] font-medium text-[hsl(var(--accent-coral))] no-underline flex items-center gap-1"
-          >
-            GitHub
-            <ExternalLink size={11} />
-          </a>
-        </div>
+    <div className="space-y-6">
+      {/* System stats grid */}
+      <div className="grid grid-cols-2 gap-4">
+        <Card className="p-4">
+          <div className="text-xs text-[hsl(var(--text-tertiary))] mb-1">Last Deploy</div>
+          <div className="text-sm font-medium text-[hsl(var(--text-primary))]">Not tracked yet</div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-xs text-[hsl(var(--text-tertiary))] mb-1">System Uptime</div>
+          <div className="text-sm font-medium text-[hsl(var(--text-primary))]">{formatDistanceToNow(APP_START_TIME)}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-xs text-[hsl(var(--text-tertiary))] mb-1">Supabase Tables</div>
+          <div className="text-sm font-medium text-[hsl(var(--text-primary))]">{isSupabaseConfigured ? '8 tables' : 'Not connected'}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-xs text-[hsl(var(--text-tertiary))] mb-1">API Usage This Month</div>
+          <div className="text-sm font-medium text-[hsl(var(--text-primary))]">Not tracked yet</div>
+        </Card>
       </div>
-    </Card>
+
+      {/* Existing system info */}
+      <Card className="p-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between">
+            <span className="text-body">Application</span>
+            <span className="text-body font-medium text-[hsl(var(--text-primary))]">Forge Console v2</span>
+          </div>
+          <div className="border-t border-[hsl(var(--border-subtle))]" />
+          <div className="flex justify-between">
+            <span className="text-body">Version</span>
+            <span className="text-body font-medium text-[hsl(var(--text-primary))]">v2.0</span>
+          </div>
+          <div className="border-t border-[hsl(var(--border-subtle))]" />
+          <div className="flex justify-between">
+            <span className="text-body">Environment</span>
+            <Badge variant={import.meta.env.PROD ? 'success' : 'neutral'}>
+              {import.meta.env.PROD ? 'Production' : 'Development'}
+            </Badge>
+          </div>
+          <div className="border-t border-[hsl(var(--border-subtle))]" />
+          <div className="flex justify-between">
+            <span className="text-body">Organization</span>
+            <span className="text-body font-medium text-[hsl(var(--text-primary))]">IAC Solutions</span>
+          </div>
+          <div className="border-t border-[hsl(var(--border-subtle))]" />
+          <div className="flex justify-between">
+            <span className="text-body">Stack</span>
+            <span className="text-body font-medium text-[hsl(var(--text-primary))]">React + TypeScript + Supabase + Cloudflare Pages</span>
+          </div>
+          <div className="border-t border-[hsl(var(--border-subtle))]" />
+          <div className="flex justify-between">
+            <span className="text-body">Data Mode</span>
+            <Badge variant={isSupabaseConfigured ? 'success' : 'warning'}>
+              {isSupabaseConfigured ? 'Live (Supabase)' : 'Mock Data'}
+            </Badge>
+          </div>
+          <div className="border-t border-[hsl(var(--border-subtle))]" />
+          <div className="flex justify-between items-center">
+            <span className="text-body">Repository</span>
+            <a
+              href="https://github.com/lucasoliver/forge-console-v2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[13px] font-medium text-[hsl(var(--accent-coral))] no-underline flex items-center gap-1"
+            >
+              GitHub
+              <ExternalLink size={11} />
+            </a>
+          </div>
+        </div>
+      </Card>
+
+      <div className="text-xs text-[hsl(var(--text-tertiary))]">
+        Build: {import.meta.env.MODE} | React {React.version} | Vite
+      </div>
+    </div>
   )
 }
 
