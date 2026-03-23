@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   Calendar,
   List,
@@ -10,9 +10,6 @@ import {
   Layers,
   Inbox,
   Plus,
-  Check,
-  XCircle,
-  MessageSquare,
   Linkedin,
   BookOpen,
   FileText,
@@ -48,6 +45,7 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import { useContentReviews, useUpdateContentStatus } from '@/hooks/useContentReviews'
+import { ContentReviewModal } from '@/components/pipeline/ContentReviewModal'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview, ContentStatus } from '@/types/database'
 
@@ -95,165 +93,6 @@ function getItemDate(item: ContentReview): Date | null {
 function isItemToday(item: ContentReview): boolean {
   const d = getItemDate(item)
   return d ? isToday(d) : false
-}
-
-// ----- Detail Modal -----
-function ContentDetailDialog({
-  item,
-  open,
-  onOpenChange,
-}: {
-  item: ContentReview | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) {
-  const updateStatus = useUpdateContentStatus()
-  const [feedback, setFeedback] = useState('')
-  const [showReject, setShowReject] = useState(false)
-
-  if (!item) return null
-
-  const PlatformIcon = item.platforms[0] ? PLATFORM_ICONS[item.platforms[0]] ?? FileText : FileText
-
-  const handleApprove = () => {
-    updateStatus.mutate({ id: item.id, status: 'approved' })
-    onOpenChange(false)
-  }
-
-  const handleReject = () => {
-    if (!feedback.trim()) return
-    updateStatus.mutate({ id: item.id, status: 'rejected', feedback: feedback.trim() })
-    setFeedback('')
-    setShowReject(false)
-    onOpenChange(false)
-  }
-
-  const handleResubmit = () => {
-    updateStatus.mutate({ id: item.id, status: 'pending' })
-    onOpenChange(false)
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[680px]">
-        <DialogHeader>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--accent-coral))]">
-              Week {item.week_number} &middot; {item.day_label}
-            </span>
-            <StatusBadge status={item.status} />
-          </div>
-          <DialogTitle className="text-lg font-semibold text-[hsl(var(--text-primary))]">
-            {item.post_title}
-          </DialogTitle>
-          <DialogDescription className="sr-only">Content detail for {item.post_title}</DialogDescription>
-        </DialogHeader>
-
-        <div className="flex flex-col gap-5">
-          {/* Caption */}
-          {item.caption && (
-            <div>
-              <span className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Caption</span>
-              <div className="min-h-[120px] rounded-md border border-[hsl(var(--border-subtle))] bg-[hsl(var(--bg-elevated))] px-3 py-2 text-sm text-[hsl(var(--text-primary))] leading-relaxed whitespace-pre-wrap">
-                {item.caption}
-              </div>
-            </div>
-          )}
-
-          {/* Meta row */}
-          <div className="grid grid-cols-4 gap-3 rounded-md bg-[hsl(var(--bg-elevated))] p-3.5">
-            <div>
-              <span className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1">Platform</span>
-              <div className="flex items-center gap-1.5">
-                <PlatformIcon size={14} className="text-[hsl(var(--text-secondary))]" />
-                <span className="text-sm font-medium text-[hsl(var(--text-primary))] capitalize">
-                  {item.platforms.join(', ')}
-                </span>
-              </div>
-            </div>
-            <div>
-              <span className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1">Slides</span>
-              <SlideInfo slideCount={item.slide_count} />
-            </div>
-            <div>
-              <span className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1">Revision</span>
-              <span className="text-sm font-medium text-[hsl(var(--text-primary))]">{item.revision}</span>
-            </div>
-            <div>
-              <span className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1">Scheduled</span>
-              <span className="text-sm font-medium text-[hsl(var(--text-primary))]">{item.scheduled_date ? formatShortDate(item.scheduled_date) : 'Not set'}</span>
-            </div>
-          </div>
-
-          {/* Feedback if rejected */}
-          {item.feedback && (
-            <div className="rounded-md bg-[hsl(0_80%_97%)] border border-[hsl(var(--status-error)/0.3)] p-3.5">
-              <span className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--status-error))] mb-1.5">Feedback</span>
-              <p className="text-sm text-[hsl(var(--text-primary))] leading-relaxed m-0">{item.feedback}</p>
-            </div>
-          )}
-
-          {/* Rejection feedback input */}
-          <AnimatePresence>
-            {showReject && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="flex flex-col gap-2.5">
-                  <div className="flex items-center gap-1.5">
-                    <MessageSquare size={14} className="text-[hsl(var(--text-tertiary))]" />
-                    <span className="text-sm font-medium text-[hsl(var(--text-primary))]">Rejection feedback</span>
-                  </div>
-                  <textarea
-                    className="w-full min-h-[80px] resize-y rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
-                    placeholder="What needs to change?"
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                  />
-                  <div className="flex gap-2">
-                    <Button variant="destructive" onClick={handleReject} disabled={!feedback.trim()}>
-                      Confirm Reject
-                    </Button>
-                    <Button variant="outline" onClick={() => setShowReject(false)}>Cancel</Button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Actions */}
-        {!showReject && (
-          <DialogFooter className="gap-2">
-            {(item.status === 'pending' || item.status === 'draft') && (
-              <>
-                <Button onClick={handleApprove} className="gap-1.5">
-                  <Check size={14} />
-                  Approve
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setShowReject(true)}
-                  className="text-[hsl(var(--status-error))] gap-1.5"
-                >
-                  <XCircle size={14} />
-                  Reject
-                </Button>
-              </>
-            )}
-            {item.status === 'rejected' && (
-              <Button onClick={handleResubmit} className="bg-[hsl(var(--accent-coral))] hover:bg-[hsl(var(--accent-coral-hover))] text-white gap-1.5">
-                Re-submit
-              </Button>
-            )}
-          </DialogFooter>
-        )}
-      </DialogContent>
-    </Dialog>
-  )
 }
 
 // ----- Add Content Modal -----
@@ -597,7 +436,7 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
         </div>
 
         {/* Day cells */}
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 gap-px w-full">
           {calendarDays.map((day) => {
             const dateKey = format(day, 'yyyy-MM-dd')
             const dayItems = itemsByDate.get(dateKey) ?? []
@@ -607,13 +446,13 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
             return (
               <div
                 key={dateKey}
-                className={`min-h-[140px] border border-[hsl(var(--border-subtle))] p-2 ${
+                className={`min-h-[80px] md:min-h-[100px] lg:min-h-[120px] border border-[hsl(var(--border-subtle))] p-1 md:p-2 overflow-hidden ${
                   !inMonth ? 'bg-[hsl(var(--bg-elevated)/0.5)]' : 'bg-[hsl(var(--bg-surface))]'
                 } ${
                   todayCell ? 'border-t-2 border-t-[hsl(var(--accent-coral))] bg-[hsl(var(--accent-coral)/0.04)]' : ''
                 }`}
               >
-                <span className={`text-sm font-semibold ${
+                <span className={`text-xs sm:text-sm font-semibold ${
                   !inMonth
                     ? 'text-[hsl(var(--text-tertiary)/0.4)]'
                     : todayCell
@@ -627,10 +466,10 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
                     <button
                       key={item.id}
                       onClick={() => onSelect(item)}
-                      className="flex items-center gap-1 rounded px-1.5 py-0.5 text-left transition-colors hover:bg-[hsl(var(--bg-elevated))] w-full"
+                      className="flex items-center gap-1 rounded px-1 py-0.5 text-left transition-colors hover:bg-[hsl(var(--bg-elevated))] w-full"
                     >
-                      <StatusBadge status={item.status} className="text-[9px] px-1.5 py-0" />
-                      <span className="text-xs text-[hsl(var(--text-primary))] truncate">
+                      <StatusBadge status={item.status} className="text-[9px] px-1.5 py-0 shrink-0" />
+                      <span className="text-[10px] sm:text-xs text-[hsl(var(--text-primary))] truncate">
                         {item.post_title}
                       </span>
                     </button>
@@ -715,12 +554,25 @@ export function ContentPipeline() {
   const [detailOpen, setDetailOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
   const { data: reviews, isLoading } = useContentReviews()
+  const updateStatus = useUpdateContentStatus()
 
   const items = reviews ?? []
 
   const handleSelect = (item: ContentReview) => {
     setSelected(item)
     setDetailOpen(true)
+  }
+
+  const handleApprove = (id: string) => {
+    updateStatus.mutate({ id, status: 'approved' })
+    setDetailOpen(false)
+    setSelected(null)
+  }
+
+  const handleReject = (id: string, reason: string) => {
+    updateStatus.mutate({ id, status: 'rejected', feedback: reason })
+    setDetailOpen(false)
+    setSelected(null)
   }
 
   return (
@@ -783,13 +635,15 @@ export function ContentPipeline() {
       )}
 
       {/* Detail Modal */}
-      <ContentDetailDialog
+      <ContentReviewModal
         item={selected}
         open={detailOpen}
         onOpenChange={(open) => {
           setDetailOpen(open)
           if (!open) setSelected(null)
         }}
+        onApprove={handleApprove}
+        onReject={handleReject}
       />
 
       {/* Add Content Modal */}
