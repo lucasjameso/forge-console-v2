@@ -146,6 +146,7 @@ Plans:
 **Depends on**: Phase 4
 **Requirements**: CONT-01 through CONT-12, CSUG-01 through CSUG-12
 **Feedback Spec**: `.planning/feedback/PHASE-06-CONTENT-PIPELINE-SPEC.md` (12 suggestions)
+**Plans:** 5 plans
 **Success Criteria** (what must be TRUE):
   1. Calendar navigation allows browsing months forward/back with slide animations and a "Today" button
   2. Content items can be dragged between days in month view to reschedule (updates Supabase, shows toast)
@@ -154,8 +155,11 @@ Plans:
   5. Analytics strip shows monthly summary, posting cadence indicator, and gap alerts
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md -- Data foundation: Supabase tables, TypeScript types, hooks scaffold
+- [ ] 06-02-PLAN.md -- Drag-and-drop Kanban + Month views, bulk selection with floating action bar
+- [ ] 06-03-PLAN.md -- Modal depth: caption editing, AI refinement, n8n webhooks, revision history, performance
+- [ ] 06-04-PLAN.md -- Templates tab with weekly arc generation, analytics strip
+- [ ] 06-05-PLAN.md -- Integration polish: calendar animations, top performer badge, visual QA
 
 ### Phase 7: Social Media + Activity Log
 **Goal**: Transform both pages from static directories into dynamic dashboards with setup wizards, growth tracking, session grouping, and real-time activity updates
@@ -224,7 +228,7 @@ Note: Phases 5, 6, 7, 8 all depend on Phase 4.1 but not on each other. Phase 9 d
 | 4. Visual Polish (All Pages) | 6/6 | Complete | 2026-03-22 |
 | 4.1 UAT Remediation | 0/8 | Not started | - |
 | 5. Brain Dump Depth | 0/0 | Not started | - |
-| 6. Content Pipeline Depth | 0/0 | Not started | - |
+| 6. Content Pipeline Depth | 0/5 | Not started | - |
 | 7. Social Media + Activity Log | 0/0 | Not started | - |
 | 8. Dashboard + Project Detail Power | 0/0 | Not started | - |
 | 9. Settings + Mobile + Deployment | 0/0 | Not started | - |
