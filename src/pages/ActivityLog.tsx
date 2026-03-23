@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -12,7 +13,7 @@ import {
   ChevronDown,
   X,
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { format, subDays, startOfDay, isToday, isYesterday, isAfter } from 'date-fns'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,6 +21,13 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ProjectBadge } from '@/components/ui/ProjectBadge'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Tooltip,
   TooltipContent,
@@ -59,6 +67,14 @@ const TOOL_ICONS: Record<string, React.ElementType> = {
   Cowork: Users,
 }
 
+const datePresets = [
+  { label: 'Today', value: 'today' },
+  { label: 'Yesterday', value: 'yesterday' },
+  { label: 'Last 7d', value: '7d' },
+  { label: 'Last 30d', value: '30d' },
+  { label: 'All', value: 'all' },
+]
+
 // ---------- helpers ----------
 
 type EntryTier = 'major' | 'standard' | 'background'
@@ -88,17 +104,36 @@ function boldFirstPhrase(text: string): { bold: string; rest: string } {
   return { bold: text, rest: '' }
 }
 
+function filterByDateRange(entries: ActivityEntry[], range: string): ActivityEntry[] {
+  if (range === 'all') return entries
+  return entries.filter(entry => {
+    const entryDate = new Date(entry.created_at)
+    switch (range) {
+      case 'today': return isToday(entryDate)
+      case 'yesterday': return isYesterday(entryDate)
+      case '7d': return isAfter(entryDate, subDays(startOfDay(new Date()), 7))
+      case '30d': return isAfter(entryDate, subDays(startOfDay(new Date()), 30))
+      default: return true
+    }
+  })
+}
+
 // ---------- component ----------
 
 export function ActivityLog() {
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [projectFilter, setProjectFilter] = useState('all')
   const [typeFilter, setTypeFilter] = useState<SessionType | 'all'>('all')
+  const [dateRange, setDateRange] = useState<string>('all')
   const [page, setPage] = useState(1)
-  const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set())
+  const [expandedEntries] = useState<Set<string>>(new Set())
   const [showLogForm, setShowLogForm] = useState(false)
   const [logSummary, setLogSummary] = useState('')
   const [logProject, setLogProject] = useState('')
+  const [logTool, setLogTool] = useState('manual')
+  const [logEventType, setLogEventType] = useState('note')
+  const [logLinkUrl, setLogLinkUrl] = useState('')
 
   const debouncedSearch = useDebounce(searchQuery, 300)
 
@@ -108,15 +143,17 @@ export function ActivityLog() {
     sessionType: typeFilter !== 'all' ? (typeFilter as SessionType) : undefined,
   })
 
-  // --- client-side search filter ---
+  // --- client-side search + date filter ---
   const filteredEntries = useMemo(() => {
     if (!rawEntries) return []
-    if (!debouncedSearch) return rawEntries
-    const q = debouncedSearch.toLowerCase()
-    return rawEntries.filter((e) =>
-      e.summary.toLowerCase().includes(q),
-    )
-  }, [rawEntries, debouncedSearch])
+    let results = rawEntries
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase()
+      results = results.filter((e) => e.summary.toLowerCase().includes(q))
+    }
+    results = filterByDateRange(results, dateRange)
+    return results
+  }, [rawEntries, debouncedSearch, dateRange])
 
   // --- pagination ---
   const PAGE_SIZE = 20
@@ -185,13 +222,20 @@ export function ActivityLog() {
     return counts
   }, [rawEntries])
 
-  const toggleExpanded = (id: string) => {
-    setExpandedEntries((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+  const handleEntryClick = (entry: ActivityEntry) => {
+    if (entry.project) {
+      navigate(`/projects/${entry.project}`)
+    }
+  }
+
+  const handleLogSubmit = () => {
+    // In a real implementation, this would call a mutation
+    setShowLogForm(false)
+    setLogSummary('')
+    setLogProject('')
+    setLogTool('manual')
+    setLogEventType('note')
+    setLogLinkUrl('')
   }
 
   return (
@@ -303,6 +347,37 @@ export function ActivityLog() {
                   ))}
                 </div>
               </div>
+
+              {/* Date range presets */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  {datePresets.map(preset => (
+                    <button
+                      key={preset.value}
+                      onClick={() => { setDateRange(preset.value); setPage(1) }}
+                      className={cn(
+                        'px-2.5 py-1 text-xs rounded-md transition-colors',
+                        dateRange === preset.value
+                          ? 'bg-[hsl(var(--accent-coral))] text-white'
+                          : 'bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] hover:bg-[hsl(var(--bg-active))]'
+                      )}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Divider */}
+                <div className="w-px h-4 bg-[hsl(var(--border-subtle))]" />
+
+                {/* Timeline dot legend */}
+                <div className="flex items-center gap-3 text-xs text-[hsl(var(--text-tertiary))]">
+                  <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[hsl(var(--accent-coral))]" />Claude Code</span>
+                  <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[hsl(var(--status-success))]" />n8n</span>
+                  <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[hsl(var(--status-warning))]" />Manual</span>
+                  <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[hsl(var(--text-tertiary))]" />System</span>
+                </div>
+              </div>
             </div>
           </Card>
 
@@ -334,6 +409,30 @@ export function ActivityLog() {
                           </option>
                         ))}
                       </select>
+                      <Select value={logTool} onValueChange={setLogTool}>
+                        <SelectTrigger className="w-[140px] h-8 text-sm">
+                          <SelectValue placeholder="Tool" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="claude_code">Claude Code</SelectItem>
+                          <SelectItem value="n8n">n8n</SelectItem>
+                          <SelectItem value="slack">Slack</SelectItem>
+                          <SelectItem value="manual">Manual</SelectItem>
+                          <SelectItem value="system">System</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={logEventType} onValueChange={setLogEventType}>
+                        <SelectTrigger className="w-[140px] h-8 text-sm">
+                          <SelectValue placeholder="Event Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="milestone">Milestone</SelectItem>
+                          <SelectItem value="commit">Commit</SelectItem>
+                          <SelectItem value="approval">Approval</SelectItem>
+                          <SelectItem value="note">Note</SelectItem>
+                          <SelectItem value="health_check">Health Check</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <Input
                         placeholder="Activity summary..."
                         value={logSummary}
@@ -341,14 +440,18 @@ export function ActivityLog() {
                         className="flex-1 min-w-[240px] h-8 text-sm"
                       />
                     </div>
+                    <div className="flex gap-3 items-center">
+                      <Input
+                        placeholder="Link URL (optional)"
+                        value={logLinkUrl}
+                        onChange={(e) => setLogLinkUrl(e.target.value)}
+                        className="flex-1 h-8 text-sm"
+                      />
+                    </div>
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        onClick={() => {
-                          setShowLogForm(false)
-                          setLogSummary('')
-                          setLogProject('')
-                        }}
+                        onClick={handleLogSubmit}
                         disabled={!logSummary.trim()}
                       >
                         Save
@@ -360,6 +463,9 @@ export function ActivityLog() {
                           setShowLogForm(false)
                           setLogSummary('')
                           setLogProject('')
+                          setLogTool('manual')
+                          setLogEventType('note')
+                          setLogLinkUrl('')
                         }}
                       >
                         Cancel
@@ -382,11 +488,11 @@ export function ActivityLog() {
                   {filteredEntries.length} activities across all projects
                 </span>
               </div>
-              <div className="flex items-end gap-1 h-[60px]">
+              <div className="flex items-end gap-1 min-h-[140px]">
                 {densityData.map((day) => (
                   <Tooltip key={day.label + day.date.toISOString()}>
                     <TooltipTrigger asChild>
-                      <div className="flex-1 flex flex-col-reverse h-full cursor-default">
+                      <div className="flex-1 flex flex-col-reverse h-full min-h-[140px] cursor-default">
                         {day.total === 0 ? (
                           <div className="w-full h-[2px] rounded-full bg-[hsl(var(--border-subtle))]" />
                         ) : (
@@ -430,6 +536,13 @@ export function ActivityLog() {
                     {day.label}
                   </div>
                 ))}
+              </div>
+              {/* Project color legend */}
+              <div className="flex items-center gap-4 mt-2 text-xs text-[hsl(var(--text-tertiary))]">
+                <span className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--accent-coral))]" />Forge</span>
+                <span className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--status-info))]" />Ridgeline</span>
+                <span className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--status-success))]" />CLARITY</span>
+                <span className="flex items-center gap-1"><div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--text-tertiary))]" />System</span>
               </div>
             </Card>
           )}
@@ -537,8 +650,8 @@ export function ActivityLog() {
                           {/* Entry content */}
                           {tier === 'major' ? (
                             <div
-                              className="flex-1 p-4 rounded-lg border border-[hsl(var(--border-subtle))] shadow-sm bg-[hsl(var(--bg-surface))] cursor-pointer"
-                              onClick={() => toggleExpanded(entry.id)}
+                              className="flex-1 p-4 rounded-lg border border-[hsl(var(--border-subtle))] shadow-sm bg-[hsl(var(--bg-surface))] cursor-pointer hover:bg-[hsl(var(--bg-elevated))] transition-colors"
+                              onClick={() => handleEntryClick(entry)}
                             >
                               <div className="flex items-center justify-between gap-3">
                                 <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -579,26 +692,27 @@ export function ActivityLog() {
                             </div>
                           ) : tier === 'background' ? (
                             <div
-                              className="flex-1 py-1.5 opacity-60 flex items-center justify-between gap-3 cursor-pointer"
-                              onClick={() => toggleExpanded(entry.id)}
+                              className="flex-1 py-1.5 opacity-60 grid grid-cols-[auto_80px_1fr_80px] items-center gap-3 cursor-pointer hover:bg-[hsl(var(--bg-elevated))] transition-colors rounded px-3"
+                              onClick={() => handleEntryClick(entry)}
                             >
-                              <div className="flex items-center gap-2 min-w-0 flex-1">
-                                <Badge className="rounded-md bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] text-xs px-2 py-0.5 border-transparent">
-                                  <ToolIcon className="w-3 h-3 mr-1" />
-                                  {entry.tool ?? entry.session_type}
-                                </Badge>
-                                <p
-                                  className={cn(
-                                    'text-[13px] text-[hsl(var(--text-tertiary))]',
-                                    !isExpanded && 'truncate',
-                                  )}
-                                >
-                                  {entry.summary}
-                                </p>
-                              </div>
+                              <Badge className="rounded-md bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] text-xs px-2 py-0.5 border-transparent">
+                                <ToolIcon className="w-3 h-3 mr-1" />
+                                {entry.tool ?? entry.session_type}
+                              </Badge>
+                              <span className="text-xs text-[hsl(var(--text-tertiary))] truncate">
+                                {entry.project ?? ''}
+                              </span>
+                              <p
+                                className={cn(
+                                  'text-[13px] text-[hsl(var(--text-tertiary))]',
+                                  !isExpanded && 'truncate',
+                                )}
+                              >
+                                {entry.summary}
+                              </p>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <span className="text-[11px] text-[hsl(var(--text-tertiary))] flex-shrink-0">
+                                  <span className="text-[11px] text-[hsl(var(--text-tertiary))] justify-self-end flex-shrink-0">
                                     {formatTime(entry.created_at)}
                                   </span>
                                 </TooltipTrigger>
@@ -613,47 +727,47 @@ export function ActivityLog() {
                           ) : (
                             /* standard tier */
                             <div
-                              className="flex-1 p-3 rounded-lg bg-[hsl(var(--bg-surface))] cursor-pointer"
-                              onClick={() => toggleExpanded(entry.id)}
+                              className="flex-1 grid grid-cols-[auto_80px_80px_1fr_100px] items-center gap-3 py-2 px-3 rounded-lg bg-[hsl(var(--bg-surface))] cursor-pointer hover:bg-[hsl(var(--bg-elevated))] transition-colors"
+                              onClick={() => handleEntryClick(entry)}
                             >
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-2 min-w-0 flex-1">
-                                  {/* Tool badge */}
-                                  <Badge className="rounded-md bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] text-xs px-2 py-0.5 border-transparent">
-                                    <ToolIcon className="w-3 h-3 mr-1" />
-                                    {entry.tool ?? entry.session_type}
-                                  </Badge>
-                                  {entry.project && (
-                                    <ProjectBadge project={entry.project}>
-                                      {entry.project}
-                                    </ProjectBadge>
+                              {/* Tool badge */}
+                              <Badge className="rounded-md bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] text-xs px-2 py-0.5 border-transparent">
+                                <ToolIcon className="w-3 h-3 mr-1" />
+                                {entry.tool ?? entry.session_type}
+                              </Badge>
+                              {entry.project ? (
+                                <ProjectBadge project={entry.project}>
+                                  {entry.project}
+                                </ProjectBadge>
+                              ) : (
+                                <span />
+                              )}
+                              <span className="text-xs text-[hsl(var(--text-tertiary))] truncate justify-self-start">
+                                {entry.session_type}
+                              </span>
+                              <p
+                                className={cn(
+                                  'text-[14px] text-[hsl(var(--text-primary))] truncate',
+                                )}
+                              >
+                                <span className="font-semibold">
+                                  {bold}
+                                </span>
+                                {rest && ` ${rest}`}
+                              </p>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-xs text-[hsl(var(--text-tertiary))] justify-self-end flex-shrink-0">
+                                    {formatRelativeTime(entry.created_at)}
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {format(
+                                    new Date(entry.created_at),
+                                    'EEEE, MMMM d, yyyy h:mm a',
                                   )}
-                                  <p
-                                    className={cn(
-                                      'text-[14px] text-[hsl(var(--text-primary))]',
-                                      !isExpanded && 'truncate',
-                                    )}
-                                  >
-                                    <span className="font-semibold">
-                                      {bold}
-                                    </span>
-                                    {rest && ` ${rest}`}
-                                  </p>
-                                </div>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="text-xs text-[hsl(var(--text-tertiary))] flex-shrink-0">
-                                      {formatRelativeTime(entry.created_at)}
-                                    </span>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {format(
-                                      new Date(entry.created_at),
-                                      'EEEE, MMMM d, yyyy h:mm a',
-                                    )}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
+                                </TooltipContent>
+                              </Tooltip>
                             </div>
                           )}
                         </motion.div>
