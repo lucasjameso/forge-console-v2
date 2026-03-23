@@ -44,20 +44,20 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 #### Dashboard Fixes (Phase 4)
 
-- [ ] **DFIX-01**: Priority badges use correct colors (red=high, amber=medium, green=low), Meridian/Atlas set to medium
+- [x] **DFIX-01**: Priority badges use correct colors (red=high, amber=medium, green=low), Meridian/Atlas set to medium
 - [ ] **DFIX-02**: Progress bars color-coded by health (green=on track, amber=behind, red=critical)
 - [ ] **DFIX-03**: Content calendar strip shows intelligent week selection (current if has content, else next)
 - [ ] **DFIX-04**: "View all" on action items expands inline instead of navigating to Activity Log
-- [ ] **DFIX-05**: Stat tiles have colored recency borders matching project cards
+- [x] **DFIX-05**: Stat tiles have colored recency borders matching project cards
 - [ ] **DFIX-06**: CLARITY countdown has threshold-based urgency treatment (amber 14-30d, red <14d)
-- [ ] **DFIX-07**: Recency colors verified against activity_log (green <48h, amber 3-5d, red 5d+)
+- [x] **DFIX-07**: Recency colors verified against activity_log (green <48h, amber 3-5d, red 5d+)
 - [ ] **DFIX-08**: Greeting subtitle is dynamic and contextual from real data
 
 #### Brain Dump Fixes (Phase 4)
 
 - [ ] **BFIX-01**: Project selector pill row on capture input with persistent selection
 - [ ] **BFIX-02**: Submit button larger with visible keyboard shortcut hint
-- [ ] **BFIX-03**: History entries have project-colored left borders and weighted status badges
+- [x] **BFIX-03**: History entries have project-colored left borders and weighted status badges
 - [ ] **BFIX-04**: Expanded entries show parsed output with proper formatting and action buttons
 - [ ] **BFIX-05**: Status progression visible (Captured -> Parsed -> Tasks Created -> Actioned)
 - [ ] **BFIX-06**: Textarea starts at 120px and auto-grows, placeholder shortened
@@ -74,14 +74,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **CFIX-06**: Kanban empty columns show proper empty state, max-height with scroll
 - [ ] **CFIX-07**: Kanban cards have metadata (status badge, date, platform icon, warm styling)
 - [ ] **CFIX-08**: Content detail modal 680px+ with editable caption and action buttons
-- [ ] **CFIX-09**: Status badges standardized across all views (size, padding, colors)
+- [x] **CFIX-09**: Status badges standardized across all views (size, padding, colors)
 - [ ] **CFIX-10**: Today indicator present in all 4 views
 - [ ] **CFIX-11**: "Text post" shown instead of "0 slides" for non-carousel items
 - [ ] **CFIX-12**: "Add Content" button in page header opens creation modal
 
 #### Social Media Fixes (Phase 4)
 
-- [ ] **SFIX-01**: Real platform brand icons (react-icons) replacing all generic Lucide icons
+- [x] **SFIX-01**: Real platform brand icons (react-icons) replacing all generic Lucide icons
 - [ ] **SFIX-02**: Platform cards sized by importance (active=larger, setup=compact 3-per-row)
 - [ ] **SFIX-03**: "Setup Needed" banner replaced with badge + amber left border
 - [ ] **SFIX-04**: Unset platforms show only icon + name + handle + badge (no zero counts)
@@ -96,7 +96,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 #### Settings Fixes (Phase 4)
 
-- [ ] **STFIX-01**: Integration cards use real brand logos
+- [x] **STFIX-01**: Integration cards use real brand logos
 - [ ] **STFIX-02**: Feedback log renders markdown or strips it with "Read more" toggle
 - [ ] **STFIX-03**: Feedback entries compact by default (8-10 per screen), expandable
 - [ ] **STFIX-04**: Integration cards show human-readable labels (not env var names)
@@ -112,15 +112,15 @@ Requirements for this milestone. Each maps to roadmap phases.
 #### Activity Log Fixes (Phase 4)
 
 - [ ] **AFIX-01**: Entries grouped by day with sticky headers and count per day
-- [ ] **AFIX-02**: Timeline dots color-coded by tool type, significant events get larger dots
+- [x] **AFIX-02**: Timeline dots color-coded by tool type, significant events get larger dots
 - [ ] **AFIX-03**: Three-tier visual weight (major/standard/background entries)
-- [ ] **AFIX-04**: Filter chips show clear active/inactive state with count badges
-- [ ] **AFIX-05**: Real-time search with debounce, result count, highlighted matches
+- [x] **AFIX-04**: Filter chips show clear active/inactive state with count badges
+- [x] **AFIX-05**: Real-time search with debounce, result count, highlighted matches
 - [ ] **AFIX-06**: Timestamps standardized (relative <24h, time-only within day groups)
 - [ ] **AFIX-07**: Pagination/infinite scroll (20 entries per batch) with total count
-- [ ] **AFIX-08**: Project badges use consistent per-project colors across app
+- [x] **AFIX-08**: Project badges use consistent per-project colors across app
 - [ ] **AFIX-09**: Activity density heatmap/bar chart at top (14-day, stacked by project)
-- [ ] **AFIX-10**: Tool badges visually distinct from project badges (different shape + icon)
+- [x] **AFIX-10**: Tool badges visually distinct from project badges (different shape + icon)
 - [ ] **AFIX-11**: Entry text truncated to 1 line, bold first phrase, expand on click
 - [ ] **AFIX-12**: "Log activity" button for manual entries
 

@@ -91,7 +91,7 @@ Plans:
   7. All pages use consistent project badge colors, recency indicators, and status badge styling
 
 Plans:
-- [ ] 04-01-PLAN.md -- Shared foundation: project colors, brand icons, badge components, utilities
+- [x] 04-01-PLAN.md -- Shared foundation: project colors, brand icons, badge components, utilities
 - [ ] 04-02-PLAN.md -- Dashboard fixes (DFIX-01-08) + Projects/ProjectDetail polish (VISL-05, VISL-06)
 - [ ] 04-03-PLAN.md -- Brain Dump fixes (BFIX-01-08) + page polish (VISL-07)
 - [ ] 04-04-PLAN.md -- Content Pipeline fixes (CFIX-01-12) + page polish (VISL-08)
