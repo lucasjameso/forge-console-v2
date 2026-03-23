@@ -36,7 +36,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [ ] **VISL-05**: Projects page polished with proper spacing, card breathing room, and visual refinement
 - [ ] **VISL-06**: ProjectDetail page polished with command-center depth and proper information density
-- [ ] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
+- [x] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
 - [ ] **VISL-08**: ContentPipeline page polished across all 4 view modes
 - [ ] **VISL-09**: SocialMedia page polished with proper card layout and spacing
 - [ ] **VISL-10**: ActivityLog page polished with proper timeline spacing and filter layout
@@ -55,14 +55,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 #### Brain Dump Fixes (Phase 4)
 
-- [ ] **BFIX-01**: Project selector pill row on capture input with persistent selection
-- [ ] **BFIX-02**: Submit button larger with visible keyboard shortcut hint
+- [x] **BFIX-01**: Project selector pill row on capture input with persistent selection
+- [x] **BFIX-02**: Submit button larger with visible keyboard shortcut hint
 - [x] **BFIX-03**: History entries have project-colored left borders and weighted status badges
-- [ ] **BFIX-04**: Expanded entries show parsed output with proper formatting and action buttons
-- [ ] **BFIX-05**: Status progression visible (Captured -> Parsed -> Tasks Created -> Actioned)
-- [ ] **BFIX-06**: Textarea starts at 120px and auto-grows, placeholder shortened
-- [ ] **BFIX-07**: Skeleton shimmer with "Parsing..." label during AI processing
-- [ ] **BFIX-08**: History grouped by day with day headers and actual timestamps
+- [x] **BFIX-04**: Expanded entries show parsed output with proper formatting and action buttons
+- [x] **BFIX-05**: Status progression visible (Captured -> Parsed -> Tasks Created -> Actioned)
+- [x] **BFIX-06**: Textarea starts at 120px and auto-grows, placeholder shortened
+- [x] **BFIX-07**: Skeleton shimmer with "Parsing..." label during AI processing
+- [x] **BFIX-08**: History grouped by day with day headers and actual timestamps
 
 #### Content Pipeline Fixes (Phase 4)
 
