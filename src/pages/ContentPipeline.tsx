@@ -55,7 +55,7 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
 import { toast } from 'sonner'
-import { useContentReviews, useUpdateContentStatus } from '@/hooks/useContentReviews'
+import { useContentReviews, useUpdateContentStatus, useCreateContent } from '@/hooks/useContentReviews'
 import { ContentReviewModal } from '@/components/pipeline/ContentReviewModal'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview, ContentStatus, ContentType } from '@/types/database'
@@ -167,6 +167,7 @@ function AddContentDialog({
   onOpenChange: (open: boolean) => void
 }) {
   const [newContent, setNewContent] = useState<NewContentState>(initialNewContent)
+  const createContent = useCreateContent()
 
   const dayOptions = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -184,9 +185,22 @@ function AddContentDialog({
   }
 
   const handleCreate = () => {
-    toast.success('Content created as draft', { description: newContent.title })
-    setNewContent(initialNewContent)
-    onOpenChange(false)
+    createContent.mutate({
+      post_title: newContent.title,
+      caption: newContent.body || null,
+      content_type: newContent.content_type,
+      scheduled_date: newContent.scheduledDate || null,
+      day_label: newContent.dayLabel,
+      week_number: weekNum,
+      platforms: newContent.platforms,
+      series: newContent.series || null,
+      notes: newContent.notes || null,
+    }, {
+      onSuccess: () => {
+        setNewContent(initialNewContent)
+        onOpenChange(false)
+      },
+    })
   }
 
   return (
@@ -323,7 +337,7 @@ function AddContentDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button
             onClick={handleCreate}
-            disabled={!newContent.title.trim()}
+            disabled={!newContent.title.trim() || createContent.isPending}
             className="bg-[hsl(var(--accent-coral))] hover:bg-[hsl(var(--accent-coral-hover))] text-white gap-1.5"
           >
             <Plus size={14} />

@@ -34,7 +34,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useActivityLog } from '@/hooks/useActivityLog'
+import { useActivityLog, useLogActivity } from '@/hooks/useActivityLog'
 import { useProjects } from '@/hooks/useProjects'
 import { useDebounce } from '@/hooks/useDebounce'
 import {
@@ -136,6 +136,7 @@ export function ActivityLog() {
   const [logLinkUrl, setLogLinkUrl] = useState('')
 
   const debouncedSearch = useDebounce(searchQuery, 300)
+  const logActivity = useLogActivity()
 
   const { data: projects } = useProjects()
   const { data: rawEntries, isLoading } = useActivityLog({
@@ -229,13 +230,22 @@ export function ActivityLog() {
   }
 
   const handleLogSubmit = () => {
-    // In a real implementation, this would call a mutation
-    setShowLogForm(false)
-    setLogSummary('')
-    setLogProject('')
-    setLogTool('manual')
-    setLogEventType('note')
-    setLogLinkUrl('')
+    logActivity.mutate({
+      session_type: logEventType as SessionType,
+      project: logProject || null,
+      tool: logTool,
+      summary: logSummary,
+      metadata: logLinkUrl ? { link_url: logLinkUrl } : null,
+    }, {
+      onSuccess: () => {
+        setShowLogForm(false)
+        setLogSummary('')
+        setLogProject('')
+        setLogTool('manual')
+        setLogEventType('note')
+        setLogLinkUrl('')
+      },
+    })
   }
 
   return (
@@ -452,7 +462,7 @@ export function ActivityLog() {
                       <Button
                         size="sm"
                         onClick={handleLogSubmit}
-                        disabled={!logSummary.trim()}
+                        disabled={!logSummary.trim() || logActivity.isPending}
                       >
                         Save
                       </Button>
