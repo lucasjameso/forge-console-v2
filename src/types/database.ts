@@ -41,6 +41,21 @@ export interface Database {
         Insert: Omit<ContentReview, 'id' | 'created_at'>
         Update: Partial<Omit<ContentReview, 'id' | 'created_at'>>
       }
+      content_templates: {
+        Row: ContentTemplate
+        Insert: Omit<ContentTemplate, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<ContentTemplate, 'id' | 'created_at'>>
+      }
+      content_versions: {
+        Row: ContentVersion
+        Insert: Omit<ContentVersion, 'id' | 'created_at'>
+        Update: Partial<Omit<ContentVersion, 'id' | 'created_at'>>
+      }
+      content_performance: {
+        Row: ContentPerformance
+        Insert: Omit<ContentPerformance, 'id' | 'recorded_at'>
+        Update: Partial<Omit<ContentPerformance, 'id'>>
+      }
       social_platforms: {
         Row: SocialPlatform
         Insert: Omit<SocialPlatform, 'id' | 'created_at' | 'updated_at'>
@@ -224,6 +239,58 @@ export interface ContentReview {
   created_at: string
   resolved_at: string | null
   posted_at: string | null
+}
+
+export interface ContentTemplate {
+  id: string
+  day_of_week: number // 0=Monday, 6=Sunday
+  title_pattern: string
+  default_caption: string | null
+  content_type: ContentType
+  platform: string
+  target_char_min: number
+  target_char_max: number
+  suggested_slide_count: number
+  series: string | null
+  sort_order: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ContentVersion {
+  id: string
+  content_id: string
+  revision: number
+  caption: string | null
+  change_summary: string | null
+  created_at: string
+}
+
+export interface ContentPerformance {
+  id: string
+  content_id: string
+  impressions: number
+  likes: number
+  comments: number
+  shares: number
+  click_through_rate: number
+  engagement_rate: number
+  recorded_at: string
+}
+
+export interface AiSuggestion {
+  type: 'tighten' | 'strengthen' | 'cut' | 'restructure' | 'cta'
+  description: string
+  original: string
+  revised: string
+}
+
+export interface AiRefinementResult {
+  suggestions: AiSuggestion[]
+  char_count: number
+  in_range: boolean
+  range_note: string
 }
 
 export interface SocialPlatform {

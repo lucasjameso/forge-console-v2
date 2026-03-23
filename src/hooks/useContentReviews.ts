@@ -1,8 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import { mockContentReviews } from '@/data/mock'
 import type { ContentReview, ContentType } from '@/types/database'
+
+// Re-export UseQueryResult for downstream consumers
+export type { UseQueryResult }
 
 export function useContentReviews() {
   return useQuery<ContentReview[]>({
@@ -95,6 +98,62 @@ export function useCreateContent() {
     },
     onError: (error: Error) => {
       toast.error('Failed to create content', { description: error.message })
+    },
+  })
+}
+
+export function useUpdateCaption() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, caption }: { id: string; caption: string }) => {
+      if (!isSupabaseConfigured) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
+        .from('content_reviews')
+        .update({ caption })
+        .eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['content-reviews'] })
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to save caption', { description: error.message })
+    },
+  })
+}
+
+export function useUpdateScheduledDate() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, scheduled_date }: { id: string; scheduled_date: string }) => {
+      if (!isSupabaseConfigured) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
+        .from('content_reviews')
+        .update({ scheduled_date })
+        .eq('id', id)
+      if (error) throw error
+    },
+    onMutate: async ({ id, scheduled_date }) => {
+      await qc.cancelQueries({ queryKey: ['content-reviews'] })
+      const previous = qc.getQueryData<ContentReview[]>(['content-reviews'])
+      qc.setQueryData<ContentReview[]>(['content-reviews'], (old) =>
+        old?.map((item) => (item.id === id ? { ...item, scheduled_date } : item))
+      )
+      return { previous }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        qc.setQueryData(['content-reviews'], context.previous)
+      }
+      toast.error('Failed to reschedule content')
+    },
+    onSuccess: () => {
+      toast.success('Content rescheduled')
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: ['content-reviews'] })
     },
   })
 }
