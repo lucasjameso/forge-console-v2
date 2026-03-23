@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, ChevronDown, ChevronRight, Clock, Plus } from 'lucide-react'
+import { Send, ChevronDown, ChevronRight, Clock, Check, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -30,28 +31,32 @@ function getStatusStage(dump: { status: string; parsed_output: unknown }): Statu
   return 'Captured'
 }
 
-function StatusProgression({ currentStage }: { currentStage: StatusStage }) {
-  const currentIdx = STATUS_STAGES.indexOf(currentStage)
-
+function StepProgress({ stages, currentIndex }: { stages: string[]; currentIndex: number }) {
   return (
-    <div className="flex items-center gap-1.5 mt-2">
-      {STATUS_STAGES.map((stage, idx) => {
-        const isCompleted = idx < currentIdx
-        const isCurrent = idx === currentIdx
-        return (
-          <span
-            key={stage}
-            className={cn(
-              'text-[11px] uppercase font-medium px-2 py-0.5 rounded-full',
-              isCompleted && 'bg-[hsl(var(--status-success-bg))] text-[hsl(var(--status-success))]',
-              isCurrent && 'bg-[hsl(var(--status-info-bg))] text-[hsl(var(--status-info))]',
-              !isCompleted && !isCurrent && 'border border-[hsl(var(--border-subtle))] text-[hsl(var(--text-tertiary))]',
-            )}
-          >
+    <div className="flex items-center gap-0 mt-2">
+      {stages.map((stage, idx) => (
+        <Fragment key={stage}>
+          {idx > 0 && (
+            <div className={cn('h-0.5 w-6',
+              idx <= currentIndex ? 'bg-[hsl(var(--status-success))]' : 'bg-[hsl(var(--border-subtle))]'
+            )} />
+          )}
+          <div className={cn(
+            'flex items-center gap-1.5 text-[11px] font-medium whitespace-nowrap',
+            idx < currentIndex && 'text-[hsl(var(--status-success))]',
+            idx === currentIndex && 'text-[hsl(var(--status-info))]',
+            idx > currentIndex && 'text-[hsl(var(--text-tertiary))]',
+          )}>
+            <div className={cn(
+              'w-2.5 h-2.5 rounded-full',
+              idx < currentIndex && 'bg-[hsl(var(--status-success))]',
+              idx === currentIndex && 'bg-[hsl(var(--status-info))] animate-pulse',
+              idx > currentIndex && 'border border-[hsl(var(--border-default))]',
+            )} />
             {stage}
-          </span>
-        )
-      })}
+          </div>
+        </Fragment>
+      ))}
     </div>
   )
 }
@@ -60,9 +65,31 @@ export function BrainDump() {
   const [text, setText] = useState('')
   const [selectedProject, setSelectedProject] = useState<string>('auto')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [taskActions, setTaskActions] = useState<Record<string, { project?: string; priority?: string; accepted?: boolean; rejected?: boolean }>>({})
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { data: dumps, isLoading } = useBrainDumps()
   const submitMutation = useSubmitBrainDump()
+
+  function handleProjectAssign(taskKey: string, project: string) {
+    setTaskActions(prev => ({ ...prev, [taskKey]: { ...prev[taskKey], project } }))
+    const label = PROJECT_OPTIONS.find(p => p.value === project)?.label ?? project
+    toast.success(`Assigned to ${label}`)
+  }
+
+  function handlePriorityChange(taskKey: string, priority: string) {
+    setTaskActions(prev => ({ ...prev, [taskKey]: { ...prev[taskKey], priority } }))
+    toast.success(`Priority set to ${priority}`)
+  }
+
+  function handleAccept(taskKey: string) {
+    setTaskActions(prev => ({ ...prev, [taskKey]: { ...prev[taskKey], accepted: true, rejected: false } }))
+    toast.success('Task accepted')
+  }
+
+  function handleReject(taskKey: string) {
+    setTaskActions(prev => ({ ...prev, [taskKey]: { ...prev[taskKey], rejected: true, accepted: false } }))
+    toast.success('Task rejected')
+  }
 
   function handleTextareaInput() {
     const el = textareaRef.current
@@ -220,32 +247,91 @@ export function BrainDump() {
                   {lastResult.parsed.summary}
                 </p>
                 <div className="flex flex-col gap-2">
-                  {lastResult.parsed.tasks.map((task, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: idx * 0.05 }}
-                      className="p-3 rounded-lg bg-[hsl(var(--bg-elevated))] flex items-center justify-between gap-2.5"
-                    >
-                      <p className="text-body-sm font-medium text-[hsl(var(--text-primary))] m-0">
-                        {task.description}
-                      </p>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <ProjectBadge project={task.project} />
-                        <Badge
-                          variant={
-                            task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'warning' : 'neutral'
-                          }
-                        >
-                          {task.priority}
-                        </Badge>
-                        {task.deadline && (
-                          <span className="text-caption">{task.deadline}</span>
+                  {lastResult.parsed.tasks.map((task, idx) => {
+                    const taskKey = `new-${idx}`
+                    const actions = taskActions[taskKey]
+                    const isRejected = actions?.rejected
+                    const displayProject = actions?.project ?? task.project
+                    const displayPriority = actions?.priority ?? task.priority
+                    return (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.2, delay: idx * 0.05 }}
+                        className={cn(
+                          'p-3 rounded-lg bg-[hsl(var(--bg-elevated))]',
+                          isRejected && 'opacity-40',
+                          actions?.accepted && 'ring-1 ring-[hsl(var(--status-success))]',
                         )}
-                      </div>
-                    </motion.div>
-                  ))}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-body-sm font-medium text-[hsl(var(--text-primary))] m-0">
+                            {task.description}
+                          </p>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <ProjectBadge project={displayProject} />
+                            <Badge
+                              variant={
+                                displayPriority === 'high' ? 'coral' : displayPriority === 'medium' ? 'warning' : 'neutral'
+                              }
+                            >
+                              {displayPriority}
+                            </Badge>
+                            {task.deadline && (
+                              <span className="text-caption">{task.deadline}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[hsl(var(--border-subtle))]">
+                          <select
+                            className="text-[12px] bg-[hsl(var(--bg-root))] border border-[hsl(var(--border-subtle))] rounded px-2 py-1 text-[hsl(var(--text-secondary))] cursor-pointer"
+                            value={displayProject}
+                            onChange={(e) => handleProjectAssign(taskKey, e.target.value)}
+                          >
+                            {PROJECT_OPTIONS.filter(p => p.value !== 'auto').map(p => (
+                              <option key={p.value} value={p.value}>{p.label}</option>
+                            ))}
+                          </select>
+                          <select
+                            className="text-[12px] bg-[hsl(var(--bg-root))] border border-[hsl(var(--border-subtle))] rounded px-2 py-1 text-[hsl(var(--text-secondary))] cursor-pointer"
+                            value={displayPriority}
+                            onChange={(e) => handlePriorityChange(taskKey, e.target.value)}
+                          >
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                          </select>
+                          <div className="flex items-center gap-1 ml-auto">
+                            <button
+                              type="button"
+                              onClick={() => handleAccept(taskKey)}
+                              className={cn(
+                                'p-1 rounded transition-colors',
+                                actions?.accepted
+                                  ? 'bg-[hsl(var(--status-success-bg))]'
+                                  : 'hover:bg-[hsl(var(--bg-elevated))]',
+                              )}
+                            >
+                              <Check className="w-3.5 h-3.5 text-[hsl(var(--status-success))]" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleReject(taskKey)}
+                              className={cn(
+                                'p-1 rounded transition-colors',
+                                isRejected
+                                  ? 'bg-[hsl(var(--status-error-bg))]'
+                                  : 'hover:bg-[hsl(var(--bg-elevated))]',
+                              )}
+                            >
+                              <X className="w-3.5 h-3.5 text-[hsl(var(--status-error))]" />
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               </Card>
             </motion.div>
@@ -327,8 +413,8 @@ export function BrainDump() {
                               </div>
                             </div>
 
-                            {/* Status progression */}
-                            <StatusProgression currentStage={currentStage} />
+                            {/* Step progress indicator */}
+                            <StepProgress stages={STATUS_STAGES} currentIndex={STATUS_STAGES.indexOf(currentStage)} />
 
                             {/* Expanded content */}
                             <AnimatePresence>
@@ -355,38 +441,85 @@ export function BrainDump() {
                                       {dump.parsed_output.summary}
                                     </p>
                                     <div className="flex flex-col gap-2">
-                                      {dump.parsed_output.tasks.map((task, idx) => (
-                                        <div
-                                          key={idx}
-                                          className="p-3 rounded-lg bg-[hsl(var(--bg-elevated))] border border-[hsl(var(--border-subtle))]"
-                                        >
-                                          <div className="flex items-center justify-between gap-2">
-                                            <span className="text-[14px] font-medium text-[hsl(var(--text-primary))]">
-                                              {task.description}
-                                            </span>
-                                            <div className="flex items-center gap-1.5 shrink-0">
-                                              <ProjectBadge project={task.project} />
-                                              <Badge
-                                                variant={
-                                                  task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'warning' : 'neutral'
-                                                }
+                                      {dump.parsed_output.tasks.map((task, idx) => {
+                                        const taskKey = `${dump.id}-${idx}`
+                                        const actions = taskActions[taskKey]
+                                        const isRejected = actions?.rejected
+                                        const displayProject = actions?.project ?? task.project
+                                        const displayPriority = actions?.priority ?? task.priority
+                                        return (
+                                          <div
+                                            key={idx}
+                                            className={cn(
+                                              'p-3 rounded-lg bg-[hsl(var(--bg-elevated))] border border-[hsl(var(--border-subtle))]',
+                                              isRejected && 'opacity-40',
+                                              actions?.accepted && 'ring-1 ring-[hsl(var(--status-success))]',
+                                            )}
+                                          >
+                                            <div className="flex items-center justify-between gap-2">
+                                              <span className="text-[14px] font-medium text-[hsl(var(--text-primary))]">
+                                                {task.description}
+                                              </span>
+                                              <div className="flex items-center gap-1.5 shrink-0">
+                                                <ProjectBadge project={displayProject} />
+                                                <Badge
+                                                  variant={
+                                                    displayPriority === 'high' ? 'coral' : displayPriority === 'medium' ? 'warning' : 'neutral'
+                                                  }
+                                                >
+                                                  {displayPriority}
+                                                </Badge>
+                                              </div>
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[hsl(var(--border-subtle))]">
+                                              <select
+                                                className="text-[12px] bg-[hsl(var(--bg-root))] border border-[hsl(var(--border-subtle))] rounded px-2 py-1 text-[hsl(var(--text-secondary))] cursor-pointer"
+                                                value={displayProject}
+                                                onChange={(e) => { e.stopPropagation(); handleProjectAssign(taskKey, e.target.value) }}
                                               >
-                                                {task.priority}
-                                              </Badge>
+                                                {PROJECT_OPTIONS.filter(p => p.value !== 'auto').map(p => (
+                                                  <option key={p.value} value={p.value}>{p.label}</option>
+                                                ))}
+                                              </select>
+                                              <select
+                                                className="text-[12px] bg-[hsl(var(--bg-root))] border border-[hsl(var(--border-subtle))] rounded px-2 py-1 text-[hsl(var(--text-secondary))] cursor-pointer"
+                                                value={displayPriority}
+                                                onChange={(e) => { e.stopPropagation(); handlePriorityChange(taskKey, e.target.value) }}
+                                              >
+                                                <option value="high">High</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="low">Low</option>
+                                              </select>
+                                              <div className="flex items-center gap-1 ml-auto">
+                                                <button
+                                                  type="button"
+                                                  onClick={(e) => { e.stopPropagation(); handleAccept(taskKey) }}
+                                                  className={cn(
+                                                    'p-1 rounded transition-colors',
+                                                    actions?.accepted
+                                                      ? 'bg-[hsl(var(--status-success-bg))]'
+                                                      : 'hover:bg-[hsl(var(--bg-elevated))]',
+                                                  )}
+                                                >
+                                                  <Check className="w-3.5 h-3.5 text-[hsl(var(--status-success))]" />
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  onClick={(e) => { e.stopPropagation(); handleReject(taskKey) }}
+                                                  className={cn(
+                                                    'p-1 rounded transition-colors',
+                                                    isRejected
+                                                      ? 'bg-[hsl(var(--status-error-bg))]'
+                                                      : 'hover:bg-[hsl(var(--bg-elevated))]',
+                                                  )}
+                                                >
+                                                  <X className="w-3.5 h-3.5 text-[hsl(var(--status-error))]" />
+                                                </button>
+                                              </div>
                                             </div>
                                           </div>
-                                          <div className="mt-2">
-                                            <button
-                                              type="button"
-                                              className="text-[12px] text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--text-secondary))] transition-colors flex items-center gap-1"
-                                              onClick={(e) => e.stopPropagation()}
-                                            >
-                                              <Plus size={12} />
-                                              Add to project
-                                            </button>
-                                          </div>
-                                        </div>
-                                      ))}
+                                        )
+                                      })}
                                     </div>
                                   </div>
                                 </motion.div>
