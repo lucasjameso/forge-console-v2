@@ -37,7 +37,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **VISL-05**: Projects page polished with proper spacing, card breathing room, and visual refinement
 - [ ] **VISL-06**: ProjectDetail page polished with command-center depth and proper information density
 - [x] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
-- [ ] **VISL-08**: ContentPipeline page polished across all 4 view modes
+- [x] **VISL-08**: ContentPipeline page polished across all 4 view modes
 - [x] **VISL-09**: SocialMedia page polished with proper card layout and spacing
 - [ ] **VISL-10**: ActivityLog page polished with proper timeline spacing and filter layout
 - [x] **VISL-11**: Settings page polished with proper integration card layout
@@ -66,18 +66,18 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 #### Content Pipeline Fixes (Phase 4)
 
-- [ ] **CFIX-01**: Month view has fixed date headers, visible borders, consistent heights, sticky columns
-- [ ] **CFIX-02**: Empty day cells show date number in top-left corner
-- [ ] **CFIX-03**: Month/week navigation with forward/back arrows and "Today" button
-- [ ] **CFIX-04**: List view cards compact (80-90px) with 1-line truncated description
-- [ ] **CFIX-05**: Week groups have stronger visual containers with 32px gaps
-- [ ] **CFIX-06**: Kanban empty columns show proper empty state, max-height with scroll
-- [ ] **CFIX-07**: Kanban cards have metadata (status badge, date, platform icon, warm styling)
-- [ ] **CFIX-08**: Content detail modal 680px+ with editable caption and action buttons
+- [x] **CFIX-01**: Month view has fixed date headers, visible borders, consistent heights, sticky columns
+- [x] **CFIX-02**: Empty day cells show date number in top-left corner
+- [x] **CFIX-03**: Month/week navigation with forward/back arrows and "Today" button
+- [x] **CFIX-04**: List view cards compact (80-90px) with 1-line truncated description
+- [x] **CFIX-05**: Week groups have stronger visual containers with 32px gaps
+- [x] **CFIX-06**: Kanban empty columns show proper empty state, max-height with scroll
+- [x] **CFIX-07**: Kanban cards have metadata (status badge, date, platform icon, warm styling)
+- [x] **CFIX-08**: Content detail modal 680px+ with editable caption and action buttons
 - [x] **CFIX-09**: Status badges standardized across all views (size, padding, colors)
-- [ ] **CFIX-10**: Today indicator present in all 4 views
-- [ ] **CFIX-11**: "Text post" shown instead of "0 slides" for non-carousel items
-- [ ] **CFIX-12**: "Add Content" button in page header opens creation modal
+- [x] **CFIX-10**: Today indicator present in all 4 views
+- [x] **CFIX-11**: "Text post" shown instead of "0 slides" for non-carousel items
+- [x] **CFIX-12**: "Add Content" button in page header opens creation modal
 
 #### Social Media Fixes (Phase 4)
 
