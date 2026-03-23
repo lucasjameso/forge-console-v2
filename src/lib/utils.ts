@@ -6,6 +6,24 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getDynamicSubtitle(stats: {
+  actionItemCount: number
+  upcomingDeadlineDays?: number
+  upcomingDeadlineProject?: string
+}): string {
+  const hour = new Date().getHours()
+  const isWeekend = [0, 6].includes(new Date().getDay())
+  if (stats.upcomingDeadlineDays !== undefined && stats.upcomingDeadlineDays <= 7) {
+    return `${stats.upcomingDeadlineProject} launches in ${stats.upcomingDeadlineDays} days`
+  }
+  if (stats.actionItemCount > 0) {
+    return `${stats.actionItemCount} action items need your attention`
+  }
+  if (isWeekend) return 'Weekend mode -- review and plan ahead'
+  if (hour < 9) return 'Early start today'
+  return 'All clear -- time for deep work'
+}
+
 export function formatRelativeTime(date: string | Date): string {
   const now = new Date()
   const target = new Date(date)

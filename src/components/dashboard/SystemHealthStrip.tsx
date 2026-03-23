@@ -4,10 +4,10 @@ import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
 import { useSystemHealth } from '@/hooks/useSystemHealth'
 import type { HealthStatus } from '@/types/database'
 
-const statusColor: Record<HealthStatus, string> = {
-  healthy: 'inherit',
-  degraded: 'hsl(var(--status-warning))',
-  down: 'hsl(var(--status-error))',
+const statusTextClass: Record<HealthStatus, string> = {
+  healthy: '',
+  degraded: 'font-semibold text-[hsl(var(--status-warning))]',
+  down: 'font-semibold text-[hsl(var(--status-error))]',
 }
 
 export function SystemHealthStrip() {
@@ -15,7 +15,7 @@ export function SystemHealthStrip() {
 
   if (isLoading) {
     return (
-      <SkeletonBlock width="100%" height={32} style={{ borderRadius: 'var(--radius-md)' }} />
+      <SkeletonBlock width="100%" height={32} className="rounded-md" />
     )
   }
 
@@ -26,32 +26,16 @@ export function SystemHealthStrip() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3, delay: 0.15 }}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        padding: '8px 16px',
-        borderRadius: 'var(--radius-md)',
-        backgroundColor: 'hsl(var(--bg-elevated))',
-        border: '1px solid hsl(var(--border-subtle))',
-      }}
+      className="flex items-center gap-4 py-2 px-4 rounded-md bg-[hsl(var(--bg-elevated))] border border-[hsl(var(--border-subtle))]"
     >
       {data.map((item) => (
         <div
           key={item.id}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-          }}
+          className="flex items-center gap-1.5"
         >
           <StatusDot status={item.status} />
           <span
-            className="text-body-sm"
-            style={{
-              fontWeight: item.status !== 'healthy' ? 600 : 400,
-              color: statusColor[item.status],
-            }}
+            className={`text-body-sm ${statusTextClass[item.status]}`}
           >
             {item.service}
           </span>

@@ -69,6 +69,40 @@ export const mockProjects: Project[] = [
     created_at: daysAgo(1),
     updated_at: now,
   },
+  {
+    id: '4',
+    name: 'Meridian',
+    slug: 'meridian',
+    description:
+      'Corporate support and internal tooling platform for IAC Solutions team operations.',
+    status: 'active',
+    priority: 'medium',
+    progress_pct: 55,
+    current_phase: 'Phase 2: Internal Tools',
+    metadata: null,
+    github_url: null,
+    supabase_ref: null,
+    cloudflare_url: null,
+    created_at: daysAgo(60),
+    updated_at: daysAgo(4),
+  },
+  {
+    id: '5',
+    name: 'Atlas',
+    slug: 'atlas',
+    description:
+      'Knowledge base and documentation system for cross-project reference and onboarding.',
+    status: 'active',
+    priority: 'medium',
+    progress_pct: 30,
+    current_phase: 'Phase 1: Content Migration',
+    metadata: null,
+    github_url: null,
+    supabase_ref: null,
+    cloudflare_url: null,
+    created_at: daysAgo(90),
+    updated_at: daysAgo(10),
+  },
 ]
 
 export const mockTasks: Record<string, Task[]> = {
@@ -302,6 +336,30 @@ export const mockActionItems: Record<string, ProjectActionItem[]> = {
     },
   ],
   '3': [],
+  '4': [
+    {
+      id: 'a20',
+      project_id: '4',
+      description: 'Review Meridian internal tools deployment plan',
+      urgency: 'medium',
+      source: 'Planning session',
+      status: 'open',
+      created_at: daysAgo(3),
+      resolved_at: null,
+    },
+  ],
+  '5': [
+    {
+      id: 'a30',
+      project_id: '5',
+      description: 'Finalize Atlas content migration checklist',
+      urgency: 'low',
+      source: 'Planning session',
+      status: 'open',
+      created_at: daysAgo(5),
+      resolved_at: null,
+    },
+  ],
 }
 
 export const mockNotes: Record<string, ProjectNote[]> = {
@@ -555,6 +613,24 @@ export const mockActivity: ActivityEntry[] = [
     summary: 'System health check: all services healthy. PM2, n8n, Cloudflare tunnel all nominal.',
     metadata: null,
     created_at: hoursAgo(5),
+  },
+  {
+    id: 'al6',
+    session_type: 'claude_code',
+    project: 'meridian',
+    tool: 'Claude Code',
+    summary: 'Internal tools dashboard wireframe review. Updated component specs for team ops view.',
+    metadata: null,
+    created_at: daysAgo(4),
+  },
+  {
+    id: 'al7',
+    session_type: 'manual',
+    project: 'atlas',
+    tool: 'Manual',
+    summary: 'Content migration planning. Identified 45 docs for initial import from Notion.',
+    metadata: null,
+    created_at: daysAgo(10),
   },
 ]
 
