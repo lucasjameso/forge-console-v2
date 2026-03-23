@@ -39,7 +39,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
 - [x] **VISL-08**: ContentPipeline page polished across all 4 view modes
 - [x] **VISL-09**: SocialMedia page polished with proper card layout and spacing
-- [ ] **VISL-10**: ActivityLog page polished with proper timeline spacing and filter layout
+- [x] **VISL-10**: ActivityLog page polished with proper timeline spacing and filter layout
 - [x] **VISL-11**: Settings page polished with proper integration card layout
 
 #### Dashboard Fixes (Phase 4)
@@ -111,18 +111,18 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 #### Activity Log Fixes (Phase 4)
 
-- [ ] **AFIX-01**: Entries grouped by day with sticky headers and count per day
+- [x] **AFIX-01**: Entries grouped by day with sticky headers and count per day
 - [x] **AFIX-02**: Timeline dots color-coded by tool type, significant events get larger dots
-- [ ] **AFIX-03**: Three-tier visual weight (major/standard/background entries)
+- [x] **AFIX-03**: Three-tier visual weight (major/standard/background entries)
 - [x] **AFIX-04**: Filter chips show clear active/inactive state with count badges
 - [x] **AFIX-05**: Real-time search with debounce, result count, highlighted matches
-- [ ] **AFIX-06**: Timestamps standardized (relative <24h, time-only within day groups)
-- [ ] **AFIX-07**: Pagination/infinite scroll (20 entries per batch) with total count
+- [x] **AFIX-06**: Timestamps standardized (relative <24h, time-only within day groups)
+- [x] **AFIX-07**: Pagination/infinite scroll (20 entries per batch) with total count
 - [x] **AFIX-08**: Project badges use consistent per-project colors across app
-- [ ] **AFIX-09**: Activity density heatmap/bar chart at top (14-day, stacked by project)
+- [x] **AFIX-09**: Activity density heatmap/bar chart at top (14-day, stacked by project)
 - [x] **AFIX-10**: Tool badges visually distinct from project badges (different shape + icon)
-- [ ] **AFIX-11**: Entry text truncated to 1 line, bold first phrase, expand on click
-- [ ] **AFIX-12**: "Log activity" button for manual entries
+- [x] **AFIX-11**: Entry text truncated to 1 line, bold first phrase, expand on click
+- [x] **AFIX-12**: "Log activity" button for manual entries
 
 ### Brain Dump Depth (Phase 5)
 
