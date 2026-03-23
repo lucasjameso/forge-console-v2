@@ -8,11 +8,23 @@ import {
   Users,
   Clock,
   Globe,
+  TrendingUp,
+  TrendingDown,
+  FileText,
+  BarChart3,
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
@@ -53,6 +65,21 @@ function isActivePlatform(p: SocialPlatform): boolean {
   return p.status === 'active' || (p.follower_count !== null && p.follower_count > 0)
 }
 
+function getMetaString(meta: Record<string, unknown> | null, key: string): string | null {
+  if (!meta || typeof meta[key] !== 'string') return null
+  return meta[key]
+}
+
+function getMetaNumber(meta: Record<string, unknown> | null, key: string): number | null {
+  if (!meta || typeof meta[key] !== 'number') return null
+  return meta[key]
+}
+
+function getMetaStringArray(meta: Record<string, unknown> | null, key: string): string[] {
+  if (!meta || !Array.isArray(meta[key])) return []
+  return meta[key] as string[]
+}
+
 function sortPlatforms(platforms: SocialPlatform[], sortBy: SortBy): SocialPlatform[] {
   const sorted = [...platforms]
   switch (sortBy) {
@@ -87,6 +114,11 @@ function ActivePlatformCard({ platform, index }: { platform: SocialPlatform; ind
   const goal = isLinkedIn ? LINKEDIN_GOAL : (typeof meta?.target === 'number' ? meta.target : null)
   const percentage = goal && platform.follower_count ? Math.round((platform.follower_count / goal) * 100) : null
 
+  const followerTrend = getMetaString(meta, 'follower_trend')
+  const postsThisMonth = getMetaNumber(meta, 'posts_this_month')
+  const engagementRate = getMetaString(meta, 'engagement_rate')
+  const trendIsPositive = followerTrend ? followerTrend.startsWith('+') : null
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -94,48 +126,54 @@ function ActivePlatformCard({ platform, index }: { platform: SocialPlatform; ind
       transition={{ duration: 0.3, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
       className="flex"
     >
-      <Card className="p-6 flex flex-col gap-3.5 flex-1">
+      <Card className="p-5 flex flex-col gap-3 flex-1 relative">
+        {/* External link */}
+        {hasUrl && (
+          <a
+            href={platform.profile_url!}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute top-3 right-3 text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--text-primary))] transition-colors"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        )}
+
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] flex items-center justify-center">
-              <Icon size={18} className="text-[hsl(var(--accent-navy))]" />
-            </div>
-            <div>
-              <h3 className="text-card-title text-[hsl(var(--text-primary))] m-0">
-                {platform.platform_name}
-              </h3>
-              {platform.handle && (
-                <span className="text-caption">{platform.handle}</span>
-              )}
-            </div>
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] flex items-center justify-center">
+            <Icon size={18} className="text-[hsl(var(--accent-navy))]" />
           </div>
-          <div className="flex items-center gap-2">
+          <div>
+            <h3 className="text-card-title text-[hsl(var(--text-primary))] m-0">
+              {platform.platform_name}
+            </h3>
+            {platform.handle && (
+              <span className="text-caption">{platform.handle}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 ml-auto mr-6">
             {isLaunchCritical(platform.platform_name) && (
               <Badge variant="coral">Needed for launch</Badge>
             )}
             <Badge variant="success">Active</Badge>
-            {hasUrl && (
-              <a
-                href={platform.profile_url!}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--accent-coral))] transition-colors"
-              >
-                <ExternalLink size={14} />
-              </a>
-            )}
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="flex gap-5">
+        {/* Stats row */}
+        <div className="flex flex-wrap gap-4">
           {platform.follower_count !== null && (
             <div className="flex items-center gap-1.5">
               <Users size={13} className="text-[hsl(var(--text-tertiary))]" />
               <span className="text-body font-semibold text-[hsl(var(--text-primary))]">
                 {platform.follower_count.toLocaleString()}
               </span>
+              {followerTrend && (
+                <span className={`flex items-center gap-0.5 text-xs font-medium ${trendIsPositive ? 'text-[hsl(var(--status-success))]' : 'text-[hsl(var(--status-error))]'}`}>
+                  {trendIsPositive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                  {followerTrend}
+                </span>
+              )}
               {goal && (
                 <span className="text-caption">/ {goal.toLocaleString()} goal</span>
               )}
@@ -149,9 +187,25 @@ function ActivePlatformCard({ platform, index }: { platform: SocialPlatform; ind
               </span>
             </div>
           )}
+          {postsThisMonth !== null && (
+            <div className="flex items-center gap-1.5">
+              <FileText size={13} className="text-[hsl(var(--text-tertiary))]" />
+              <span className="text-caption">
+                {postsThisMonth} posts this month
+              </span>
+            </div>
+          )}
+          {engagementRate && (
+            <div className="flex items-center gap-1.5">
+              <BarChart3 size={13} className="text-[hsl(var(--text-tertiary))]" />
+              <span className="text-caption">
+                {engagementRate} engagement
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* LinkedIn follower goal progress bar */}
+        {/* Follower goal progress bar */}
         {percentage !== null && goal && (
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
@@ -177,8 +231,18 @@ function ActivePlatformCard({ platform, index }: { platform: SocialPlatform; ind
   )
 }
 
-function SetupPlatformCard({ platform, index }: { platform: SocialPlatform; index: number }) {
+function SetupPlatformCard({
+  platform,
+  index,
+  onSetup,
+}: {
+  platform: SocialPlatform
+  index: number
+  onSetup: (platform: SocialPlatform) => void
+}) {
   const Icon = getPlatformIcon(platform)
+  const meta = platform.metadata as Record<string, unknown> | null
+  const signupUrl = getMetaString(meta, 'signup_url')
 
   return (
     <motion.div
@@ -187,23 +251,47 @@ function SetupPlatformCard({ platform, index }: { platform: SocialPlatform; inde
       transition={{ duration: 0.3, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
       className="flex"
     >
-      <Card className="p-4 flex items-center gap-3 flex-1 border-l-4 border-l-[hsl(var(--status-warning))]">
-        <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] flex items-center justify-center shrink-0">
-          <Icon size={18} className="text-[hsl(var(--accent-navy))]" />
+      <Card className="p-5 flex flex-col gap-3 flex-1 border-l-4 border-l-[hsl(var(--status-warning))] relative">
+        {/* External link */}
+        {signupUrl && (
+          <a
+            href={signupUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute top-3 right-3 text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--text-primary))] transition-colors"
+          >
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        )}
+
+        {/* Header */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] flex items-center justify-center shrink-0">
+            <Icon size={18} className="text-[hsl(var(--accent-navy))]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-card-title text-[hsl(var(--text-primary))] m-0 truncate">
+              {platform.platform_name}
+            </h3>
+            {platform.handle && (
+              <span className="text-caption truncate block">{platform.handle}</span>
+            )}
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-card-title text-[hsl(var(--text-primary))] m-0 truncate">
-            {platform.platform_name}
-          </h3>
-          {platform.handle && (
-            <span className="text-caption truncate block">{platform.handle}</span>
-          )}
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
+
+        {/* Actions */}
+        <div className="flex items-center gap-2">
           {isLaunchCritical(platform.platform_name) && (
             <Badge variant="coral">Needed for launch</Badge>
           )}
-          <Badge variant="warning">Setup Needed</Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onSetup(platform)}
+            className="text-[hsl(var(--status-warning))] border-[hsl(var(--status-warning))] hover:bg-[hsl(var(--status-warning)/0.1)]"
+          >
+            Setup Needed
+          </Button>
         </div>
       </Card>
     </motion.div>
@@ -213,6 +301,7 @@ function SetupPlatformCard({ platform, index }: { platform: SocialPlatform; inde
 export function SocialMedia() {
   const { data: platforms, isLoading } = useSocialPlatforms()
   const [sortBy, setSortBy] = useState<SortBy>('priority')
+  const [setupPlatform, setSetupPlatform] = useState<SocialPlatform | null>(null)
 
   const allPlatforms = useMemo(() => platforms ?? [], [platforms])
 
@@ -223,9 +312,15 @@ export function SocialMedia() {
 
   const activeCount = activePlatforms.length
   const setupCount = setupPlatforms.length
+  const totalCount = allPlatforms.length
   const totalFollowers = allPlatforms.reduce((sum, p) => sum + (p.follower_count ?? 0), 0)
+  const readinessPercent = totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 0
 
   const dynamicSubtitle = `${activeCount} active, ${setupCount} need setup. ${totalFollowers.toLocaleString()} total followers.`
+
+  const setupMeta = setupPlatform?.metadata as Record<string, unknown> | null
+  const setupSteps = getMetaStringArray(setupMeta, 'setup_steps')
+  const setupSignupUrl = getMetaString(setupMeta, 'signup_url')
 
   return (
     <PageShell
@@ -277,6 +372,16 @@ export function SocialMedia() {
                 {setupCount > 0 && <Badge variant="warning">{setupCount}</Badge>}
               </div>
             </Card>
+            <Card className="p-4 rounded-lg flex-1">
+              <div className="text-stat">{activeCount}/{totalCount}</div>
+              <div className="text-caption">Platforms ready for CLARITY launch</div>
+              <div className="w-full bg-[hsl(var(--bg-elevated))] rounded-full h-1.5 mt-1">
+                <div
+                  className="bg-[hsl(var(--accent-coral))] h-1.5 rounded-full transition-all"
+                  style={{ width: `${readinessPercent}%` }}
+                />
+              </div>
+            </Card>
           </div>
 
           {/* Active Platforms section */}
@@ -301,13 +406,55 @@ export function SocialMedia() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {setupPlatforms.map((platform, idx) => (
-                  <SetupPlatformCard key={platform.id} platform={platform} index={idx} />
+                  <SetupPlatformCard
+                    key={platform.id}
+                    platform={platform}
+                    index={idx}
+                    onSetup={setSetupPlatform}
+                  />
                 ))}
               </div>
             </div>
           )}
         </div>
       )}
+
+      {/* Setup Modal */}
+      <Dialog open={!!setupPlatform} onOpenChange={() => setSetupPlatform(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Set up {setupPlatform?.platform_name}</DialogTitle>
+            <DialogDescription>
+              Follow these steps to connect {setupPlatform?.platform_name} to your Forge Console.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {setupSteps.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium mb-2">Setup Checklist</h4>
+                <div className="space-y-2">
+                  {setupSteps.map((step, i) => (
+                    <label key={i} className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input type="checkbox" className="rounded border-[hsl(var(--border))]" />
+                      {step}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+            {setupSignupUrl && (
+              <a
+                href={setupSignupUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-[hsl(var(--accent-coral))] hover:underline"
+              >
+                Create account <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageShell>
   )
 }

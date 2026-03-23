@@ -1,6 +1,7 @@
 import {
   SiFacebook, SiInstagram, SiTiktok, SiYoutube,
-  SiX, SiMedium, SiReddit,
+  SiX, SiMedium, SiReddit, SiGithub, SiSubstack,
+  SiThreads, SiBluesky, SiSpotify, SiGoodreads,
   SiSupabase, SiCloudflare, SiAnthropic, SiN8n,
 } from '@icons-pack/react-simple-icons'
 import type { ComponentType, SVGAttributes } from 'react'
@@ -21,9 +22,15 @@ export const PLATFORM_ICONS: Record<string, ComponentType<IconProps>> = {
   twitter: SiX,
   medium: SiMedium,
   reddit: SiReddit,
-  // Amazon not available in @icons-pack/react-simple-icons -- use Lucide ExternalLink fallback
+  github: SiGithub,
+  substack: SiSubstack,
+  threads: SiThreads,
+  bluesky: SiBluesky,
+  spotify: SiSpotify,
+  goodreads: SiGoodreads,
+  // Amazon not available in @icons-pack/react-simple-icons -- use Lucide ShoppingBag fallback
 }
-// Note: LinkedIn, Amazon, Beehiiv, Gumroad, Goodreads are not in this package.
+// Note: LinkedIn and Amazon are not in this package.
 // For missing icons, the consuming component should fall back to Lucide icons.
 
 export const INTEGRATION_ICONS: Record<string, ComponentType<IconProps>> = {
