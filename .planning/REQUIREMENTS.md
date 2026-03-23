@@ -38,9 +38,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **VISL-06**: ProjectDetail page polished with command-center depth and proper information density
 - [x] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
 - [ ] **VISL-08**: ContentPipeline page polished across all 4 view modes
-- [ ] **VISL-09**: SocialMedia page polished with proper card layout and spacing
+- [x] **VISL-09**: SocialMedia page polished with proper card layout and spacing
 - [ ] **VISL-10**: ActivityLog page polished with proper timeline spacing and filter layout
-- [ ] **VISL-11**: Settings page polished with proper integration card layout
+- [x] **VISL-11**: Settings page polished with proper integration card layout
 
 #### Dashboard Fixes (Phase 4)
 
@@ -82,32 +82,32 @@ Requirements for this milestone. Each maps to roadmap phases.
 #### Social Media Fixes (Phase 4)
 
 - [x] **SFIX-01**: Real platform brand icons (react-icons) replacing all generic Lucide icons
-- [ ] **SFIX-02**: Platform cards sized by importance (active=larger, setup=compact 3-per-row)
-- [ ] **SFIX-03**: "Setup Needed" banner replaced with badge + amber left border
-- [ ] **SFIX-04**: Unset platforms show only icon + name + handle + badge (no zero counts)
-- [ ] **SFIX-05**: Overview stats moved to top as hero stat row
-- [ ] **SFIX-06**: LinkedIn follower goal shows percentage, green bar, projected date
-- [ ] **SFIX-07**: Card content density standardized (active=rich, setup=minimal)
-- [ ] **SFIX-08**: CLARITY launch platforms tagged with "Needed for launch" badge
-- [ ] **SFIX-09**: External link icons standardized, "View profile" text removed
-- [ ] **SFIX-10**: Page subtitle shows dynamic platform/follower counts
-- [ ] **SFIX-11**: Adaptive grid layout (2-col active, 3-col setup)
-- [ ] **SFIX-12**: Sort dropdown (Priority, Alphabetical, Followers, Last active)
+- [x] **SFIX-02**: Platform cards sized by importance (active=larger, setup=compact 3-per-row)
+- [x] **SFIX-03**: "Setup Needed" banner replaced with badge + amber left border
+- [x] **SFIX-04**: Unset platforms show only icon + name + handle + badge (no zero counts)
+- [x] **SFIX-05**: Overview stats moved to top as hero stat row
+- [x] **SFIX-06**: LinkedIn follower goal shows percentage, green bar, projected date
+- [x] **SFIX-07**: Card content density standardized (active=rich, setup=minimal)
+- [x] **SFIX-08**: CLARITY launch platforms tagged with "Needed for launch" badge
+- [x] **SFIX-09**: External link icons standardized, "View profile" text removed
+- [x] **SFIX-10**: Page subtitle shows dynamic platform/follower counts
+- [x] **SFIX-11**: Adaptive grid layout (2-col active, 3-col setup)
+- [x] **SFIX-12**: Sort dropdown (Priority, Alphabetical, Followers, Last active)
 
 #### Settings Fixes (Phase 4)
 
 - [x] **STFIX-01**: Integration cards use real brand logos
-- [ ] **STFIX-02**: Feedback log renders markdown or strips it with "Read more" toggle
-- [ ] **STFIX-03**: Feedback entries compact by default (8-10 per screen), expandable
-- [ ] **STFIX-04**: Integration cards show human-readable labels (not env var names)
-- [ ] **STFIX-05**: Connected/disconnected visual distinction (green/red borders + badges)
-- [ ] **STFIX-06**: All integrations have "Open dashboard" links
-- [ ] **STFIX-07**: About section enhanced with build date, commit hash, database stats
-- [ ] **STFIX-08**: Page organized into sections (Integrations, Feedback, Preferences, Data, System)
-- [ ] **STFIX-09**: "Test connection" button per integration with health check results
-- [ ] **STFIX-10**: Feedback filter tabs show count badges, "Open" is default
-- [ ] **STFIX-11**: Fix vs suggestion entries have distinct visual treatment (wrench/lightbulb + border color)
-- [ ] **STFIX-12**: Feedback page badges color-coded by page identity
+- [x] **STFIX-02**: Feedback log renders markdown or strips it with "Read more" toggle
+- [x] **STFIX-03**: Feedback entries compact by default (8-10 per screen), expandable
+- [x] **STFIX-04**: Integration cards show human-readable labels (not env var names)
+- [x] **STFIX-05**: Connected/disconnected visual distinction (green/red borders + badges)
+- [x] **STFIX-06**: All integrations have "Open dashboard" links
+- [x] **STFIX-07**: About section enhanced with build date, commit hash, database stats
+- [x] **STFIX-08**: Page organized into sections (Integrations, Feedback, Preferences, Data, System)
+- [x] **STFIX-09**: "Test connection" button per integration with health check results
+- [x] **STFIX-10**: Feedback filter tabs show count badges, "Open" is default
+- [x] **STFIX-11**: Fix vs suggestion entries have distinct visual treatment (wrench/lightbulb + border color)
+- [x] **STFIX-12**: Feedback page badges color-coded by page identity
 
 #### Activity Log Fixes (Phase 4)
 
