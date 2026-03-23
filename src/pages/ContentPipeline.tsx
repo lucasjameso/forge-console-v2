@@ -10,6 +10,7 @@ import {
   Layers,
   Inbox,
   Plus,
+  MoreHorizontal,
 } from 'lucide-react'
 import {
   format,
@@ -47,6 +48,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 import { toast } from 'sonner'
 import { useContentReviews, useUpdateContentStatus } from '@/hooks/useContentReviews'
 import { ContentReviewModal } from '@/components/pipeline/ContentReviewModal'
@@ -569,7 +576,17 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
   )
 }
 
-function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (item: ContentReview) => void }) {
+const kanbanStatusOptions: ContentStatus[] = ['draft', 'pending', 'approved', 'posted']
+
+function KanbanView({
+  items,
+  onSelect,
+  onMoveStatus,
+}: {
+  items: ContentReview[]
+  onSelect: (item: ContentReview) => void
+  onMoveStatus: (id: string, newStatus: ContentStatus) => void
+}) {
   return (
     <div className="grid grid-cols-4 gap-4">
       {kanbanColumns.map(col => {
@@ -599,16 +616,48 @@ function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (it
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2, delay: idx * 0.03 }}
-                        onClick={() => onSelect(item)}
                         className="bg-[hsl(var(--bg-surface))] border border-[hsl(var(--border-subtle))] rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <p className="text-sm font-medium text-[hsl(var(--text-primary))] line-clamp-2 m-0">
+                          <p
+                            className="text-sm font-medium text-[hsl(var(--text-primary))] line-clamp-2 m-0 flex-1 cursor-pointer"
+                            onClick={() => onSelect(item)}
+                          >
                             {item.post_title}
                           </p>
-                          <StatusBadge status={item.status} className="shrink-0" />
+                          <div className="flex items-center gap-1 shrink-0">
+                            <StatusBadge status={item.status} />
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <button
+                                  className="h-6 w-6 flex items-center justify-center rounded-[var(--radius-sm)] hover:bg-[hsl(var(--bg-elevated))] transition-colors"
+                                  onClick={e => e.stopPropagation()}
+                                >
+                                  <MoreHorizontal className="w-4 h-4 text-[hsl(var(--text-tertiary))]" />
+                                </button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {kanbanStatusOptions
+                                  .filter(s => s !== item.status)
+                                  .map(s => (
+                                    <DropdownMenuItem
+                                      key={s}
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        onMoveStatus(item.id, s)
+                                      }}
+                                    >
+                                      Move to {s.replace('_', ' ')}
+                                    </DropdownMenuItem>
+                                  ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap">
+                        <div
+                          className="flex items-center gap-2 flex-wrap"
+                          onClick={() => onSelect(item)}
+                        >
                           {item.scheduled_date && (
                             <span className="text-xs text-[hsl(var(--text-tertiary))]">{formatShortDate(item.scheduled_date)}</span>
                           )}
@@ -657,6 +706,11 @@ export function ContentPipeline() {
     updateStatus.mutate({ id, status: 'rejected', feedback: reason })
     setDetailOpen(false)
     setSelected(null)
+  }
+
+  const handleMoveStatus = (id: string, newStatus: ContentStatus) => {
+    updateStatus.mutate({ id, status: newStatus })
+    toast.success(`Moved to ${newStatus.replace('_', ' ')}`)
   }
 
   return (
@@ -714,7 +768,7 @@ export function ContentPipeline() {
           {view === 'list' && <ListView items={items} onSelect={handleSelect} />}
           {view === 'week' && <WeekView items={items} onSelect={handleSelect} />}
           {view === 'month' && <MonthView items={items} onSelect={handleSelect} />}
-          {view === 'kanban' && <KanbanView items={items} onSelect={handleSelect} />}
+          {view === 'kanban' && <KanbanView items={items} onSelect={handleSelect} onMoveStatus={handleMoveStatus} />}
         </>
       )}
 
