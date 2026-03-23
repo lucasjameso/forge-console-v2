@@ -92,7 +92,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md -- Shared foundation: project colors, brand icons, badge components, utilities
-- [ ] 04-02-PLAN.md -- Dashboard fixes (DFIX-01-08) + Projects/ProjectDetail polish (VISL-05, VISL-06)
+- [x] 04-02-PLAN.md -- Dashboard fixes (DFIX-01-08) + Projects/ProjectDetail polish (VISL-05, VISL-06)
 - [x] 04-03-PLAN.md -- Brain Dump fixes (BFIX-01-08) + page polish (VISL-07)
 - [x] 04-04-PLAN.md -- Content Pipeline fixes (CFIX-01-12) + page polish (VISL-08)
 - [x] 04-05-PLAN.md -- Social Media fixes (SFIX-01-12) + Settings fixes (STFIX-01-12) + polish (VISL-09, VISL-11)

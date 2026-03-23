@@ -34,8 +34,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Visual Polish -- All Pages (Phase 4)
 
-- [ ] **VISL-05**: Projects page polished with proper spacing, card breathing room, and visual refinement
-- [ ] **VISL-06**: ProjectDetail page polished with command-center depth and proper information density
+- [x] **VISL-05**: Projects page polished with proper spacing, card breathing room, and visual refinement
+- [x] **VISL-06**: ProjectDetail page polished with command-center depth and proper information density
 - [x] **VISL-07**: BrainDump page polished with proper spacing and clear visual flow
 - [x] **VISL-08**: ContentPipeline page polished across all 4 view modes
 - [x] **VISL-09**: SocialMedia page polished with proper card layout and spacing
@@ -45,13 +45,13 @@ Requirements for this milestone. Each maps to roadmap phases.
 #### Dashboard Fixes (Phase 4)
 
 - [x] **DFIX-01**: Priority badges use correct colors (red=high, amber=medium, green=low), Meridian/Atlas set to medium
-- [ ] **DFIX-02**: Progress bars color-coded by health (green=on track, amber=behind, red=critical)
-- [ ] **DFIX-03**: Content calendar strip shows intelligent week selection (current if has content, else next)
-- [ ] **DFIX-04**: "View all" on action items expands inline instead of navigating to Activity Log
+- [x] **DFIX-02**: Progress bars color-coded by health (green=on track, amber=behind, red=critical)
+- [x] **DFIX-03**: Content calendar strip shows intelligent week selection (current if has content, else next)
+- [x] **DFIX-04**: "View all" on action items expands inline instead of navigating to Activity Log
 - [x] **DFIX-05**: Stat tiles have colored recency borders matching project cards
-- [ ] **DFIX-06**: CLARITY countdown has threshold-based urgency treatment (amber 14-30d, red <14d)
+- [x] **DFIX-06**: CLARITY countdown has threshold-based urgency treatment (amber 14-30d, red <14d)
 - [x] **DFIX-07**: Recency colors verified against activity_log (green <48h, amber 3-5d, red 5d+)
-- [ ] **DFIX-08**: Greeting subtitle is dynamic and contextual from real data
+- [x] **DFIX-08**: Greeting subtitle is dynamic and contextual from real data
 
 #### Brain Dump Fixes (Phase 4)
 
