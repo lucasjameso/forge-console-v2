@@ -157,3 +157,25 @@ export function useUpdateScheduledDate() {
     },
   })
 }
+
+export function useDeleteContent() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      if (!isSupabaseConfigured) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
+        .from('content_reviews')
+        .delete()
+        .eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['content-reviews'] })
+      toast.success('Content deleted')
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to delete content', { description: error.message })
+    },
+  })
+}

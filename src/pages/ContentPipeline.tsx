@@ -1,6 +1,16 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import {
+  DndContext,
+  DragOverlay,
+  closestCorners,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core'
+import {
   Calendar,
   List,
   Columns3,
@@ -8,7 +18,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Layers,
-  Inbox,
   Plus,
   MoreHorizontal,
 } from 'lucide-react'
@@ -55,10 +64,16 @@ import {
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
 import { toast } from 'sonner'
-import { useContentReviews, useUpdateContentStatus, useCreateContent } from '@/hooks/useContentReviews'
+import { useContentReviews, useUpdateContentStatus, useUpdateScheduledDate, useCreateContent, useDeleteContent } from '@/hooks/useContentReviews'
+import { useBulkSelection } from '@/hooks/useBulkSelection'
 import { ContentReviewModal } from '@/components/pipeline/ContentReviewModal'
 import { TemplatesTab } from '@/components/pipeline/TemplatesTab'
 import { AnalyticsStrip } from '@/components/pipeline/AnalyticsStrip'
+import { DraggableContentCard } from '@/components/pipeline/DraggableContentCard'
+import { DroppableColumn } from '@/components/pipeline/DroppableColumn'
+import { DroppableDateCell } from '@/components/pipeline/DroppableDateCell'
+import { DragOverlayCard } from '@/components/pipeline/DragOverlayCard'
+import { BulkActionBar } from '@/components/pipeline/BulkActionBar'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview, ContentStatus, ContentType } from '@/types/database'
 
@@ -353,7 +368,15 @@ function AddContentDialog({
 }
 
 // ----- Views -----
-function ListView({ items, onSelect }: { items: ContentReview[]; onSelect: (item: ContentReview) => void }) {
+function ListView({
+  items,
+  onSelect,
+  selection,
+}: {
+  items: ContentReview[]
+  onSelect: (item: ContentReview) => void
+  selection: { isSelected: (id: string) => boolean; toggle: (id: string) => void }
+}) {
   return (
     <div className="flex flex-col gap-2.5">
       {items.map((item, idx) => {
@@ -369,16 +392,25 @@ function ListView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
               className={`flex items-center gap-4 p-4 h-[84px] cursor-pointer transition-shadow hover:shadow-card-hover ${
                 today ? 'bg-[hsl(var(--accent-coral)/0.04)]' : ''
               }`}
-              onClick={() => onSelect(item)}
             >
+              {/* Checkbox */}
+              <div className="shrink-0">
+                <input
+                  type="checkbox"
+                  checked={selection.isSelected(item.id)}
+                  onChange={() => selection.toggle(item.id)}
+                  className="h-4 w-4 rounded border-[hsl(var(--border-default))] accent-[hsl(var(--accent-coral))] cursor-pointer"
+                />
+              </div>
+
               {/* Left: week/date */}
-              <div className="flex flex-col items-center w-16 shrink-0">
+              <div className="flex flex-col items-center w-16 shrink-0" onClick={() => onSelect(item)}>
                 <span className="text-xs text-[hsl(var(--text-tertiary))]">Wk {item.week_number}</span>
                 <span className="text-xs text-[hsl(var(--text-tertiary))]">{item.day_label.slice(0, 3)}</span>
               </div>
 
               {/* Center: title + caption */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0" onClick={() => onSelect(item)}>
                 <p className="text-sm font-medium text-[hsl(var(--text-primary))] truncate m-0">{item.post_title}</p>
                 {item.caption && (
                   <p className="text-[13px] text-[hsl(var(--text-secondary))] line-clamp-1 m-0 mt-0.5">{item.caption}</p>
@@ -408,7 +440,15 @@ function ListView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
   )
 }
 
-function WeekView({ items, onSelect }: { items: ContentReview[]; onSelect: (item: ContentReview) => void }) {
+function WeekView({
+  items,
+  onSelect,
+  selection,
+}: {
+  items: ContentReview[]
+  onSelect: (item: ContentReview) => void
+  selection: { isSelected: (id: string) => boolean; toggle: (id: string) => void }
+}) {
   const weeks = new Map<number, ContentReview[]>()
   items.forEach(item => {
     const list = weeks.get(item.week_number) ?? []
@@ -439,13 +479,20 @@ function WeekView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
                   initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2, delay: idx * 0.03 }}
-                  onClick={() => onSelect(item)}
-                  className="flex items-center gap-3 rounded-md p-3 cursor-pointer transition-colors hover:bg-[hsl(var(--bg-elevated))]"
+                  className="flex items-center gap-3 rounded-md p-3 transition-colors hover:bg-[hsl(var(--bg-elevated))]"
                 >
-                  <div className="w-14 shrink-0">
+                  <div className="shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={selection.isSelected(item.id)}
+                      onChange={() => selection.toggle(item.id)}
+                      className="h-4 w-4 rounded border-[hsl(var(--border-default))] accent-[hsl(var(--accent-coral))] cursor-pointer"
+                    />
+                  </div>
+                  <div className="w-14 shrink-0 cursor-pointer" onClick={() => onSelect(item)}>
                     <span className="text-xs text-[hsl(var(--text-tertiary))]">{item.day_label.slice(0, 3)}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 cursor-pointer" onClick={() => onSelect(item)}>
                     <p className="text-sm font-medium text-[hsl(var(--text-primary))] truncate m-0">{item.post_title}</p>
                     <div className="flex items-center gap-2 mt-0.5">
                       <PlatformTags platforms={item.platforms} />
@@ -466,7 +513,23 @@ function WeekView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
   )
 }
 
-function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (item: ContentReview) => void }) {
+function MonthView({
+  items,
+  onSelect,
+  activeItem,
+  onDragStart,
+  onDragEnd,
+  sensors,
+  selection,
+}: {
+  items: ContentReview[]
+  onSelect: (item: ContentReview) => void
+  activeItem: ContentReview | null
+  onDragStart: (event: DragStartEvent) => void
+  onDragEnd: (event: DragEndEvent) => void
+  sensors: ReturnType<typeof useSensors>
+  selection: { isSelected: (id: string) => boolean; toggle: (id: string) => void }
+}) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [direction, setDirection] = useState<'next' | 'prev'>('next')
 
@@ -528,67 +591,65 @@ function MonthView({ items, onSelect }: { items: ContentReview[]; onSelect: (ite
         </Button>
       </div>
 
-      {/* Calendar grid */}
-      <motion.div
-        key={format(currentMonth, 'yyyy-MM')}
-        initial={{ x: direction === 'next' ? 20 : -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.2 }}
+      {/* Calendar grid wrapped in DndContext */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
       >
-        {/* Day headers */}
-        <div className="grid grid-cols-7 mb-1">
-          {days.map(d => (
-            <div key={d} className="text-center text-xs uppercase font-medium text-[hsl(var(--text-tertiary))] py-2">
-              {d}
-            </div>
-          ))}
-        </div>
-
-        {/* Day cells */}
-        <div className="grid grid-cols-7 gap-px w-full">
-          {calendarDays.map((day) => {
-            const dateKey = format(day, 'yyyy-MM-dd')
-            const dayItems = itemsByDate.get(dateKey) ?? []
-            const inMonth = isSameMonth(day, currentMonth)
-            const todayCell = isToday(day)
-
-            return (
-              <div
-                key={dateKey}
-                className={`min-h-[80px] md:min-h-[100px] lg:min-h-[120px] border border-[hsl(var(--border-subtle))] p-1 md:p-2 overflow-hidden ${
-                  !inMonth ? 'bg-[hsl(var(--bg-elevated)/0.5)]' : 'bg-[hsl(var(--bg-surface))]'
-                } ${
-                  todayCell ? 'border-t-2 border-t-[hsl(var(--accent-coral))] bg-[hsl(var(--accent-coral)/0.04)]' : ''
-                }`}
-              >
-                <span className={`text-xs sm:text-sm font-semibold ${
-                  !inMonth
-                    ? 'text-[hsl(var(--text-tertiary)/0.4)]'
-                    : todayCell
-                    ? 'text-[hsl(var(--accent-coral))]'
-                    : 'text-[hsl(var(--text-primary))]'
-                }`}>
-                  {format(day, 'd')}
-                </span>
-                <div className="flex flex-col gap-1 mt-1">
-                  {dayItems.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => onSelect(item)}
-                      className="flex items-center gap-1 rounded px-1 py-0.5 text-left transition-colors hover:bg-[hsl(var(--bg-elevated))] w-full"
-                    >
-                      <StatusBadge status={item.status} className="text-[9px] px-1.5 py-0 shrink-0" />
-                      <span className="text-[10px] sm:text-xs text-[hsl(var(--text-primary))] truncate">
-                        {item.post_title}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+        <motion.div
+          key={format(currentMonth, 'yyyy-MM')}
+          initial={{ x: direction === 'next' ? 20 : -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          {/* Day headers */}
+          <div className="grid grid-cols-7 mb-1">
+            {days.map(d => (
+              <div key={d} className="text-center text-xs uppercase font-medium text-[hsl(var(--text-tertiary))] py-2">
+                {d}
               </div>
-            )
-          })}
-        </div>
-      </motion.div>
+            ))}
+          </div>
+
+          {/* Day cells */}
+          <div className="grid grid-cols-7 gap-px w-full">
+            {calendarDays.map((day) => {
+              const dateKey = format(day, 'yyyy-MM-dd')
+              const dayItems = itemsByDate.get(dateKey) ?? []
+              const inMonth = isSameMonth(day, currentMonth)
+              const todayCell = isToday(day)
+
+              return (
+                <DroppableDateCell
+                  key={dateKey}
+                  dateKey={dateKey}
+                  isCurrentMonth={inMonth}
+                  isToday={todayCell}
+                  dayNumber={format(day, 'd')}
+                >
+                  {dayItems.map(item => (
+                    <DraggableContentCard
+                      key={item.id}
+                      item={item}
+                      onSelect={onSelect}
+                      isSelected={selection.isSelected(item.id)}
+                      onToggleSelect={selection.toggle}
+                      showCheckbox="hover"
+                      enableDrag={true}
+                    />
+                  ))}
+                </DroppableDateCell>
+              )
+            })}
+          </div>
+        </motion.div>
+
+        <DragOverlay>
+          {activeItem && <DragOverlayCard item={activeItem} />}
+        </DragOverlay>
+      </DndContext>
     </div>
   )
 }
@@ -599,101 +660,87 @@ function KanbanView({
   items,
   onSelect,
   onMoveStatus,
+  activeItem,
+  onDragStart,
+  onDragEnd,
+  sensors,
+  selection,
 }: {
   items: ContentReview[]
   onSelect: (item: ContentReview) => void
   onMoveStatus: (id: string, newStatus: ContentStatus) => void
+  activeItem: ContentReview | null
+  onDragStart: (event: DragStartEvent) => void
+  onDragEnd: (event: DragEndEvent) => void
+  sensors: ReturnType<typeof useSensors>
+  selection: { isSelected: (id: string) => boolean; toggle: (id: string) => void }
 }) {
   return (
-    <div className="grid grid-cols-4 gap-4">
-      {kanbanColumns.map(col => {
-        const colItems = items.filter(i => i.status === col.status)
-        return (
-          <div key={col.status}>
-            {/* Column header */}
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-sm font-semibold text-[hsl(var(--text-primary))]">{col.label}</span>
-              <Badge variant="neutral">{colItems.length}</Badge>
-            </div>
-
-            {/* Column body */}
-            <div className="max-h-[calc(100vh-280px)] overflow-y-auto rounded-lg bg-[hsl(var(--bg-elevated))] p-2 min-h-[100px]">
-              {colItems.length === 0 ? (
-                <div className="border-2 border-dashed border-[hsl(var(--border-subtle))] rounded-lg p-8 flex flex-col items-center justify-center gap-2">
-                  <Inbox size={24} className="text-[hsl(var(--text-tertiary))] opacity-40" />
-                  <span className="text-[13px] text-[hsl(var(--text-tertiary))]">No items</span>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  {colItems.map((item, idx) => {
-                    const today = isItemToday(item)
-                    return (
-                      <motion.div
-                        key={item.id}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.2, delay: idx * 0.03 }}
-                        className="bg-[hsl(var(--bg-surface))] border border-[hsl(var(--border-subtle))] rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                      >
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <p
-                            className="text-sm font-medium text-[hsl(var(--text-primary))] line-clamp-2 m-0 flex-1 cursor-pointer"
-                            onClick={() => onSelect(item)}
-                          >
-                            {item.post_title}
-                          </p>
-                          <div className="flex items-center gap-1 shrink-0">
-                            <StatusBadge status={item.status} />
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <button
-                                  className="h-6 w-6 flex items-center justify-center rounded-[var(--radius-sm)] hover:bg-[hsl(var(--bg-elevated))] transition-colors"
-                                  onClick={e => e.stopPropagation()}
-                                >
-                                  <MoreHorizontal className="w-4 h-4 text-[hsl(var(--text-tertiary))]" />
-                                </button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                {kanbanStatusOptions
-                                  .filter(s => s !== item.status)
-                                  .map(s => (
-                                    <DropdownMenuItem
-                                      key={s}
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        onMoveStatus(item.id, s)
-                                      }}
-                                    >
-                                      Move to {s.replace('_', ' ')}
-                                    </DropdownMenuItem>
-                                  ))}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
-                        <div
-                          className="flex items-center gap-2 flex-wrap"
-                          onClick={() => onSelect(item)}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
+      <div className="grid grid-cols-4 gap-4">
+        {kanbanColumns.map(col => {
+          const colItems = items.filter(i => i.status === col.status)
+          return (
+            <DroppableColumn
+              key={col.status}
+              id={col.status}
+              label={col.label}
+              count={colItems.length}
+            >
+              {colItems.map((item) => (
+                <DraggableContentCard
+                  key={item.id}
+                  item={item}
+                  onSelect={onSelect}
+                  isSelected={selection.isSelected(item.id)}
+                  onToggleSelect={selection.toggle}
+                  showCheckbox="always"
+                  enableDrag={true}
+                >
+                  {/* Preserve click-to-move dropdown per D-02 */}
+                  <div className="absolute top-2 right-2 z-10">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="h-6 w-6 flex items-center justify-center rounded-[var(--radius-sm)] hover:bg-[hsl(var(--bg-elevated))] transition-colors"
+                          onClick={e => e.stopPropagation()}
                         >
-                          {item.scheduled_date && (
-                            <span className="text-xs text-[hsl(var(--text-tertiary))]">{formatShortDate(item.scheduled_date)}</span>
-                          )}
-                          <SlideInfo slideCount={item.slide_count} />
-                          <PlatformTags platforms={item.platforms} />
-                          {today && (
-                            <span className="text-[10px] font-semibold text-[hsl(var(--accent-coral))] bg-[hsl(var(--accent-coral)/0.08)] px-1.5 py-0.5 rounded-full">Today</span>
-                          )}
-                        </div>
-                      </motion.div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        )
-      })}
-    </div>
+                          <MoreHorizontal className="w-4 h-4 text-[hsl(var(--text-tertiary))]" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {kanbanStatusOptions
+                          .filter(s => s !== item.status)
+                          .map(s => (
+                            <DropdownMenuItem
+                              key={s}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onMoveStatus(item.id, s)
+                              }}
+                            >
+                              Move to {s.replace('_', ' ')}
+                            </DropdownMenuItem>
+                          ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </DraggableContentCard>
+              ))}
+            </DroppableColumn>
+          )
+        })}
+      </div>
+
+      <DragOverlay>
+        {activeItem && <DragOverlayCard item={activeItem} />}
+      </DragOverlay>
+    </DndContext>
   )
 }
 
@@ -703,10 +750,21 @@ export function ContentPipeline() {
   const [selected, setSelected] = useState<ContentReview | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
+  const [activeItem, setActiveItem] = useState<ContentReview | null>(null)
   const { data: reviews, isLoading } = useContentReviews()
   const updateStatus = useUpdateContentStatus()
+  const updateScheduledDate = useUpdateScheduledDate()
+  const deleteContent = useDeleteContent()
+  const selection = useBulkSelection()
 
   const items = reviews ?? []
+
+  // DnD sensors with distance constraint to allow clicks (per research pitfall 4)
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    })
+  )
 
   const handleSelect = (item: ContentReview) => {
     setSelected(item)
@@ -728,6 +786,72 @@ export function ContentPipeline() {
   const handleMoveStatus = (id: string, newStatus: ContentStatus) => {
     updateStatus.mutate({ id, status: newStatus })
     toast.success(`Moved to ${newStatus.replace('_', ' ')}`)
+  }
+
+  // Drag handlers
+  const handleDragStart = (event: DragStartEvent) => {
+    const draggedId = event.active.id as string
+    const found = items.find(i => i.id === draggedId) ?? null
+    setActiveItem(found)
+  }
+
+  const handleKanbanDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveItem(null)
+    if (!over) return
+
+    const itemId = active.id as string
+    const newStatus = over.id as ContentStatus
+    const item = items.find(i => i.id === itemId)
+    if (!item || item.status === newStatus) return
+
+    updateStatus.mutate({ id: itemId, status: newStatus })
+    toast.success(`Moved to ${newStatus.replace('_', ' ')}`)
+  }
+
+  const handleMonthDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveItem(null)
+    if (!over) return
+
+    const itemId = active.id as string
+    const newDate = over.id as string
+    const item = items.find(i => i.id === itemId)
+    if (!item) return
+
+    // Only update if the date actually changed
+    if (item.scheduled_date === newDate) return
+
+    updateScheduledDate.mutate({ id: itemId, scheduled_date: newDate })
+    toast.success(`Rescheduled to ${newDate}`)
+  }
+
+  // Bulk action handlers
+  const handleBulkApproveAll = () => {
+    selection.selectedIds.forEach(id => {
+      updateStatus.mutate({ id, status: 'approved' })
+    })
+    selection.deselectAll()
+    toast.success('All selected items approved')
+  }
+
+  const handleBulkMoveToDraft = () => {
+    selection.selectedIds.forEach(id => {
+      updateStatus.mutate({ id, status: 'draft' })
+    })
+    selection.deselectAll()
+    toast.success('All selected items moved to draft')
+  }
+
+  const handleBulkDelete = () => {
+    selection.selectedIds.forEach(id => {
+      deleteContent.mutate({ id })
+    })
+    selection.deselectAll()
+  }
+
+  const handleBulkReschedule = () => {
+    // Placeholder -- date picker integration in future iteration
   }
 
   return (
@@ -789,12 +913,43 @@ export function ContentPipeline() {
         </Card>
       ) : (
         <>
-          {view === 'list' && <ListView items={items} onSelect={handleSelect} />}
-          {view === 'week' && <WeekView items={items} onSelect={handleSelect} />}
-          {view === 'month' && <MonthView items={items} onSelect={handleSelect} />}
-          {view === 'kanban' && <KanbanView items={items} onSelect={handleSelect} onMoveStatus={handleMoveStatus} />}
+          {view === 'list' && <ListView items={items} onSelect={handleSelect} selection={selection} />}
+          {view === 'week' && <WeekView items={items} onSelect={handleSelect} selection={selection} />}
+          {view === 'month' && (
+            <MonthView
+              items={items}
+              onSelect={handleSelect}
+              activeItem={activeItem}
+              onDragStart={handleDragStart}
+              onDragEnd={handleMonthDragEnd}
+              sensors={sensors}
+              selection={selection}
+            />
+          )}
+          {view === 'kanban' && (
+            <KanbanView
+              items={items}
+              onSelect={handleSelect}
+              onMoveStatus={handleMoveStatus}
+              activeItem={activeItem}
+              onDragStart={handleDragStart}
+              onDragEnd={handleKanbanDragEnd}
+              sensors={sensors}
+              selection={selection}
+            />
+          )}
         </>
       )}
+
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        count={selection.count}
+        onApproveAll={handleBulkApproveAll}
+        onMoveToDraft={handleBulkMoveToDraft}
+        onReschedule={handleBulkReschedule}
+        onDelete={handleBulkDelete}
+        onDeselectAll={selection.deselectAll}
+      />
 
       {/* Detail Modal */}
       <ContentReviewModal
