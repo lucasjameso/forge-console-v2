@@ -18,9 +18,7 @@ export function usePageFeedback(filter?: 'open' | 'done') {
     queryKey: ['page_feedback', filter],
     queryFn: async () => {
       if (!isSupabaseConfigured) return []
-      // page_feedback is not in the generated Database type -- cast to bypass
-      const base = supabase.from('page_feedback') as ReturnType<typeof supabase.from>
-      let query = base.select('*').order('created_at', { ascending: false })
+      let query = supabase.from('page_feedback').select('*').order('created_at', { ascending: false })
       if (filter === 'open') query = query.in('status', ['open', 'in_progress'])
       if (filter === 'done') query = query.eq('status', 'done')
       const { data, error } = await query
@@ -35,8 +33,7 @@ export function useSubmitFeedback() {
   return useMutation({
     mutationFn: async (input: { page: string; feedback_type: 'fix' | 'suggestion'; content: string }) => {
       if (!isSupabaseConfigured) return
-      // page_feedback is not in the generated Database type -- cast to bypass
-      const { error } = await (supabase.from('page_feedback') as ReturnType<typeof supabase.from>).insert(input as never)
+      const { error } = await supabase.from('page_feedback').insert(input as never)
       if (error) throw error
     },
     onSuccess: () => {
