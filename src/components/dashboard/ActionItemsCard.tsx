@@ -81,7 +81,7 @@ export function ActionItemsCard() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2, delay: idx < 5 ? idx * 0.05 : 0, ease: [0.16, 1, 0.3, 1] }}
-                className="py-3 px-3.5 rounded-[10px] border border-[hsl(var(--border-subtle))] bg-[hsl(var(--bg-elevated))] flex flex-col gap-1.5"
+                className="py-3 px-3.5 rounded-[var(--radius-md)] border border-[hsl(var(--border-subtle))] bg-[hsl(var(--bg-elevated))] flex flex-col gap-1.5"
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-body-sm font-medium text-[hsl(var(--text-primary))] flex-1">

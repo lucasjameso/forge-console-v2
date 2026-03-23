@@ -98,7 +98,7 @@ function ActivePlatformCard({ platform, index }: { platform: SocialPlatform; ind
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-[10px] bg-[hsl(var(--bg-elevated))] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] flex items-center justify-center">
               <Icon size={18} className="text-[hsl(var(--accent-navy))]" />
             </div>
             <div>
@@ -188,7 +188,7 @@ function SetupPlatformCard({ platform, index }: { platform: SocialPlatform; inde
       className="flex"
     >
       <Card className="p-4 flex items-center gap-3 flex-1 border-l-4 border-l-[hsl(var(--status-warning))]">
-        <div className="w-9 h-9 rounded-[10px] bg-[hsl(var(--bg-elevated))] flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] flex items-center justify-center shrink-0">
           <Icon size={18} className="text-[hsl(var(--accent-navy))]" />
         </div>
         <div className="flex-1 min-w-0">

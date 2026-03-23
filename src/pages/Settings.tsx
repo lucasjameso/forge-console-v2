@@ -183,7 +183,7 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center ${
+            <div className={`w-9 h-9 rounded-[var(--radius-md)] flex items-center justify-center ${
               connStatus === 'connected'
                 ? 'bg-[hsl(var(--status-success-bg))]'
                 : 'bg-[hsl(var(--bg-elevated))]'

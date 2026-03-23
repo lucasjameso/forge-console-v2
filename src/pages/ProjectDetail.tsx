@@ -77,7 +77,7 @@ function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: 
         <span className="text-body-sm font-semibold text-[hsl(var(--text-primary))]">{title}</span>
         <span className="text-caption">({tasks.length})</span>
       </div>
-      <div className="flex flex-col gap-2 min-h-[60px] p-2 rounded-[10px] bg-[hsl(var(--bg-elevated))] border border-dashed border-[hsl(var(--border-subtle))]">
+      <div className="flex flex-col gap-2 min-h-[60px] p-2 rounded-[var(--radius-md)] bg-[hsl(var(--bg-elevated))] border border-dashed border-[hsl(var(--border-subtle))]">
         {tasks.map((task) => (
           <div
             key={task.id}
@@ -195,7 +195,7 @@ export function ProjectDetail() {
               {openActions.map((item) => (
                 <div
                   key={item.id}
-                  className={`py-3 px-4 rounded-[10px] border border-[hsl(var(--border-subtle))] flex items-center justify-between gap-3 ${
+                  className={`py-3 px-4 rounded-[var(--radius-md)] border border-[hsl(var(--border-subtle))] flex items-center justify-between gap-3 ${
                     item.urgency === 'high'
                       ? 'bg-[hsl(var(--status-error-bg))]'
                       : 'bg-[hsl(var(--bg-elevated))]'
@@ -222,12 +222,12 @@ export function ProjectDetail() {
                 <span className="text-body">{project.current_phase ?? 'No phase set'}</span>
                 <span className="text-xl font-bold text-[hsl(var(--text-primary))]">{project.progress_pct}%</span>
               </div>
-              <div className="w-full h-2.5 rounded-[5px] bg-[hsl(var(--bg-elevated))] overflow-hidden">
+              <div className="w-full h-2.5 rounded-[var(--radius)] bg-[hsl(var(--bg-elevated))] overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${project.progress_pct}%` }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="h-full rounded-[5px] bg-[hsl(var(--accent-coral))]"
+                  className="h-full rounded-[var(--radius)] bg-[hsl(var(--accent-coral))]"
                 />
               </div>
             </div>

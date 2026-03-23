@@ -744,7 +744,7 @@ export function ContentPipeline() {
                 <button
                   key={vm.key}
                   onClick={() => setView(vm.key)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] border-none cursor-pointer text-xs transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-lg)] border-none cursor-pointer text-xs transition-all ${
                     isActive
                       ? 'font-semibold text-[hsl(var(--text-primary))] bg-[hsl(var(--bg-surface))] shadow-card'
                       : 'text-[hsl(var(--text-tertiary))] bg-transparent'
