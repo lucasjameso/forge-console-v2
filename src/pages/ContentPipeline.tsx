@@ -10,10 +10,6 @@ import {
   Layers,
   Inbox,
   Plus,
-  Linkedin,
-  BookOpen,
-  FileText,
-  ShoppingBag,
 } from 'lucide-react'
 import {
   format,
@@ -25,10 +21,11 @@ import {
   endOfWeek,
   eachDayOfInterval,
   isSameMonth,
-
+  getWeek,
   isToday,
   parseISO,
 } from 'date-fns'
+import { cn } from '@/lib/utils'
 import { PageShell } from '@/components/layout/PageShell'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { Badge } from '@/components/ui/badge'
@@ -43,11 +40,18 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { toast } from 'sonner'
 import { useContentReviews, useUpdateContentStatus } from '@/hooks/useContentReviews'
 import { ContentReviewModal } from '@/components/pipeline/ContentReviewModal'
 import { formatShortDate } from '@/lib/utils'
-import type { ContentReview, ContentStatus } from '@/types/database'
+import type { ContentReview, ContentStatus, ContentType } from '@/types/database'
 
 type ViewMode = 'list' | 'week' | 'month' | 'kanban'
 
@@ -58,12 +62,6 @@ const viewModes: { key: ViewMode; label: string; icon: React.ComponentType<{ siz
   { key: 'kanban', label: 'Kanban', icon: Columns3 },
 ]
 
-const PLATFORM_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  linkedin: Linkedin,
-  goodreads: BookOpen,
-  medium: FileText,
-  amazon: ShoppingBag,
-}
 
 const kanbanColumns: { status: ContentStatus; label: string }[] = [
   { status: 'draft', label: 'Draft' },
@@ -95,7 +93,65 @@ function isItemToday(item: ContentReview): boolean {
   return d ? isToday(d) : false
 }
 
+// ----- Character Count Indicator -----
+function CharCountIndicator({ count }: { count: number }) {
+  const color =
+    count >= 1200 && count <= 1600
+      ? 'text-[hsl(var(--status-success))]'
+      : count > 3000
+        ? 'text-[hsl(var(--status-error))]'
+        : 'text-[hsl(var(--status-warning))]'
+  return (
+    <span className={cn('text-xs font-medium', color)}>
+      {count.toLocaleString()} characters
+      {count >= 1200 && count <= 1600 && ' (optimal)'}
+    </span>
+  )
+}
+
+// ----- Platform helpers -----
+const addContentPlatformOptions = ['linkedin', 'facebook', 'x', 'instagram', 'tiktok']
+
+function platformDisplayName(p: string): string {
+  if (p === 'x') return 'X/Twitter'
+  return p.charAt(0).toUpperCase() + p.slice(1)
+}
+
+// ----- Platform Tags Component -----
+function PlatformTags({ platforms }: { platforms: string[] }) {
+  const displayPlatforms = platforms.length > 0 ? platforms : ['linkedin']
+  return (
+    <div className="flex gap-1">
+      {displayPlatforms.map(p => (
+        <Badge key={p} variant="outline" className="text-[10px] capitalize">{platformDisplayName(p)}</Badge>
+      ))}
+    </div>
+  )
+}
+
 // ----- Add Content Modal -----
+interface NewContentState {
+  title: string
+  body: string
+  content_type: ContentType
+  scheduledDate: string
+  dayLabel: string
+  platforms: string[]
+  series: string
+  notes: string
+}
+
+const initialNewContent: NewContentState = {
+  title: '',
+  body: '',
+  content_type: 'text',
+  scheduledDate: '',
+  dayLabel: 'Monday',
+  platforms: ['linkedin'],
+  series: '',
+  notes: '',
+}
+
 function AddContentDialog({
   open,
   onOpenChange,
@@ -103,38 +159,32 @@ function AddContentDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const [title, setTitle] = useState('')
-  const [caption, setCaption] = useState('')
-  const [weekNumber, setWeekNumber] = useState('')
-  const [dayLabel, setDayLabel] = useState('Monday')
-  const [scheduledDate, setScheduledDate] = useState('')
-  const [platforms, setPlatforms] = useState<string[]>(['linkedin'])
+  const [newContent, setNewContent] = useState<NewContentState>(initialNewContent)
 
   const dayOptions = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-  const platformOptions = [
-    { key: 'linkedin', label: 'LinkedIn' },
-    { key: 'medium', label: 'Medium' },
-    { key: 'goodreads', label: 'Goodreads' },
-    { key: 'amazon', label: 'Amazon' },
-  ]
+
+  const weekNum = newContent.scheduledDate
+    ? getWeek(new Date(newContent.scheduledDate), { weekStartsOn: 1 })
+    : null
 
   const togglePlatform = (p: string) => {
-    setPlatforms(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p])
+    setNewContent(prev => ({
+      ...prev,
+      platforms: prev.platforms.includes(p)
+        ? prev.platforms.filter(x => x !== p)
+        : [...prev.platforms, p],
+    }))
   }
 
   const handleCreate = () => {
-    // Stub: just show success for now; real mutation added when Supabase is wired
-    toast.success('Content created as draft', { description: title })
-    setTitle('')
-    setCaption('')
-    setWeekNumber('')
-    setScheduledDate('')
+    toast.success('Content created as draft', { description: newContent.title })
+    setNewContent(initialNewContent)
     onOpenChange(false)
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[540px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-[hsl(var(--text-primary))]">Add Content</DialogTitle>
           <DialogDescription className="text-sm text-[hsl(var(--text-secondary))]">
@@ -148,42 +198,88 @@ function AddContentDialog({
             <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Title</label>
             <input
               type="text"
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground"
+              className="w-full rounded-[var(--radius-md)] border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground"
               placeholder="Post title..."
-              value={title}
-              onChange={e => setTitle(e.target.value)}
+              value={newContent.title}
+              onChange={e => setNewContent(prev => ({ ...prev, title: e.target.value }))}
             />
           </div>
 
-          {/* Caption */}
+          {/* Post Body */}
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Caption</label>
+            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Post Body</label>
             <textarea
-              className="w-full min-h-[100px] resize-y rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
-              placeholder="Write your caption..."
-              value={caption}
-              onChange={e => setCaption(e.target.value)}
+              className="w-full min-h-[300px] resize-y rounded-[var(--radius-md)] border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
+              placeholder="Write your post content..."
+              value={newContent.body}
+              onChange={e => setNewContent(prev => ({ ...prev, body: e.target.value }))}
             />
+            <div className="mt-1">
+              <CharCountIndicator count={newContent.body.length} />
+            </div>
           </div>
 
-          {/* Week / Day row */}
+          {/* Content Type */}
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Content Type</label>
+            <Select
+              value={newContent.content_type}
+              onValueChange={(v: ContentType) => setNewContent(prev => ({ ...prev, content_type: v }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="text">Text Post</SelectItem>
+                <SelectItem value="carousel">Carousel</SelectItem>
+                <SelectItem value="visual_quote">Visual Quote</SelectItem>
+                <SelectItem value="poll">Poll</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Platforms */}
+          <div>
+            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Platforms</label>
+            <div className="flex flex-wrap gap-2">
+              {addContentPlatformOptions.map(p => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => togglePlatform(p)}
+                  className={cn(
+                    'px-3 py-1 text-xs rounded-[var(--radius-pill)] border transition-colors capitalize',
+                    newContent.platforms.includes(p)
+                      ? 'bg-[hsl(var(--accent-coral))] text-white border-[hsl(var(--accent-coral))]'
+                      : 'border-[hsl(var(--border-default))] text-[hsl(var(--text-secondary))] hover:bg-[hsl(var(--bg-elevated))]'
+                  )}
+                >
+                  {platformDisplayName(p)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Scheduled date + Week number */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Week Number</label>
+              <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Scheduled Date</label>
               <input
-                type="number"
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground"
-                placeholder="12"
-                value={weekNumber}
-                onChange={e => setWeekNumber(e.target.value)}
+                type="date"
+                className="w-full rounded-[var(--radius-md)] border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10"
+                value={newContent.scheduledDate}
+                onChange={e => setNewContent(prev => ({ ...prev, scheduledDate: e.target.value }))}
               />
+              {weekNum !== null && (
+                <div className="text-sm text-[hsl(var(--text-secondary))] mt-1">Week {weekNum}</div>
+              )}
             </div>
             <div>
               <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Day</label>
               <select
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10"
-                value={dayLabel}
-                onChange={e => setDayLabel(e.target.value)}
+                className="w-full rounded-[var(--radius-md)] border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10"
+                value={newContent.dayLabel}
+                onChange={e => setNewContent(prev => ({ ...prev, dayLabel: e.target.value }))}
               >
                 {dayOptions.map(d => (
                   <option key={d} value={d}>{d}</option>
@@ -192,36 +288,27 @@ function AddContentDialog({
             </div>
           </div>
 
-          {/* Scheduled date */}
+          {/* Series/Arc */}
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Scheduled Date</label>
+            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Series / Arc</label>
             <input
-              type="date"
-              className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10"
-              value={scheduledDate}
-              onChange={e => setScheduledDate(e.target.value)}
+              type="text"
+              className="w-full rounded-[var(--radius-md)] border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground"
+              placeholder="Series/Arc tag (e.g., CLARITY Launch, Ridgeline Origins)"
+              value={newContent.series}
+              onChange={e => setNewContent(prev => ({ ...prev, series: e.target.value }))}
             />
           </div>
 
-          {/* Platforms */}
+          {/* Notes */}
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Platforms</label>
-            <div className="flex flex-wrap gap-2">
-              {platformOptions.map(p => (
-                <button
-                  key={p.key}
-                  type="button"
-                  onClick={() => togglePlatform(p.key)}
-                  className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${
-                    platforms.includes(p.key)
-                      ? 'bg-[hsl(var(--accent-coral))] text-white border-transparent'
-                      : 'bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] border-[hsl(var(--border-subtle))]'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
+            <label className="block text-xs font-medium uppercase tracking-wide text-[hsl(var(--text-tertiary))] mb-1.5">Notes</label>
+            <textarea
+              className="w-full min-h-[60px] resize-y rounded-[var(--radius-md)] border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
+              placeholder="Internal notes (not published)"
+              value={newContent.notes}
+              onChange={e => setNewContent(prev => ({ ...prev, notes: e.target.value }))}
+            />
           </div>
         </div>
 
@@ -229,7 +316,7 @@ function AddContentDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button
             onClick={handleCreate}
-            disabled={!title.trim()}
+            disabled={!newContent.title.trim()}
             className="bg-[hsl(var(--accent-coral))] hover:bg-[hsl(var(--accent-coral-hover))] text-white gap-1.5"
           >
             <Plus size={14} />
@@ -246,7 +333,6 @@ function ListView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
   return (
     <div className="flex flex-col gap-2.5">
       {items.map((item, idx) => {
-        const PIcon = item.platforms[0] ? PLATFORM_ICONS[item.platforms[0]] ?? FileText : FileText
         const today = isItemToday(item)
         return (
           <motion.div
@@ -275,7 +361,7 @@ function ListView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
                 )}
                 {/* Bottom metadata */}
                 <div className="flex items-center gap-3 mt-1">
-                  <PIcon size={13} className="text-[hsl(var(--text-tertiary))]" />
+                  <PlatformTags platforms={item.platforms} />
                   <SlideInfo slideCount={item.slide_count} />
                 </div>
               </div>
@@ -322,7 +408,6 @@ function WeekView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
           {/* Items */}
           <div className="flex flex-col gap-2 p-4">
             {weekItems.map((item, idx) => {
-              const PIcon = item.platforms[0] ? PLATFORM_ICONS[item.platforms[0]] ?? FileText : FileText
               const today = isItemToday(item)
               return (
                 <motion.div
@@ -339,7 +424,7 @@ function WeekView({ items, onSelect }: { items: ContentReview[]; onSelect: (item
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[hsl(var(--text-primary))] truncate m-0">{item.post_title}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <PIcon size={12} className="text-[hsl(var(--text-tertiary))]" />
+                      <PlatformTags platforms={item.platforms} />
                       <SlideInfo slideCount={item.slide_count} />
                     </div>
                   </div>
@@ -507,7 +592,6 @@ function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (it
               ) : (
                 <div className="flex flex-col gap-2">
                   {colItems.map((item, idx) => {
-                    const PIcon = item.platforms[0] ? PLATFORM_ICONS[item.platforms[0]] ?? FileText : FileText
                     const today = isItemToday(item)
                     return (
                       <motion.div
@@ -529,7 +613,7 @@ function KanbanView({ items, onSelect }: { items: ContentReview[]; onSelect: (it
                             <span className="text-xs text-[hsl(var(--text-tertiary))]">{formatShortDate(item.scheduled_date)}</span>
                           )}
                           <SlideInfo slideCount={item.slide_count} />
-                          <PIcon size={14} className="text-[hsl(var(--text-tertiary))]" />
+                          <PlatformTags platforms={item.platforms} />
                           {today && (
                             <span className="text-[10px] font-semibold text-[hsl(var(--accent-coral))] bg-[hsl(var(--accent-coral)/0.08)] px-1.5 py-0.5 rounded-full">Today</span>
                           )}

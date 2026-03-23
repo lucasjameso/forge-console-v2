@@ -89,6 +89,7 @@ export type Urgency = 'high' | 'medium' | 'low'
 export type BrainDumpStatus = 'pending' | 'processed' | 'dismissed'
 export type BrainDumpTaskStatus = 'pending' | 'assigned' | 'done'
 export type ContentStatus = 'draft' | 'pending' | 'approved' | 'rejected' | 'posted'
+export type ContentType = 'text' | 'carousel' | 'visual_quote' | 'poll'
 export type SocialPlatformStatus = 'active' | 'setup_needed' | 'inactive'
 export type PodcastStatus = 'outreach' | 'scheduled' | 'recorded' | 'published'
 export type SessionType = 'claude_code' | 'n8n' | 'slack' | 'cowork' | 'system' | 'manual'
@@ -207,9 +208,16 @@ export interface ContentReview {
   slide_count: number
   revision: number
   status: ContentStatus
+  content_type: ContentType
   export_paths: string[]
   excalidraw_paths: string[]
   platforms: string[]
+  parent_id: string | null
+  platform_variant: string | null
+  series: string | null
+  notes: string | null
+  rejection_reason: string | null
+  slides: Array<{ title: string; description: string }> | null
   feedback: string | null
   slack_ts: string | null
   slack_channel: string | null
