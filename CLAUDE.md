@@ -15,7 +15,7 @@ Phases 1-7 were completed in a fast overnight build. All 7 pages render, the bui
 - **Code rules**: No em dashes anywhere. No spinners (skeleton shimmer only). No `any` in TypeScript. No hardcoded colors (CSS variables only). Framer Motion for all animations. React Query for all data fetching. `npm run build` must pass after every change.
 - **Deployment**: Cloudflare Pages via Wrangler.
 - **Single user**: No auth, no multi-tenant, no user management.
-- **Design system**: Must follow idea.md spec (colors, typography, spacing, component patterns).
+- **Design system**: Must follow docs/idea.md spec (colors, typography, spacing, component patterns).
 <!-- GSD:project-end -->
 
 <!-- GSD:stack-start source:codebase/STACK.md -->

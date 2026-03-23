@@ -58,8 +58,8 @@ Every page should feel like a premium, Apple-quality product that Lucas wants to
 ## Context
 
 - The existing code was built overnight for speed, not quality. Every page needs a visual polish pass.
-- The design system spec in idea.md defines the target: Apple-inspired, clean and airy, generous whitespace, Inter font, specific color tokens.
-- shadcn/ui was specified in the original idea.md but not adopted in the fast build. This redesign adopts it properly.
+- The design system spec in docs/idea.md defines the target: Apple-inspired, clean and airy, generous whitespace, Inter font, specific color tokens.
+- shadcn/ui was specified in the original docs/idea.md but not adopted in the fast build. This redesign adopts it properly.
 - The app uses mock data with Supabase fallback. Redesign continues against mock data; Supabase seeding happens later.
 - Dashboard is the worst visual offender and sets the tone for the entire app.
 - Mobile experience is NOT responsive desktop -- it is a purpose-built capture tool for on-the-go brain dumps and quick task allocation. Type a thought, close the app, process it later at the desk.
@@ -72,7 +72,7 @@ Every page should feel like a premium, Apple-quality product that Lucas wants to
 - **Code rules**: No em dashes anywhere. No spinners (skeleton shimmer only). No `any` in TypeScript. No hardcoded colors (CSS variables only). Framer Motion for all animations. React Query for all data fetching. `npm run build` must pass after every change.
 - **Deployment**: Cloudflare Pages via Wrangler.
 - **Single user**: No auth, no multi-tenant, no user management.
-- **Design system**: Must follow idea.md spec (colors, typography, spacing, component patterns).
+- **Design system**: Must follow docs/idea.md spec (colors, typography, spacing, component patterns).
 
 ## Key Decisions
 
