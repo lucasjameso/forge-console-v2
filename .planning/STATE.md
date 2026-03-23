@@ -92,6 +92,12 @@ None yet.
 - Phase 5: Verify brain_dump_tasks schema supports assignment mutation before building UI
 - Phase 8: iOS Safari keyboard behavior requires real iPhone testing
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260322-tz1 | Update Forge Console icon across entire project | 2026-03-23 | a5338ea | [260322-tz1-update-forge-console-icon-across-entire-](./quick/260322-tz1-update-forge-console-icon-across-entire-/) |
+
 ## Session Continuity
 
 Last session: 2026-03-23T01:38:23.616Z
