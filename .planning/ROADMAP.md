@@ -2,7 +2,9 @@
 
 ## Overview
 
-This milestone transforms the working Forge Console prototype into a premium, Apple-quality command center. The path starts with adopting shadcn/ui as the component foundation (prerequisite for all visual work), then establishes global design standards, redesigns the dashboard, polishes every remaining page, builds the three major feature additions (brain dump task flow, content pipeline depth, social media/podcast tracking), adds mobile capture as an independent route, and ships to Cloudflare Pages. Every phase delivers a coherent, verifiable capability that builds on the previous.
+This milestone transforms the working Forge Console prototype into a premium, Apple-quality command center. The path starts with adopting shadcn/ui as the component foundation (prerequisite for all visual work), then establishes global design standards, redesigns the dashboard, fixes every visual and UX issue across all pages, builds deep feature additions for every major page, adds shared interactive components for Dashboard and Project Detail, and ships with settings depth, mobile capture, and production deployment. Every phase delivers a coherent, verifiable capability that builds on the previous.
+
+**Feedback-Driven:** Phases 4-9 are enriched with 150 specific feedback items captured via the page feedback system on 2026-03-22. Authoritative specs live in `.planning/feedback/PHASE-{NN}-*-SPEC.md`.
 
 ## Phases
 
@@ -12,15 +14,15 @@ This milestone transforms the working Forge Console prototype into a premium, Ap
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Component Foundation** - Adopt shadcn/ui with design token mapping, toast system, error boundaries, and favicon
-- [ ] **Phase 2: Global Design Standards** - Establish sidebar polish, card system, typography hierarchy, and spacing rules app-wide
-- [ ] **Phase 3: Dashboard Redesign** - Rebuild dashboard with dense grid layout, stat hierarchy, project indicators, and content calendar strip
-- [ ] **Phase 4: Page-by-Page Visual Polish** - Apply design standards to all remaining pages (Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings)
-- [ ] **Phase 5: Brain Dump Task Flow** - Wire parsed brain dump tasks into project boards with assign, create, batch process, and bulk actions
-- [ ] **Phase 6: Content Pipeline Features** - Add caption editing, Slack webhook integration, and kanban drag-and-drop
-- [ ] **Phase 7: Social Media and Podcast** - Build cross-platform content calendar and podcast guest tracker with pipeline management
-- [ ] **Phase 8: Mobile Capture** - Purpose-built /capture route for iPhone quick-capture with optimistic submit
-- [ ] **Phase 9: Deployment and Hardening** - Claude API proxy, Cloudflare Pages deployment, production env vars, and smoke test
+- [x] **Phase 1: Component Foundation** - Adopt shadcn/ui with design token mapping, toast system, error boundaries, and favicon
+- [x] **Phase 2: Global Design Standards** - Establish sidebar polish, card system, typography hierarchy, and spacing rules app-wide
+- [x] **Phase 3: Dashboard Redesign** - Rebuild dashboard with dense grid layout, stat hierarchy, project indicators, and content calendar strip
+- [ ] **Phase 4: Visual Polish (All Pages)** - Fix every visual, UX, and data issue across all 7 pages (64 fix items from feedback)
+- [ ] **Phase 5: Brain Dump Depth** - Transform brain dump from simple capture into full thought-to-action pipeline with project routing, agent refinement, and task creation
+- [ ] **Phase 6: Content Pipeline Depth** - Transform content pipeline into a full content management and publishing workflow with calendar nav, drag-drop, templates, and analytics
+- [ ] **Phase 7: Social Media + Activity Log** - Transform both pages from static directories into dynamic dashboards with setup wizards, growth tracking, session grouping, and real-time updates
+- [ ] **Phase 8: Dashboard + Project Detail Power Features** - Build shared interactive components (task modals, action items, quick capture, subtask system, kanban board) powering both command centers
+- [ ] **Phase 9: Settings + Feedback Page + Mobile Capture + Deployment** - Complete the app with settings depth, dedicated feedback page, mobile capture route, and Cloudflare Pages deployment
 
 ## Phase Details
 
@@ -28,13 +30,13 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: The app runs on shadcn/ui primitives with a unified design token system, consistent feedback via toasts, graceful error handling, and a branded favicon
 **Depends on**: Nothing (first phase)
 **Requirements**: FOUN-01, FOUN-02, FOUN-03, FOUN-04, FOUN-05
+**Status**: Complete
 **Success Criteria** (what must be TRUE):
   1. All buttons, cards, badges, inputs, and form elements render as shadcn/ui components with Forge Console design tokens (coral primary, navy accent, Inter font)
   2. Every mutating user action (save, create, delete, approve, reject) triggers a visible toast notification confirming the result
   3. Navigating to a page with a simulated error shows a graceful fallback UI instead of a white screen
   4. The browser tab displays a coral F on navy background as the favicon
   5. No orphaned custom CSS component classes remain in globals.css (all replaced by shadcn primitives)
-**Plans**: 3 plans
 
 Plans:
 - [x] 01-01-PLAN.md -- shadcn/ui init, token bridge, font migration, favicon
@@ -45,12 +47,12 @@ Plans:
 **Goal**: Every page in the app shares consistent sidebar polish, card styling, typography hierarchy, and spacing -- establishing the visual quality bar
 **Depends on**: Phase 1
 **Requirements**: VISL-01, VISL-02, VISL-03, VISL-04
+**Status**: Complete
 **Success Criteria** (what must be TRUE):
   1. Sidebar has refined spacing, visual weight, and premium feel that matches the shadcn design system
   2. All cards across every page use 24px padding, 14px radius, 1px border, and subtle hover shadow (0 2px 8px rgba(0,0,0,0.06))
   3. Typography hierarchy is consistent everywhere: 28px page titles, 18px section headers, 15px card titles, 14px body text, 12px meta text
   4. Section gaps are 32-40px and card gaps are 20-24px uniformly across all pages
-**Plans**: 3 plans
 
 Plans:
 - [x] 02-01-PLAN.md -- Warm palette tokens, typography classes, Card/Button component fixes
@@ -61,124 +63,136 @@ Plans:
 **Goal**: The dashboard is a dense, scannable command center that surfaces project health, action items, and upcoming content at a glance
 **Depends on**: Phase 2
 **Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06
+**Status**: Complete
 **Success Criteria** (what must be TRUE):
   1. Dashboard renders a 2-3 column grid at 1440px+ with clear visual hierarchy between sections
   2. Key stats (tasks, posts, brain dumps) display as large 36px numbers with small labels, scannable in under 2 seconds
   3. Project cards show color-coded "days since last activity" indicators (green under 24h, amber 1-3 days, red over 3 days)
   4. A 7-day content calendar strip shows upcoming scheduled posts inline on the dashboard
   5. Action items from all projects appear aggregated and sorted by urgency
-**Plans**: 2 plans
 
 Plans:
 - [x] 03-01-PLAN.md -- Stat tiles row, system health strip, action items cap, dashboard layout rebuild
 - [x] 03-02-PLAN.md -- Project cards with days-since indicators, 7-day content calendar strip
 
-### Phase 4: Page-by-Page Visual Polish
-**Goal**: Every remaining page (Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings) meets the same premium quality bar as the dashboard
+### Phase 4: Visual Polish (All Pages)
+**Goal**: Fix every visual, UX, and data issue identified across all 7 pages so every screen meets the premium quality bar
 **Depends on**: Phase 3
-**Requirements**: VISL-05, VISL-06, VISL-07, VISL-08, VISL-09, VISL-10, VISL-11
+**Requirements**: VISL-05, VISL-06, VISL-07, VISL-08, VISL-09, VISL-10, VISL-11, DFIX-01 through DFIX-08, BFIX-01 through BFIX-08, CFIX-01 through CFIX-12, SFIX-01 through SFIX-12, STFIX-01 through STFIX-12, AFIX-01 through AFIX-12
+**Feedback Spec**: `.planning/feedback/PHASE-04-FIXES-SPEC.md` (64 items)
 **Success Criteria** (what must be TRUE):
-  1. Projects page has proper card breathing room, consistent spacing, and polished visual presentation
-  2. ProjectDetail page renders with command-center depth showing project status, task board, and activity in a dense but clear layout
-  3. BrainDump page has clear visual flow from input to parsed results to pending tasks
-  4. ContentPipeline page looks polished across all 4 view modes (list, week, month, kanban)
-  5. SocialMedia, ActivityLog, and Settings pages all meet the design system standards with proper card layouts, timeline spacing, and integration card presentation
-**Plans**: TBD
+  1. Dashboard: priority badges use correct colors (red/amber/green), progress bars reflect project health, content calendar shows intelligent week, greeting is contextual
+  2. Brain Dump: project selector on input, history grouped by day with project colors, expanded entries show parsed output properly, processing shimmer visible
+  3. Content Pipeline: month view is a real calendar with dates on every cell, navigation arrows, today indicator, consistent status badges, "Add Content" button
+  4. Social Media: real brand icons on all platforms, cards sized by importance, stats moved to top, CLARITY launch badges, consistent density
+  5. Activity Log: entries grouped by day with sticky headers, tiered visual weight, color-coded dots, real-time search, pagination
+  6. Settings: brand logos on integrations, feedback log compact with markdown rendering, connection test buttons, organized sections
+  7. All pages use consistent project badge colors, recency indicators, and status badge styling
 
 Plans:
 - [ ] 04-01: TBD
 - [ ] 04-02: TBD
 - [ ] 04-03: TBD
 
-### Phase 5: Brain Dump Task Flow
-**Goal**: Parsed brain dump tasks flow seamlessly into project task boards, completing the capture-to-action pipeline
+### Phase 5: Brain Dump Depth
+**Goal**: Transform Brain Dump from a simple capture tool into a full thought-to-action pipeline with project routing, AI refinement, task creation, and analytics
 **Depends on**: Phase 4
-**Requirements**: BRAIN-01, BRAIN-02, BRAIN-03, BRAIN-04, BRAIN-05
+**Requirements**: BRAIN-01 through BRAIN-12, BSUG-01 through BSUG-12
+**Feedback Spec**: `.planning/feedback/PHASE-05-BRAIN-DUMP-SPEC.md` (12 suggestions)
 **Success Criteria** (what must be TRUE):
-  1. Each parsed brain dump task shows an "Assign to [Project]" action that lists all active projects
-  2. Assigning a brain dump task creates a real task on the target project's kanban board and the task appears immediately
-  3. Claude API parsing detects project context from task content and suggests the matching project
-  4. A batch processing view shows all unprocessed tasks grouped by their source brain dump
-  5. User can select multiple pending tasks and bulk assign or dismiss them in one action
-**Plans**: TBD
+  1. Each brain dump can be routed to a specific project via selector pills that persist between submissions
+  2. The 5-stage pipeline (Capture -> Parse -> Refine -> Approve -> Action) is visible on each expanded entry
+  3. Parsed tasks can be created in project boards with one click ("Create task") or batch ("Create all")
+  4. History is filterable by project with count badges, grouped by day, and searchable
+  5. Analytics strip shows capture count, action rate, and most active project
 
 Plans:
 - [ ] 05-01: TBD
 - [ ] 05-02: TBD
 
-### Phase 6: Content Pipeline Features
-**Goal**: The content pipeline supports the full review workflow with inline editing, Slack notifications, and drag-and-drop kanban management
+### Phase 6: Content Pipeline Depth
+**Goal**: Transform the content pipeline into a full content management and publishing workflow with calendar navigation, drag-drop rescheduling, AI editing, templates, and analytics
 **Depends on**: Phase 4
-**Requirements**: CONT-01, CONT-02, CONT-03, CONT-04
+**Requirements**: CONT-01 through CONT-12, CSUG-01 through CSUG-12
+**Feedback Spec**: `.planning/feedback/PHASE-06-CONTENT-PIPELINE-SPEC.md` (12 suggestions)
 **Success Criteria** (what must be TRUE):
-  1. User can click a post caption in the content detail view, edit it inline, and save or cancel the change
-  2. Approving a content item fires a Slack webhook to #content-queue with the post title and new status
-  3. Rejecting a content item fires a Slack webhook to #content-queue with the post title, status, and feedback
-  4. User can drag content cards between status columns in kanban view and the status updates persist
-**Plans**: TBD
+  1. Calendar navigation allows browsing months forward/back with slide animations and a "Today" button
+  2. Content items can be dragged between days in month view to reschedule (updates Supabase, shows toast)
+  3. Caption editing in detail modal includes character count and "Refine with AI" integration
+  4. Bulk actions (approve all, reschedule, delete) work via floating action bar when items are selected
+  5. Analytics strip shows monthly summary, posting cadence indicator, and gap alerts
 
 Plans:
 - [ ] 06-01: TBD
 - [ ] 06-02: TBD
 
-### Phase 7: Social Media and Podcast
-**Goal**: The social media page becomes a cross-platform content hub with calendar visibility and podcast guest pipeline management
+### Phase 7: Social Media + Activity Log
+**Goal**: Transform both pages from static directories into dynamic dashboards with setup wizards, growth tracking, session grouping, and real-time activity updates
 **Depends on**: Phase 4
-**Requirements**: SOCL-01, SOCL-02, SOCL-03, SOCL-04
+**Requirements**: SOCL-01 through SOCL-12, SSUG-01 through SSUG-12, ASUG-01 through ASUG-12
+**Feedback Spec**: `.planning/feedback/PHASE-07-SOCIAL-ACTIVITY-SPEC.md` (24 suggestions)
 **Success Criteria** (what must be TRUE):
-  1. A cross-platform content calendar shows what is posted where and when, color-coded by platform (LinkedIn, Twitter, etc.)
-  2. Podcast guest tracker displays a pipeline table with outreach, scheduled, recorded, and published status columns
-  3. User can edit dates and notes on podcast entries inline without navigating away
-  4. Platform cards show posting cadence as a progress indicator (posts this week vs target)
-**Plans**: TBD
+  1. Social Media: platforms grouped by purpose (Primary/Launch/Brand/Exploration) with collapsible sections
+  2. Social Media: podcast guest tracker section with pipeline management
+  3. Social Media: follower growth sparklines on active platform cards
+  4. Activity Log: daily/weekly auto-generated summaries at top of day groups
+  5. Activity Log: session grouping for consecutive Claude Code entries with duration tracking
+  6. Activity Log: real-time feed via Supabase Realtime subscriptions
 
 Plans:
 - [ ] 07-01: TBD
 - [ ] 07-02: TBD
 
-### Phase 8: Mobile Capture
-**Goal**: Lucas can pull out his iPhone, type a thought into a purpose-built capture screen, and close the app -- the thought lands in brain dumps for later desktop processing
-**Depends on**: Phase 1
-**Requirements**: MOBL-01, MOBL-02, MOBL-03, MOBL-04
+### Phase 8: Dashboard + Project Detail Power Features
+**Goal**: Build shared interactive components (task modals, action items, quick capture, subtask system, kanban board) that power both the Dashboard command center and the Project Detail nerve center
+**Depends on**: Phase 4
+**Requirements**: DSUG-01 through DSUG-08, PDSUG-01 through PDSUG-17
+**Feedback Spec**: `.planning/feedback/PHASE-08-DASHBOARD-PROJECT-SPEC.md` (25 items)
 **Success Criteria** (what must be TRUE):
-  1. Navigating to /capture shows a mobile-optimized layout with no sidebar and no desktop navigation
-  2. The capture screen has a large text input area and a big submit button that are easy to tap on iPhone
-  3. Tapping submit shows "Saved" immediately (optimistic) while the data syncs in the background
-  4. Captured text appears in the brain_dumps table and is visible on the desktop BrainDump page for processing
-**Plans**: TBD
+  1. Quick Capture bar on Dashboard: "/" to focus, project routing, Cmd+Enter submit, background parsing
+  2. Action items on both pages: inline resolve/snooze with animations, expand for full context, keyboard navigation
+  3. Today's Focus section: pin 2-3 tasks, checkbox completion with strikethrough, daily reset
+  4. Kanban board on Project Detail: drag-and-drop between columns, inline add task, task detail modal with subtasks
+  5. Task modal (Linear-quality): editable title, metadata pills, description, subtask checkboxes, activity timeline
+  6. Notes & Decisions section: tagged entries (Decision/Blocker/Idea/Question), add at top, markdown rendering
 
 Plans:
 - [ ] 08-01: TBD
+- [ ] 08-02: TBD
+- [ ] 08-03: TBD
 
-### Phase 9: Deployment and Hardening
-**Goal**: Forge Console v2 is live on Cloudflare Pages with production environment variables, a Claude API proxy protecting the API key, and a passing smoke test
+### Phase 9: Settings + Feedback Page + Mobile Capture + Deployment
+**Goal**: Complete the app with settings depth, a dedicated feedback page, purpose-built mobile capture, and production deployment to Cloudflare Pages
 **Depends on**: Phase 8
-**Requirements**: DEPL-01, DEPL-02, DEPL-03, DEPL-04
+**Requirements**: STSUG-01 through STSUG-12, MOBL-01 through MOBL-04, DEPL-01 through DEPL-04
+**Feedback Spec**: `.planning/feedback/PHASE-09-SETTINGS-MOBILE-DEPLOY-SPEC.md` (32 items)
 **Success Criteria** (what must be TRUE):
-  1. Claude API calls route through a Cloudflare Function proxy so the API key is never in the client bundle
-  2. The production build deploys to Cloudflare Pages via Wrangler without errors
-  3. All environment variables (Supabase, Claude, n8n, Slack) are configured in the Cloudflare Pages dashboard
-  4. A smoke test on the live Cloudflare Pages URL confirms all pages load, navigation works, and data displays
-**Plans**: TBD
+  1. Feedback Log is accessible as its own page (/feedback) with compact entries, markdown rendering, and filter counts
+  2. Settings organized into tabs: Integrations, Preferences, Data Management, System Info
+  3. Integration cards have test connection buttons showing health and response time
+  4. /capture route works on iPhone: large input, big submit, optimistic save, no sidebar
+  5. Claude API calls route through Cloudflare Function proxy (no API key in client)
+  6. Production build deployed to Cloudflare Pages with all env vars configured and smoke test passing
 
 Plans:
 - [ ] 09-01: TBD
 - [ ] 09-02: TBD
+- [ ] 09-03: TBD
 
 ## Progress
 
 **Execution Order:**
 Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
-Note: Phases 5, 6, 7 all depend on Phase 4 but not on each other. Phase 8 depends only on Phase 1.
+Note: Phases 5, 6, 7, 8 all depend on Phase 4 but not on each other. Phase 9 depends on Phase 8.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Component Foundation | 0/3 | Planning complete | - |
-| 2. Global Design Standards | 0/3 | Planning complete | - |
-| 3. Dashboard Redesign | 0/0 | Not started | - |
-| 4. Page-by-Page Visual Polish | 0/0 | Not started | - |
-| 5. Brain Dump Task Flow | 0/0 | Not started | - |
-| 6. Content Pipeline Features | 0/0 | Not started | - |
-| 7. Social Media and Podcast | 0/0 | Not started | - |
-| 8. Mobile Capture | 0/0 | Not started | - |
-| 9. Deployment and Hardening | 0/0 | Not started | - |
+| 1. Component Foundation | 3/3 | Complete | 2026-03-22 |
+| 2. Global Design Standards | 3/3 | Complete | 2026-03-22 |
+| 3. Dashboard Redesign | 2/2 | Complete | 2026-03-22 |
+| 4. Visual Polish (All Pages) | 0/0 | Not started | - |
+| 5. Brain Dump Depth | 0/0 | Not started | - |
+| 6. Content Pipeline Depth | 0/0 | Not started | - |
+| 7. Social Media + Activity Log | 0/0 | Not started | - |
+| 8. Dashboard + Project Detail Power | 0/0 | Not started | - |
+| 9. Settings + Mobile + Deployment | 0/0 | Not started | - |
