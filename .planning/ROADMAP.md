@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Global Design Standards** - Establish sidebar polish, card system, typography hierarchy, and spacing rules app-wide
 - [x] **Phase 3: Dashboard Redesign** - Rebuild dashboard with dense grid layout, stat hierarchy, project indicators, and content calendar strip
 - [ ] **Phase 4: Visual Polish (All Pages)** - Fix every visual, UX, and data issue across all 7 pages (64 fix items from feedback)
+- [ ] **Phase 4.1: UAT Remediation** - Fix 51 UAT gaps (2 blockers, 30 major, 19 minor) across all 7 pages
 - [ ] **Phase 5: Brain Dump Depth** - Transform brain dump from simple capture into full thought-to-action pipeline with project routing, agent refinement, and task creation
 - [ ] **Phase 6: Content Pipeline Depth** - Transform content pipeline into a full content management and publishing workflow with calendar nav, drag-drop, templates, and analytics
 - [ ] **Phase 7: Social Media + Activity Log** - Transform both pages from static directories into dynamic dashboards with setup wizards, growth tracking, session grouping, and real-time updates
@@ -97,6 +98,32 @@ Plans:
 - [x] 04-04-PLAN.md -- Content Pipeline fixes (CFIX-01-12) + page polish (VISL-08)
 - [x] 04-05-PLAN.md -- Social Media fixes (SFIX-01-12) + Settings fixes (STFIX-01-12) + polish (VISL-09, VISL-11)
 - [x] 04-06-PLAN.md -- Activity Log fixes (AFIX-01-12) + page polish (VISL-10)
+
+### Phase 04.1: Phase 4 UAT Remediation -- 51 gaps (2 blockers, 30 major, 19 minor) across all 7 pages (INSERTED)
+
+**Goal:** Close all 51 UAT gaps from Phase 4 testing -- fix both blockers (Brain Dump API parsing, Content Pipeline review modal), resolve 30 major visual/UX issues, and polish 19 minor items across all 7 pages
+**Requirements**: UAT-GLOBAL-BORDER-RADIUS, UAT-DEPS, UAT-DASH-STAT-TILES-GRID, UAT-DASH-STAT-TILES-LEFT-BORDER, UAT-DASH-CLARITY-PULSE, UAT-DASH-ACTION-ITEMS-INTERACTIVE, UAT-DASH-ACTION-ITEMS-COMPACT, UAT-DASH-CALENDAR-HEIGHT, UAT-DASH-CALENDAR-TYPE, UAT-DASH-GREETING-INSIGHTS, UAT-BRAIN-API-BLOCKER, UAT-BRAIN-ADD-PROJECT, UAT-BRAIN-SUBMIT-STATE, UAT-BRAIN-STEP-PROGRESS, UAT-BRAIN-INLINE-ACTIONS, UAT-BRAIN-PROJECT-BORDERS, UAT-BRAIN-STICKY-HEADERS, UAT-CONTENT-REVIEW-MODAL-BLOCKER, UAT-CONTENT-REJECT-WORKFLOW, UAT-CONTENT-APPROVE-WORKFLOW, UAT-CONTENT-CALENDAR-RESPONSIVE, UAT-CONTENT-BORDER-RADIUS, UAT-CONTENT-ADD-MODAL, UAT-CONTENT-KANBAN-DRAG, UAT-CONTENT-MULTI-PLATFORM, UAT-CONTENT-DETAIL-ALL-VIEWS, UAT-SOCIAL-BRAND-ICONS, UAT-SOCIAL-MEDIUM-DATA, UAT-SOCIAL-CARD-SIZE, UAT-SOCIAL-SETUP-MODAL, UAT-SOCIAL-ACTIVE-DATA, UAT-SOCIAL-HERO-READINESS, UAT-SOCIAL-EXTERNAL-LINKS, UAT-SOCIAL-BORDER-RADIUS, UAT-SETTINGS-TEST-BUTTONS, UAT-SETTINGS-FEEDBACK-MARKDOWN, UAT-SETTINGS-FEEDBACK-ACTIONS, UAT-SETTINGS-SYSTEM-TAB, UAT-SETTINGS-GRAYED-TABS, UAT-SETTINGS-BRAND-ICONS, UAT-SETTINGS-BORDER-RADIUS, UAT-ACTIVITY-DENSITY-CHART, UAT-ACTIVITY-TIERS, UAT-ACTIVITY-CLICKABLE, UAT-ACTIVITY-DOT-LEGEND, UAT-ACTIVITY-DATE-FILTER, UAT-ACTIVITY-ALIGNMENT, UAT-ACTIVITY-MANUAL-ENTRY, UAT-ACTIVITY-STICKY-HEADERS, UAT-ACTIVITY-BORDER-RADIUS, UAT-ACTIVITY-LOAD-MORE
+**Depends on:** Phase 4
+**Plans:** 8 plans
+**Success Criteria** (what must be TRUE):
+  1. Border radius halved globally -- clean and modern across all pages
+  2. Brain Dump Claude API parsing works reliably (BLOCKER resolved)
+  3. Content review modal shows full post body, char count, copy buttons, approve/reject workflows (BLOCKER resolved)
+  4. Dashboard stat tiles use CSS grid with equal sizing, left accent borders, interactive action items
+  5. Social Media platforms show real brand icons with equal card sizing and setup modals
+  6. Activity Log has tall density chart, three visual tiers, date filters, and manual entry form
+  7. Settings has working Claude API test, markdown feedback, enriched system tab
+  8. Content Pipeline has redesigned Add Content modal, draggable Kanban, multi-platform support
+
+Plans:
+- [ ] 04.1-01-PLAN.md -- Global border-radius fix + install new dependencies
+- [ ] 04.1-02-PLAN.md -- Dashboard fixes: stat tiles, action items, calendar, greeting
+- [ ] 04.1-03-PLAN.md -- Brain Dump fixes: API blocker, task cards, step progress, history
+- [ ] 04.1-04-PLAN.md -- Social Media fixes: brand icons, card sizing, setup modals, data
+- [ ] 04.1-05-PLAN.md -- Activity Log fixes: density chart, tiers, filters, manual entry
+- [ ] 04.1-06-PLAN.md -- Content Pipeline: review modal blocker, approve/reject, responsive calendar
+- [ ] 04.1-07-PLAN.md -- Content Pipeline: Add Content modal, Kanban drag, multi-platform
+- [ ] 04.1-08-PLAN.md -- Settings fixes: integration tests, feedback markdown, system tab
 
 ### Phase 5: Brain Dump Depth
 **Goal**: Transform Brain Dump from a simple capture tool into a full thought-to-action pipeline with project routing, AI refinement, task creation, and analytics
@@ -186,15 +213,16 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
-Note: Phases 5, 6, 7, 8 all depend on Phase 4 but not on each other. Phase 9 depends on Phase 8.
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 4.1 -> 5 -> 6 -> 7 -> 8 -> 9
+Note: Phases 5, 6, 7, 8 all depend on Phase 4.1 but not on each other. Phase 9 depends on Phase 8.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Component Foundation | 3/3 | Complete | 2026-03-22 |
 | 2. Global Design Standards | 3/3 | Complete | 2026-03-22 |
 | 3. Dashboard Redesign | 2/2 | Complete | 2026-03-22 |
-| 4. Visual Polish (All Pages) | 0/6 | Not started | - |
+| 4. Visual Polish (All Pages) | 6/6 | Complete | 2026-03-22 |
+| 4.1 UAT Remediation | 0/8 | Not started | - |
 | 5. Brain Dump Depth | 0/0 | Not started | - |
 | 6. Content Pipeline Depth | 0/0 | Not started | - |
 | 7. Social Media + Activity Log | 0/0 | Not started | - |
