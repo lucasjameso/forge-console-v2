@@ -145,7 +145,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **CSUG-02**: Drag-and-drop content rescheduling in month and week views
 - [x] **CSUG-03**: Carousel slide preview with image thumbnails in detail modal
 - [x] **CSUG-04**: Inline caption editing with character count and AI refinement
-- [ ] **CSUG-05**: Bulk actions via floating action bar (approve all, reschedule, delete)
+- [x] **CSUG-05**: Bulk actions via floating action bar (approve all, reschedule, delete)
 - [x] **CSUG-06**: Content performance tracking post-publish (impressions, engagement)
 - [x] **CSUG-07**: Content templates and recurring series with tags
 - [x] **CSUG-08**: Multi-platform content management with per-platform tabs
