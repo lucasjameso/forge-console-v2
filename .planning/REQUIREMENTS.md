@@ -141,8 +141,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Content Pipeline Depth (Phase 6)
 
-- [ ] **CSUG-01**: Full calendar navigation with month/year browsing and slide animations
-- [ ] **CSUG-02**: Drag-and-drop content rescheduling in month and week views
+- [x] **CSUG-01**: Full calendar navigation with month/year browsing and slide animations
+- [x] **CSUG-02**: Drag-and-drop content rescheduling in month and week views
 - [ ] **CSUG-03**: Carousel slide preview with image thumbnails in detail modal
 - [ ] **CSUG-04**: Inline caption editing with character count and AI refinement
 - [ ] **CSUG-05**: Bulk actions via floating action bar (approve all, reschedule, delete)
