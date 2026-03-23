@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import Markdown from 'react-markdown'
 import {
@@ -15,7 +15,10 @@ import {
   Lightbulb,
   ChevronDown,
   ChevronRight,
+  Settings2,
+  HardDrive,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -149,7 +152,46 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
   const [testResult, setTestResult] = useState<{ status: string; ms?: number } | null>(null)
   const [isTesting, setIsTesting] = useState(false)
 
+  const hasRealTest = integration.name === 'Supabase' || integration.name === 'Claude API'
+
+  async function testClaudeApi() {
+    setIsTesting(true)
+    setTestResult(null)
+    const start = Date.now()
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY || '',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 10,
+          messages: [{ role: 'user', content: 'ping' }],
+        }),
+      })
+      const latency = Date.now() - start
+      setTestResult({ status: res.ok ? 'Healthy' : 'Error', ms: latency })
+      if (res.ok) {
+        toast.success(`Claude API: Healthy (${latency}ms)`)
+      } else {
+        toast.error(`Claude API: Error (${latency}ms)`)
+      }
+    } catch {
+      setTestResult({ status: 'Connection failed' })
+      toast.error('Claude API: Connection failed')
+    } finally {
+      setIsTesting(false)
+    }
+  }
+
   async function handleTest() {
+    if (integration.name === 'Claude API') {
+      return testClaudeApi()
+    }
     setIsTesting(true)
     setTestResult(null)
     const start = performance.now()
@@ -162,8 +204,6 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
         } else {
           setTestResult({ status: 'Healthy', ms })
         }
-      } else {
-        setTestResult({ status: 'Test not available' })
       }
     } catch {
       const ms = Math.round(performance.now() - start)
@@ -234,19 +274,23 @@ function IntegrationCard({ integration, index }: { integration: Integration; ind
 
         {/* Test button + result */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={handleTest} disabled={isTesting}>
-            {isTesting ? 'Testing...' : 'Test'}
-          </Button>
-          {testResult && (
-            <span className={`text-[12px] ${
-              testResult.status === 'Healthy'
-                ? 'text-[hsl(var(--status-success))]'
-                : testResult.status === 'Test not available'
-                  ? 'text-[hsl(var(--text-tertiary))]'
-                  : 'text-[hsl(var(--status-error))]'
-            }`}>
-              {testResult.status}{testResult.ms !== undefined ? `, ${testResult.ms}ms` : ''}
-            </span>
+          {hasRealTest ? (
+            <>
+              <Button variant="ghost" size="sm" onClick={handleTest} disabled={isTesting}>
+                {isTesting ? 'Testing...' : 'Test'}
+              </Button>
+              {testResult && (
+                <span className={`text-[12px] ${
+                  testResult.status === 'Healthy'
+                    ? 'text-[hsl(var(--status-success))]'
+                    : 'text-[hsl(var(--status-error))]'
+                }`}>
+                  {testResult.status}{testResult.ms !== undefined ? `, ${testResult.ms}ms` : ''}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="text-xs text-[hsl(var(--text-tertiary))] italic">Test coming soon</span>
           )}
         </div>
 
@@ -481,8 +525,8 @@ export function Settings() {
           <TabsTrigger value="integrations">Integrations</TabsTrigger>
           <TabsTrigger value="feedback">Feedback</TabsTrigger>
           <TabsTrigger value="system">System</TabsTrigger>
-          <TabsTrigger value="preferences" disabled>Preferences</TabsTrigger>
-          <TabsTrigger value="data" disabled>Data Management</TabsTrigger>
+          <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          <TabsTrigger value="data">Data Management</TabsTrigger>
         </TabsList>
 
         <TabsContent value="integrations">
@@ -526,15 +570,19 @@ export function Settings() {
         </TabsContent>
 
         <TabsContent value="preferences">
-          <Card className="p-8 text-center">
-            <span className="text-body text-[hsl(var(--text-tertiary))]">Coming soon</span>
-          </Card>
+          <div className="flex flex-col items-center justify-center py-16 text-[hsl(var(--text-tertiary))]">
+            <Settings2 className="w-10 h-10 mb-3 opacity-40" />
+            <p className="text-sm font-medium">Coming soon</p>
+            <p className="text-xs mt-1">Preferences will be available in a future update</p>
+          </div>
         </TabsContent>
 
         <TabsContent value="data">
-          <Card className="p-8 text-center">
-            <span className="text-body text-[hsl(var(--text-tertiary))]">Coming soon</span>
-          </Card>
+          <div className="flex flex-col items-center justify-center py-16 text-[hsl(var(--text-tertiary))]">
+            <HardDrive className="w-10 h-10 mb-3 opacity-40" />
+            <p className="text-sm font-medium">Coming soon</p>
+            <p className="text-xs mt-1">Data management will be available in a future update</p>
+          </div>
         </TabsContent>
       </Tabs>
     </PageShell>
