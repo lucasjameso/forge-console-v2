@@ -142,15 +142,15 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Content Pipeline Depth (Phase 6)
 
 - [x] **CSUG-01**: Full calendar navigation with month/year browsing and slide animations
-- [x] **CSUG-02**: Drag-and-drop content rescheduling in month and week views
-- [x] **CSUG-03**: Carousel slide preview with image thumbnails in detail modal
+- [x] **CSUG-02**: Drag-and-drop content rescheduling in month and kanban views (D-04: week view excluded by design)
+- [ ] **CSUG-03**: Carousel slide preview with image thumbnails in detail modal (placeholder boxes implemented; real image loading deferred)
 - [x] **CSUG-04**: Inline caption editing with character count and AI refinement
 - [x] **CSUG-05**: Bulk actions via floating action bar (approve all, reschedule, delete)
 - [x] **CSUG-06**: Content performance tracking post-publish (impressions, engagement)
 - [x] **CSUG-07**: Content templates and recurring series with tags
 - [x] **CSUG-08**: Multi-platform content management with per-platform tabs
-- [x] **CSUG-09**: Content approval workflow with two-way Slack integration
-- [x] **CSUG-10**: Publishing scheduler with optimal time suggestions
+- [x] **CSUG-09**: Content approval workflow with one-way n8n webhook notification (D-13: two-way Slack deferred)
+- [ ] **CSUG-10**: Publishing scheduler with optimal time suggestions (UI placeholder implemented; algorithm deferred)
 - [x] **CSUG-11**: Revision history with side-by-side diff and revert
 - [x] **CSUG-12**: Content calendar analytics strip (monthly summary, cadence, gap alerts)
 
