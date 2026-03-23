@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 interface PageShellProps {
   title: string
-  subtitle?: string
+  subtitle?: ReactNode
   actions?: ReactNode
   children: ReactNode
 }

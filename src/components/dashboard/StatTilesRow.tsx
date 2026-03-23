@@ -126,7 +126,7 @@ export function StatTilesRow() {
           className={idx === 4 ? 'col-span-2 md:col-span-1' : ''}
         >
           <Card
-            className={`p-6 flex flex-col items-center justify-center gap-1 text-center ${tile.borderClass ?? ''}`}
+            className={`p-6 flex flex-col items-center justify-center gap-1 text-center ${tile.borderClass ?? ''} ${tile.pulse ? 'animate-pulse' : ''}`}
           >
             {tile.pulse ? (
               <motion.span
