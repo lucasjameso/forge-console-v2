@@ -1,68 +1,172 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, ChevronDown, ChevronRight, Clock } from 'lucide-react'
+import { Send, ChevronDown, ChevronRight, Clock, Plus } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
+import { ProjectBadge } from '@/components/ui/ProjectBadge'
 import { useBrainDumps, useSubmitBrainDump } from '@/hooks/useBrainDump'
-import { formatRelativeTime } from '@/lib/utils'
+import { formatTime, groupByDay, cn } from '@/lib/utils'
+import { getProjectColorVar, getProjectBgVar } from '@/lib/colors'
+
+const PROJECT_OPTIONS = [
+  { label: 'Auto-Route', value: 'auto', slug: 'auto' },
+  { label: 'Ridgeline', value: 'ridgeline', slug: 'ridgeline' },
+  { label: 'CLARITY', value: 'clarity', slug: 'clarity' },
+  { label: 'Forge Console', value: 'forge', slug: 'forge' },
+  { label: 'Meridian', value: 'meridian', slug: 'meridian' },
+  { label: 'Atlas', value: 'atlas', slug: 'atlas' },
+  { label: 'General', value: 'general', slug: 'general' },
+] as const
+
+type StatusStage = 'Captured' | 'Parsed' | 'Tasks Created' | 'Actioned'
+const STATUS_STAGES: StatusStage[] = ['Captured', 'Parsed', 'Tasks Created', 'Actioned']
+
+function getStatusStage(dump: { status: string; parsed_output: unknown }): StatusStage {
+  if (dump.status === 'processed' || dump.parsed_output) return 'Parsed'
+  return 'Captured'
+}
+
+function StatusProgression({ currentStage }: { currentStage: StatusStage }) {
+  const currentIdx = STATUS_STAGES.indexOf(currentStage)
+
+  return (
+    <div className="flex items-center gap-1.5 mt-2">
+      {STATUS_STAGES.map((stage, idx) => {
+        const isCompleted = idx < currentIdx
+        const isCurrent = idx === currentIdx
+        return (
+          <span
+            key={stage}
+            className={cn(
+              'text-[11px] uppercase font-medium px-2 py-0.5 rounded-full',
+              isCompleted && 'bg-[hsl(var(--status-success-bg))] text-[hsl(var(--status-success))]',
+              isCurrent && 'bg-[hsl(var(--status-info-bg))] text-[hsl(var(--status-info))]',
+              !isCompleted && !isCurrent && 'border border-[hsl(var(--border-subtle))] text-[hsl(var(--text-tertiary))]',
+            )}
+          >
+            {stage}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
 
 export function BrainDump() {
   const [text, setText] = useState('')
+  const [selectedProject, setSelectedProject] = useState<string>('auto')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { data: dumps, isLoading } = useBrainDumps()
   const submitMutation = useSubmitBrainDump()
 
+  function handleTextareaInput() {
+    const el = textareaRef.current
+    if (el) {
+      el.style.height = 'auto'
+      el.style.height = Math.min(el.scrollHeight, window.innerHeight * 0.5) + 'px'
+    }
+  }
+
   const handleSubmit = () => {
     if (!text.trim() || submitMutation.isPending) return
-    submitMutation.mutate(text.trim(), {
-      onSuccess: () => setText(''),
-    })
+    submitMutation.mutate(
+      { rawText: text.trim(), projectHint: selectedProject === 'auto' ? undefined : selectedProject },
+      {
+        onSuccess: () => setText(''),
+      },
+    )
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault()
+      handleSubmit()
+    }
   }
 
   const lastResult = submitMutation.data
+  const grouped = dumps ? groupByDay(dumps) : []
 
   return (
-    <PageShell title="Brain Dump" subtitle="Capture anything. Let the agent sort it out.">
+    <PageShell title="Brain Dump" subtitle="Capture thoughts, tasks, ideas -- let the agent sort it out.">
       <div className="flex flex-col gap-8">
 
         {/* Input area */}
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <textarea
-            className="w-full rounded-md border border-input bg-card px-3 py-2 text-card-title text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
-            style={{
-              minHeight: 140,
-              resize: 'vertical',
-              border: 'none',
-              borderRadius: 0,
-              padding: '20px 24px',
-              lineHeight: 1.7,
-            }}
-            placeholder="Dump your thoughts here... tasks, ideas, reminders, anything. Hit Submit and the agent will parse it into structured tasks."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && e.metaKey) handleSubmit()
-            }}
-          />
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '12px 24px',
-              borderTop: '1px solid hsl(var(--border-subtle))',
-              backgroundColor: 'hsl(var(--bg-elevated))',
-            }}
-          >
-            <span className="text-caption">
+        <Card className="p-0 overflow-hidden">
+          {/* Project selector */}
+          <div className="px-6 pt-5 pb-3">
+            <span className="text-[12px] uppercase font-medium text-[hsl(var(--text-tertiary))] tracking-wide">
+              Send to:
+            </span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {PROJECT_OPTIONS.map((opt) => {
+                const isSelected = selectedProject === opt.value
+                const isAutoOrGeneral = opt.value === 'auto' || opt.value === 'general'
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setSelectedProject(opt.value)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-[13px] font-medium transition-all',
+                      'border cursor-pointer',
+                      isSelected && isAutoOrGeneral && 'bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-primary))] border-[hsl(var(--border-default))]',
+                      isSelected && !isAutoOrGeneral && 'border-transparent',
+                      !isSelected && 'bg-[hsl(var(--bg-elevated))] text-[hsl(var(--text-secondary))] border-transparent hover:text-[hsl(var(--text-primary))]',
+                    )}
+                    style={
+                      isSelected && !isAutoOrGeneral
+                        ? {
+                            backgroundColor: getProjectBgVar(opt.slug),
+                            color: getProjectColorVar(opt.slug),
+                          }
+                        : undefined
+                    }
+                  >
+                    {opt.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Textarea */}
+          <div className="relative px-6 pb-1">
+            <textarea
+              ref={textareaRef}
+              className="w-full min-h-[120px] bg-transparent text-[15px] leading-relaxed text-[hsl(var(--text-primary))] outline-none resize-none overflow-y-auto placeholder:text-[hsl(var(--text-tertiary))]"
+              placeholder="What's on your mind?"
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value)
+                handleTextareaInput()
+              }}
+              onKeyDown={handleKeyDown}
+            />
+            {!text && (
+              <span className="absolute bottom-3 right-6 text-[11px] text-[hsl(var(--text-tertiary))] pointer-events-none">
+                Cmd+Enter
+              </span>
+            )}
+          </div>
+
+          {/* Submit bar */}
+          <div className="flex items-center justify-between px-6 py-3 border-t border-[hsl(var(--border-subtle))] bg-[hsl(var(--bg-elevated))]">
+            <span className="text-[12px] text-[hsl(var(--text-tertiary))]">
               {submitMutation.isPending ? 'Parsing with Claude...' : 'Cmd+Enter to submit'}
             </span>
             <Button
               onClick={handleSubmit}
               disabled={!text.trim() || submitMutation.isPending}
+              className={cn(
+                'w-full md:w-auto md:min-w-[120px]',
+                text.trim() && 'shadow-[0_0_12px_hsl(var(--accent-coral)/0.3)]',
+              )}
             >
               <Send size={14} />
               {submitMutation.isPending ? 'Parsing...' : 'Submit'}
@@ -70,45 +174,63 @@ export function BrainDump() {
           </div>
         </Card>
 
+        {/* Processing shimmer */}
+        <AnimatePresence>
+          {submitMutation.isPending && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+            >
+              <Card className="p-6">
+                <div className="flex flex-col gap-3">
+                  <SkeletonBlock width="90%" height={14} />
+                  <SkeletonBlock width="70%" height={14} />
+                  <SkeletonBlock width="50%" height={14} />
+                </div>
+                <motion.p
+                  className="text-[12px] text-[hsl(var(--text-tertiary))] mt-3"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  Parsing with Claude...
+                </motion.p>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Just-parsed result */}
         <AnimatePresence>
-          {lastResult && (
+          {lastResult && !submitMutation.isPending && (
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Card className="p-6" style={{ borderLeft: '3px solid hsl(var(--accent-coral))' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+              <Card className="p-6 border-l-[3px] border-l-[hsl(var(--accent-coral))]">
+                <div className="flex items-center gap-2 mb-3.5">
                   <span className="text-section-header">Parsed Result</span>
                   <Badge variant="success">New</Badge>
                 </div>
-                <p className="text-body" style={{ marginBottom: 16 }}>
+                <p className="text-body mb-4">
                   {lastResult.parsed.summary}
                 </p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div className="flex flex-col gap-2">
                   {lastResult.parsed.tasks.map((task, idx) => (
                     <motion.div
                       key={idx}
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.2, delay: idx * 0.05 }}
-                      style={{
-                        padding: '10px 14px',
-                        borderRadius: 8,
-                        backgroundColor: 'hsl(var(--bg-elevated))',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 10,
-                      }}
+                      className="p-3 rounded-lg bg-[hsl(var(--bg-elevated))] flex items-center justify-between gap-2.5"
                     >
-                      <p className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
+                      <p className="text-body-sm font-medium text-[hsl(var(--text-primary))] m-0">
                         {task.description}
                       </p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                        <Badge variant="navy">{task.project}</Badge>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <ProjectBadge project={task.project} />
                         <Badge
                           variant={
                             task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'warning' : 'neutral'
@@ -130,8 +252,8 @@ export function BrainDump() {
 
         {/* Error */}
         {submitMutation.isError && (
-          <Card className="p-6" style={{ borderLeft: '3px solid hsl(var(--status-error))' }}>
-            <p className="text-body-sm" style={{ color: 'hsl(var(--status-error))', margin: 0 }}>
+          <Card className="p-6 border-l-[3px] border-l-[hsl(var(--status-error))]">
+            <p className="text-body-sm text-[hsl(var(--status-error))] m-0">
               Failed to parse: {(submitMutation.error as Error).message}
             </p>
           </Card>
@@ -139,99 +261,142 @@ export function BrainDump() {
 
         {/* History */}
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <Clock size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
+          <div className="flex items-center gap-2 mb-4">
+            <Clock size={15} className="text-[hsl(var(--text-tertiary))]" />
             <span className="text-section-header">History</span>
           </div>
 
           {isLoading ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="flex flex-col gap-3">
               {[0, 1, 2].map(i => (
-                <Card key={i} className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <Card key={i} className="p-6 flex flex-col gap-2">
                   <SkeletonBlock width="80%" height={14} />
                   <SkeletonBlock width="40%" height={12} />
                 </Card>
               ))}
             </div>
-          ) : (dumps ?? []).length === 0 ? (
-            <Card className="p-6" style={{ textAlign: 'center', padding: '32px 24px' }}>
+          ) : grouped.length === 0 ? (
+            <Card className="py-8 px-6 text-center">
               <p className="text-caption">No brain dumps yet. Start typing above.</p>
             </Card>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {(dumps ?? []).map((dump) => {
-                const isExpanded = expandedId === dump.id
-                return (
-                  <motion.div
-                    key={dump.id}
-                    layout
-                    onClick={() => setExpandedId(isExpanded ? null : dump.id)}
-                  >
-                  <Card className="px-5 py-3.5 transition-shadow hover:shadow-card-hover cursor-pointer">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-                        {isExpanded ? <ChevronDown size={14} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0 }} /> : <ChevronRight size={14} style={{ color: 'hsl(var(--text-tertiary))', flexShrink: 0 }} />}
-                        <p className="text-body-sm" style={{
-                          color: 'hsl(var(--text-primary))',
-                          margin: 0,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: isExpanded ? 'normal' : 'nowrap',
-                        }}>
-                          {dump.raw_text}
-                        </p>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginLeft: 12 }}>
-                        <Badge variant={dump.status === 'processed' ? 'success' : dump.status === 'pending' ? 'warning' : 'neutral'}>
-                          {dump.status}
-                        </Badge>
-                        <span className="text-caption">{formatRelativeTime(dump.created_at)}</span>
-                      </div>
-                    </div>
+            <div className="flex flex-col gap-2">
+              {grouped.map((group) => (
+                <div key={group.label}>
+                  {/* Day group header */}
+                  <div className="sticky top-0 z-10 bg-[hsl(var(--bg-root))] py-2 text-[15px] font-semibold text-[hsl(var(--text-primary))]">
+                    {group.label}
+                  </div>
 
-                    <AnimatePresence>
-                      {isExpanded && dump.parsed_output && (
+                  <div className="flex flex-col gap-2">
+                    {group.items.map((dump) => {
+                      const isExpanded = expandedId === dump.id
+                      const currentStage = getStatusStage(dump)
+                      const projectSlug = dump.project_hint ?? 'general'
+
+                      return (
                         <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                          style={{ overflow: 'hidden' }}
+                          key={dump.id}
+                          layout
+                          onClick={() => setExpandedId(isExpanded ? null : dump.id)}
                         >
-                          <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid hsl(var(--border-subtle))' }}>
-                            <p className="text-body" style={{ marginBottom: 10 }}>
-                              {dump.parsed_output.summary}
-                            </p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                              {dump.parsed_output.tasks.map((task, idx) => (
-                                <div
-                                  key={idx}
-                                  style={{
-                                    padding: '8px 12px',
-                                    borderRadius: 6,
-                                    backgroundColor: 'hsl(var(--bg-elevated))',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    gap: 8,
-                                  }}
-                                >
-                                  <span className="text-caption" style={{ color: 'hsl(var(--text-primary))' }}>{task.description}</span>
-                                  <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                                    <Badge variant="navy">{task.project}</Badge>
-                                    <Badge variant={task.priority === 'high' ? 'coral' : 'neutral'}>{task.priority}</Badge>
-                                  </div>
-                                </div>
-                              ))}
+                          <Card
+                            className="px-5 py-3.5 transition-shadow hover:shadow-card-hover cursor-pointer border-l-4"
+                            style={{ borderLeftColor: getProjectColorVar(projectSlug) }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                {isExpanded
+                                  ? <ChevronDown size={14} className="text-[hsl(var(--text-tertiary))] shrink-0" />
+                                  : <ChevronRight size={14} className="text-[hsl(var(--text-tertiary))] shrink-0" />
+                                }
+                                <p className={cn(
+                                  'text-body-sm text-[hsl(var(--text-primary))] m-0 overflow-hidden text-ellipsis',
+                                  !isExpanded && 'whitespace-nowrap',
+                                )}>
+                                  {dump.raw_text}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0 ml-3">
+                                <Badge variant={dump.status === 'processed' ? 'success' : dump.status === 'pending' ? 'warning' : 'neutral'}>
+                                  {dump.status}
+                                </Badge>
+                                <span className="text-caption">{formatTime(dump.created_at)}</span>
+                              </div>
                             </div>
-                          </div>
+
+                            {/* Status progression */}
+                            <StatusProgression currentStage={currentStage} />
+
+                            {/* Expanded content */}
+                            <AnimatePresence>
+                              {isExpanded && dump.parsed_output && (
+                                <motion.div
+                                  initial={{ opacity: 0, height: 0 }}
+                                  animate={{ opacity: 1, height: 'auto' }}
+                                  exit={{ opacity: 0, height: 0 }}
+                                  transition={{ duration: 0.2 }}
+                                  className="overflow-hidden"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="mt-3.5 pt-3.5 border-t border-[hsl(var(--border-subtle))]">
+                                    {/* Original raw text */}
+                                    <div className="border-l-2 border-[hsl(var(--border-subtle))] pl-4 text-[hsl(var(--text-secondary))] italic text-[13px] mb-4">
+                                      {dump.raw_text}
+                                    </div>
+
+                                    <Separator className="my-4" />
+
+                                    {/* Parsed output */}
+                                    <p className="text-[13px] font-semibold text-[hsl(var(--text-primary))] mb-3">Parsed Output</p>
+                                    <p className="text-body mb-3">
+                                      {dump.parsed_output.summary}
+                                    </p>
+                                    <div className="flex flex-col gap-2">
+                                      {dump.parsed_output.tasks.map((task, idx) => (
+                                        <div
+                                          key={idx}
+                                          className="p-3 rounded-lg bg-[hsl(var(--bg-elevated))] border border-[hsl(var(--border-subtle))]"
+                                        >
+                                          <div className="flex items-center justify-between gap-2">
+                                            <span className="text-[14px] font-medium text-[hsl(var(--text-primary))]">
+                                              {task.description}
+                                            </span>
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                              <ProjectBadge project={task.project} />
+                                              <Badge
+                                                variant={
+                                                  task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'warning' : 'neutral'
+                                                }
+                                              >
+                                                {task.priority}
+                                              </Badge>
+                                            </div>
+                                          </div>
+                                          <div className="mt-2">
+                                            <button
+                                              type="button"
+                                              className="text-[12px] text-[hsl(var(--text-tertiary))] hover:text-[hsl(var(--text-secondary))] transition-colors flex items-center gap-1"
+                                              onClick={(e) => e.stopPropagation()}
+                                            >
+                                              <Plus size={12} />
+                                              Add to project
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </Card>
                         </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </Card>
-                  </motion.div>
-                )
-              })}
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

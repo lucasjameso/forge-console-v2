@@ -83,7 +83,7 @@ export function useSubmitBrainDump() {
   const qc = useQueryClient()
 
   return useMutation({
-    mutationFn: async (rawText: string) => {
+    mutationFn: async ({ rawText, projectHint }: { rawText: string; projectHint?: string }) => {
       const parsed = await parseBrainDumpWithClaude(rawText)
 
       if (isSupabaseConfigured) {
@@ -93,6 +93,7 @@ export function useSubmitBrainDump() {
           .insert({
             raw_text: rawText,
             parsed_output: parsed,
+            project_hint: projectHint ?? null,
             status: 'processed',
           })
         if (error) throw error
