@@ -4,137 +4,134 @@
 
 ## APIs & External Services
 
-**AI/LLM:**
-- Anthropic Claude API - Parses freeform brain dump text into structured tasks
-  - SDK: Not used; direct HTTP POST to `https://api.anthropic.com/v1/messages`
+**AI / LLM:**
+- Anthropic Claude API - Brain dump parsing and structured task extraction
+  - SDK: `@anthropic-ai/sdk` 0.80.0 installed but NOT used via SDK; calls made via raw `fetch()` to avoid server-side SDK requirement in browser
+  - Endpoint: `https://api.anthropic.com/v1/messages` (direct browser fetch)
   - Model: `claude-sonnet-4-20250514`
-  - Auth: `VITE_ANTHROPIC_API_KEY` (browser-exposed, marked as dangerous direct browser access)
-  - Usage: `src/hooks/useBrainDump.ts` - `parseBrainDumpWithClaude()`
-  - Fallback: Local text parsing when API key not configured
+  - Auth: `VITE_ANTHROPIC_API_KEY` env var; header `x-api-key`
+  - Special header: `anthropic-dangerous-direct-browser-access: true` (browser CORS override)
+  - Implementation: `src/hooks/useBrainDump.ts` (`parseBrainDumpWithClaude()`)
+  - Fallback: If `VITE_ANTHROPIC_API_KEY` absent, local sentence-splitting parser runs instead
+
+**Workflow Automation:**
+- n8n - Workflow automation and task dispatching
+  - Instance URL: `https://n8n.iac-solutions.io` (self-hosted)
+  - Auth: `VITE_N8N_URL` + `VITE_N8N_API_KEY`
+  - Status: Configured as integration in `src/pages/Settings.tsx` but no active API calls detected in source; connection status display only
+
+**Notifications:**
+- Slack - Notifications and content approval flow
+  - Auth: `VITE_SLACK_WEBHOOK_URL` (incoming webhook)
+  - Status: Configured as integration in `src/pages/Settings.tsx`; connection status display only; no active webhook calls detected in source
+  - Schema: `content_reviews` table has `slack_ts` and `slack_channel` columns for Slack message tracking
 
 ## Data Storage
 
 **Databases:**
-- Supabase PostgreSQL (remote)
-  - Client: `@supabase/supabase-js` v2.99.3
-  - Connection: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (public anon key)
-  - Location: `src/lib/supabase.ts`
-  - Graceful degradation: When not configured, falls back to mock data
-
-**Supabase Tables:**
-- `projects` - Project tracking with priority, status, phase, GitHub/Supabase/Cloudflare URLs
-- `tasks` - Kanban tasks with status (todo/in_progress/done), priority, assignee
-- `project_milestones` - Phase tracking with status and phase numbers
-- `project_action_items` - Action items with urgency, status (open/resolved/snoozed)
-- `project_notes` - Notes with tags
-- `brain_dumps` - Raw text and Claude-parsed output
-- `brain_dump_tasks` - Individual tasks extracted from brain dumps
-- `content_reviews` - Content pipeline with status (draft/pending/approved/rejected/posted)
-- `social_platforms` - Social media account tracking with follower counts
-- `podcast_tracker` - Podcast episode tracking (outreach/scheduled/recorded/published)
-- `activity_log` - Session activity with session type (claude_code/n8n/slack/cowork/system/manual)
-- `system_health` - Service status monitoring (healthy/degraded/down)
-- `settings` - Configuration key-value store
-- `next_session_prompts` - Per-project session prompts
+- Supabase (PostgreSQL) - Primary database for all app data
+  - Connection: `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`
+  - Client: `@supabase/supabase-js` 2.99.3 with `SupabaseClient<Database>` typed interface
+  - Initialization: `src/lib/supabase.ts`
+  - Schema: `supabase/schema.sql` - 13 tables
+  - Seed data: `supabase/seed.sql`
+  - RLS: Enabled on all tables; anon-all policies (single user, no auth)
+  - Tables:
+    - `projects` - Active builds with status, priority, progress tracking
+    - `tasks` - Kanban tasks linked to projects
+    - `project_notes` - Freeform notes per project
+    - `project_milestones` - Phase milestones with target dates
+    - `project_action_items` - Urgent action items per project
+    - `brain_dumps` - Raw + parsed AI output for brain dumps
+    - `brain_dump_tasks` - Extracted tasks from brain dumps
+    - `content_reviews` - LinkedIn content pipeline with approval workflow
+    - `social_platforms` - Social media platform metadata and follower counts
+    - `podcast_tracker` - Podcast outreach and recording pipeline
+    - `activity_log` - Session activity from claude_code, n8n, slack, cowork, system, manual sources
+    - `system_health` - Service health status checks
+    - `settings` - Key/value app settings store
+    - `next_session_prompts` - Per-project resume prompts (not yet in TypeScript Database type)
+    - `page_feedback` - In-app feedback (not yet in TypeScript Database type; accessed with cast in `src/hooks/usePageFeedback.ts`)
 
 **File Storage:**
-- Not detected - Only metadata/URLs stored, actual files stored elsewhere (GitHub, Cloudflare, local)
+- Local filesystem only (no cloud file storage integration)
 
 **Caching:**
-- TanStack React Query - In-memory cache with 2-minute stale time (configurable)
-- Refetch on window focus disabled
-- DevTools: @tanstack/react-query-devtools available in dev
+- TanStack React Query in-memory cache only
+  - Stale time: 2 minutes (global default in `src/lib/queryClient.ts`)
+  - System health: 1 minute stale, 5 minute refetch interval (`src/hooks/useSystemHealth.ts`)
+  - No persistent cache (no localStorage/IndexedDB layer)
 
 ## Authentication & Identity
 
-**Auth Provider:**
-- Supabase (anonymous/public anon key)
-  - Implementation: Public API key only - no user authentication layer
-  - Risk: All data uses public anon key with RLS (Row Level Security) expected
+**Access Gate:**
+- Custom single-code access gate: `src/components/AccessGate.tsx`
+- Auth: `VITE_ACCESS_CODE` env var (6-digit numeric code)
+- Session: `sessionStorage.setItem('forge_authenticated', 'true')` persists within tab session
+- Behavior: If `VITE_ACCESS_CODE` is not set, gate is bypassed entirely (local dev)
+- Not a multi-user auth system; single owner access only
 
-**Access Control:**
-- Relies on Supabase Row Level Security policies (not visible in client code)
+**Supabase Auth:**
+- Not wired up; Supabase client initialized with anon key only
+- RLS policies grant full anon access to all tables
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- None detected - Errors logged to console only
-
-**Logs:**
-- Browser console only
-- Activity logs stored in `activity_log` table for audit trail
+- `react-error-boundary` 6.1.1 - `<ErrorBoundary>` with `PageErrorFallback` component wraps entire app
+- No external error tracking service (no Sentry, Datadog, etc.)
 
 **System Health:**
-- `system_health` table tracks service status
-- Manual polling interval: 5 minutes (`refetchInterval: 1000 * 60 * 5` in `src/hooks/useSystemHealth.ts`)
+- Internal `system_health` Supabase table tracks service status
+- `src/hooks/useSystemHealth.ts` polls every 5 minutes
+- Displayed in `src/components/dashboard/SystemHealthCard.tsx`
+
+**Logs:**
+- `activity_log` Supabase table captures session activity
+- Session types: `claude_code`, `n8n`, `slack`, `cowork`, `system`, `manual`
+- No external logging service
+
+**Dev Tools:**
+- `@tanstack/react-query-devtools` 5.94.5 - Query state debugging in browser
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Not detected - Config agnostic to hosting platform
-- Build output: `dist/` directory
-- Suitable for: Cloudflare Pages, Vercel, Netlify, GitHub Pages, static hosting
+- Cloudflare Pages - Static hosting for production
+  - Account config: `VITE_CF_ACCOUNT_ID` env var
+  - Deployment: Wrangler CLI (referenced in project docs; no `wrangler.toml` detected in root)
+  - Output: `dist/` directory from `npm run build`
 
 **CI Pipeline:**
-- Not configured in codebase
-
-**Build Steps:**
-```bash
-npm run build  # Runs: tsc -b && vite build
-```
+- None detected (no `.github/workflows/`, no CircleCI, no Netlify CI config)
 
 ## Environment Configuration
 
-**Required env vars:**
+**Required env vars (app non-functional without these):**
 - `VITE_SUPABASE_URL` - Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` - Supabase public anon key
-- `VITE_ANTHROPIC_API_KEY` - Anthropic API key (optional, brain dump falls back to local parsing)
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous API key
+
+**Optional env vars (features degrade gracefully):**
+- `VITE_ANTHROPIC_API_KEY` - Claude API key; brain dump uses local fallback parser if absent
+- `VITE_ACCESS_CODE` - 6-digit access gate code; gate skipped if absent (local dev)
+- `VITE_CF_ACCOUNT_ID` - Cloudflare account ID; display-only in Settings
+- `VITE_SLACK_WEBHOOK_URL` - Slack incoming webhook; display-only in Settings
+- `VITE_N8N_URL` - n8n instance URL; display-only in Settings
+- `VITE_N8N_API_KEY` - n8n API key; display-only in Settings
 
 **Secrets location:**
-- `.env.local` (development only, in `.gitignore`)
-
-**Configuration notes:**
-- Vite uses `VITE_` prefix to make vars accessible in browser bundle
-- `.env.local` is standard for local development secrets
-- Production: Set env vars via hosting platform (Cloudflare, Vercel, etc.)
-
-## Data Flow
-
-**Brain Dump Processing:**
-1. User submits raw text via `/brain-dump` page
-2. `useSubmitBrainDump()` calls `parseBrainDumpWithClaude(text)`
-3. Claude API parses text into structured `{summary, tasks[]}`
-4. Insert parsed output to Supabase `brain_dumps` table
-5. Invalidate `brain-dumps` query cache, trigger UI refresh
-
-**Project Data Fetching:**
-1. React Query fetches from Supabase tables
-2. 2-minute stale time cache applied
-3. Refetch on mount, manual invalidation on mutation
-4. On Supabase error: throw error (no retry after 1 attempt)
-5. If `!isSupabaseConfigured`: serve mock data instead
-
-**Activity Tracking:**
-1. User actions recorded to `activity_log` table
-2. Session type: claude_code, n8n, slack, cowork, system, or manual
-3. Queryable by project, session type, or search
+- `.env.local` (present, not committed to git)
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- None detected
+- None (static SPA; no server to receive webhooks)
 
 **Outgoing:**
-- Supabase will trigger RLS policies on update/insert
-- Content review status updates trigger mutations to `content_reviews` table
-- Task status updates trigger mutations to `tasks` table
-- Brain dump submission inserts to two tables: `brain_dumps` and implicitly triggers processing
-
-**Query Invalidation Hooks:**
-- Task update → invalidate `['tasks']` query key
-- Note add → invalidate `['notes', projectId]`
-- Content review → invalidate `['content-reviews']`
-- Brain dump → invalidate `['brain-dumps']`
+- Anthropic API: `POST https://api.anthropic.com/v1/messages` - triggered on brain dump submit
+- Supabase: REST and realtime WebSocket connections via SDK
+- Slack webhook: Configured (`VITE_SLACK_WEBHOOK_URL`) but no active outgoing calls in source yet
+- n8n: Configured (`VITE_N8N_URL`) but no active API calls in source yet
 
 ---
 

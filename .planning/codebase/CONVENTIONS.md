@@ -5,192 +5,191 @@
 ## Naming Patterns
 
 **Files:**
-- Components: PascalCase with `.tsx` extension (e.g., `Badge.tsx`, `ProjectCard.tsx`)
-- Hooks: camelCase prefixed with `use` (e.g., `useProjects.ts`, `useBrainDump.ts`)
+- React components: PascalCase `.tsx` (e.g., `ProjectCard.tsx`, `ActionItemsCard.tsx`, `SkeletonBlock.tsx`)
+- React pages: PascalCase `.tsx` matching route concept (e.g., `Dashboard.tsx`, `ContentPipeline.tsx`)
+- Hooks: camelCase prefixed with `use` (e.g., `useProjects.ts`, `useBrainDump.ts`, `useActivityLog.ts`)
 - Utility modules: camelCase (e.g., `utils.ts`, `queryClient.ts`, `supabase.ts`)
-- Type/interface definitions: PascalCase in dedicated `database.ts` file
-- Data/mock files: camelCase (e.g., `mock.ts`)
-- Page files: PascalCase matching route structure (e.g., `Dashboard.tsx`, `ProjectDetail.tsx`)
+- Type files: camelCase (e.g., `database.ts`)
+- Mock data: camelCase (e.g., `mock.ts`)
+- shadcn/ui primitives: kebab-case `.tsx` (e.g., `badge.tsx`, `dropdown-menu.tsx`, `scroll-area.tsx`)
 
 **Functions:**
-- React components: PascalCase with `export function` declaration
-- Regular utility functions: camelCase with `export function` or `export const`
-- Internal/helper functions: camelCase without export (e.g., `getProjectBadge`, `urgencyBadge`)
-- Hooks: PascalCase prefix with `use` (e.g., `function useProjects()`)
+- React components: `export function ComponentName()` PascalCase declaration (never `const Component = () =>`)
+- Custom hooks: `export function useHookName()` PascalCase prefix
+- Internal helpers: camelCase without export (e.g., `urgencyBadge`, `getProjectBadge`, `parseBrainDumpWithClaude`)
+- Utility functions: camelCase named exports (e.g., `formatRelativeTime`, `getGreeting`, `formatDate`)
 
 **Variables:**
-- React state: camelCase (e.g., `const [mobileOpen, setMobileOpen]`, `const [now, setNow]`)
-- Component props: camelCase object keys
-- Temporary/loop variables: camelCase (e.g., `const proj`, `const item`, `idx`)
-- Constants: camelCase (e.g., `const navItems`, `const statusVariant`, `const supabaseUrl`)
+- React state: camelCase pairs (e.g., `const [mobileOpen, setMobileOpen]`, `const [now, setNow]`)
+- Query results: destructure with semantic aliases (e.g., `const { data: items, isLoading: loadingItems }`)
+- Loop variables: camelCase shorthand (e.g., `proj`, `item`, `idx`)
+- Constants/lookup tables: camelCase (e.g., `const statusVariant`, `const navItems`, `const statusConfig`)
+- Query client reference: abbreviated `qc` (e.g., `const qc = useQueryClient()`)
 
-**Types:**
-- Interface names: PascalCase (e.g., `BadgeProps`, `SkeletonBlockProps`, `Database`)
-- Union types: PascalCase (e.g., `ProjectStatus`, `TaskStatus`, `BadgeVariant`)
-- Type imports: `import type { TypeName }` for explicit type imports
+**Types and Interfaces:**
+- Interfaces: PascalCase (e.g., `BadgeProps`, `SkeletonBlockProps`, `ActivityFilters`, `Database`)
+- Union/literal types: PascalCase (e.g., `ProjectStatus`, `TaskStatus`, `ViewMode`, `ContentStatus`)
+- Type imports: use `import type { TypeName }` syntax consistently
+- Database entity interfaces: PascalCase matching table concept (e.g., `Project`, `Task`, `BrainDump`)
 
 ## Code Style
 
 **Formatting:**
-- ESLint configuration in `eslint.config.js` using flat config format
-- No Prettier config detected; relies on ESLint formatting rules
-- No `.prettierrc` file present
-- Default Vite + ESLint setup without additional formatters
+- No Prettier config; formatting is ad-hoc (ESLint-driven)
+- Single quotes for strings in TypeScript files
+- No trailing commas in function parameters (files vary slightly)
+- 2-space indentation
 
 **Linting:**
-- Tool: ESLint 9.39.4 with flat config system
-- Config file: `eslint.config.js`
-- Active plugins:
-  - `@eslint/js` - Recommended preset
-  - `typescript-eslint` - TypeScript support with recommended rules
-  - `eslint-plugin-react-hooks` - React hooks linting
-  - `eslint-plugin-react-refresh` - Vite react-refresh support
-- Key rules enforced:
-  - `@typescript-eslint/no-explicit-any` violations noted in code with `eslint-disable-next-line` comments
-  - React hooks dependencies checked
-  - React refresh compatibility
+- ESLint 9 flat config via `eslint.config.js`
+- Plugins active: `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`
+- `@typescript-eslint/no-explicit-any` enforced; suppressed with line-level `// eslint-disable-next-line` in 4 mutation functions where Supabase typing is incomplete
+- TypeScript strict mode: `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `erasableSyntaxOnly`, `noUncheckedSideEffectImports`
 
-**TypeScript Strict Mode:**
-- `strict: true` enabled in `tsconfig.app.json`
-- `noUnusedLocals: true` - Unused variables cause errors
-- `noUnusedParameters: true` - Unused function parameters cause errors
-- `noFallthroughCasesInSwitch: true` - Switch statements must have returns or breaks
-- `erasableSyntaxOnly: true` - Only syntax that can be fully erased is allowed
-- `noUncheckedSideEffectImports: true` - Module side effects must be explicit
+**TypeScript:**
+- All files use strict TypeScript; `any` is forbidden and requires explicit suppression comment
+- Generic type parameters on React Query calls (e.g., `useQuery<Project[]>`, `useQuery<Task | null>`)
+- `Record<string, T>` for lookup tables (e.g., `Record<string, 'success' | 'warning' | 'info' | 'neutral'>`)
+- Database types use `Omit<Entity, 'id' | 'created_at'>` pattern for Insert/Update shapes
 
 ## Import Organization
 
-**Order:**
-1. React and external dependencies (e.g., `import { useState } from 'react'`)
-2. Third-party libraries (e.g., `import { motion } from 'framer-motion'`, `import { useQuery } from '@tanstack/react-query'`)
-3. Icons and UI libraries (e.g., `import { AlertCircle } from 'lucide-react'`)
-4. Internal components and utilities with `@/` alias (e.g., `import { Badge } from '@/components/ui/Badge'`)
-5. Type imports as `import type { TypeName }` at top of relevant groups
+**Order observed (enforced by convention, not tooling):**
+1. React core (e.g., `import { useState, useEffect } from 'react'`)
+2. Third-party libraries (e.g., `framer-motion`, `lucide-react`, `react-router-dom`, `@tanstack/react-query`)
+3. Internal components using `@/` alias (e.g., `@/components/layout/PageShell`)
+4. Internal hooks (e.g., `@/hooks/useProjects`)
+5. Internal utilities and lib (e.g., `@/lib/utils`, `@/lib/supabase`)
+6. Type imports (e.g., `import type { Project } from '@/types/database'`)
 
 **Path Aliases:**
-- `@/*` maps to `./src/*` (configured in `vite.config.ts` and `tsconfig.app.json`)
-- All internal imports use the `@/` prefix consistently
-- Examples: `@/lib/queryClient`, `@/components/layout/Sidebar`, `@/hooks/useProjects`, `@/types/database`
+- `@/*` maps to `./src/*` -- use this for ALL internal imports without exception
+- Never use relative paths like `../../components/`; always use `@/components/`
 
-**Example from codebase:**
-```typescript
-import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { AlertCircle, CheckCircle } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
-import { SkeletonBlock } from '@/components/ui/SkeletonBlock'
-import { useActionItems } from '@/hooks/useProjects'
-import { formatRelativeTime } from '@/lib/utils'
-import type { Project, Task } from '@/types/database'
-```
+**Type import syntax:**
+- Use `import type { TypeName }` for all type-only imports (required by `verbatimModuleSyntax`)
 
 ## Error Handling
 
-**Patterns:**
-- Async queries/mutations throw errors directly: `if (error) throw error`
-- React Query handles promise rejections automatically
-- Fallback parsing in async operations: `try/catch` blocks with sensible defaults
-- Conditional error checking (e.g., `if (error && error.code !== 'PGRST116') throw error`) for expected errors
-- Mock data fallback pattern: `if (!isSupabaseConfigured) return mockData`
-- No global error boundary detected; errors propagate to React Query
+**Query functions:**
+```typescript
+const { data, error } = await supabase.from('table').select('*')
+if (error) throw error
+return data as EntityType[]
+```
 
-**Examples:**
-- `useProjects.ts` lines 22, 40, 56, 72, 97: `if (error) throw error`
-- `useBrainDump.ts` lines 71-76: `try/catch` with fallback data structure
-- `useProjects.ts` line 129: Specific error code handling for PGRST116 (not found)
-- Mutation errors: `mutationFn` throws directly, `onSuccess` callback doesn't execute if error occurs
+**Expected errors (e.g., 404 not found from Supabase):**
+```typescript
+if (error && error.code !== 'PGRST116') throw error
+return data as Entity | null
+```
+
+**Mutations use `onError` callback:**
+```typescript
+onError: (error: Error) => {
+  toast.error('Failed to update task', { description: error.message })
+}
+```
+
+**Graceful degradation pattern (every hook):**
+```typescript
+if (!isSupabaseConfigured) return mockData
+```
+
+**Async utility functions:**
+```typescript
+try {
+  return JSON.parse(content) as ParsedType
+} catch {
+  return fallbackValue
+}
+```
+
+**No global error boundary for data errors** -- errors propagate to React Query and surface via `isError` state in components. App-level `<ErrorBoundary FallbackComponent={PageErrorFallback}>` catches render crashes only.
 
 ## Logging
 
-**Framework:** No dedicated logging library; uses native `console` if needed
-
-**Patterns:**
-- No explicit logging statements in examined codebase
-- React Query handles state management without logging
-- Error visibility through browser DevTools and React Query DevTools (`@tanstack/react-query-devtools`)
-- Console logging not observed in production code
+- No `console.log` or logging framework in production code
+- Errors surface through React Query DevTools (`@tanstack/react-query-devtools`) during development
+- User-facing error feedback via `toast.error()` from `sonner` in mutation `onError` callbacks
+- User-facing success feedback via `toast.success()` in mutation `onSuccess` callbacks
 
 ## Comments
 
-**When to Comment:**
-- Very limited use of comments in codebase
-- Inline comments used only for clarification of non-obvious logic
-- No JSDoc comments observed in functional components
+**When to comment:**
+- Only for non-obvious logic (e.g., a fallback JSON parse block)
+- Required before each `eslint-disable-next-line` suppression
+- Section labels in long JSX are acceptable (e.g., `{/* Page header */}`, `{/* Footer */}`)
+- No JSDoc or TSDoc comments on any functions or components
 
-**JSDoc/TSDoc:**
-- Not used for components or hooks in this codebase
-- Type information provided through TypeScript interfaces and inline type annotations instead
+**Pattern:**
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { error } = await (supabase as any).from('table')...
+```
 
 ## Function Design
 
-**Size:**
-- Hooks are compact (15-50 lines typical)
-- Components are medium-sized (50-150 lines typical for smaller components, 200+ lines for complex pages)
-- Utility functions are small and focused (5-15 lines)
+**Component size:**
+- Small utility components: 10-30 lines (e.g., `SkeletonBlock`, `StatusDot`)
+- Dashboard cards: 50-150 lines
+- Page components: 40-300+ lines for complex pages with multiple view modes
 
-**Parameters:**
-- React components accept single `props` parameter with destructuring (e.g., `{ children, variant = 'neutral', className }`)
-- Custom hooks accept simple parameters (single string for IDs)
-- Utility functions use specific parameter lists rather than objects
-- Default parameters used for optional props (e.g., `variant = 'neutral'`)
+**Parameter style:**
+- Components accept single destructured props object: `{ project, index }: ProjectCardProps`
+- Hooks accept typed parameters directly: `useProject(slug: string)`, `useTasks(projectId: string)`
+- Optional parameters use `?` not default: `useActionItems(projectId?: string)`
+- Mutation functions accept typed inline objects: `{ id: string; status: Task['status'] }`
 
-**Return Values:**
-- React components return JSX
-- Hooks return React Query hooks or mutations (QueryResult, MutationResult)
-- Utility functions return primitives (strings, numbers, objects)
-- Conditional returns: early exit pattern for loading states (e.g., `if (isLoading) return <SkeletonBlock>`)
+**Return patterns:**
+- Components: early return for loading state (`if (isLoading) return <SkeletonCard />`)
+- Hooks: return the React Query result object directly (do not destructure before returning)
+- Utility functions: return primitives or typed objects
 
-**Pattern Examples:**
+**Animation pattern (required for all data-loaded content):**
 ```typescript
-// Simple component with defaults
-export function Badge({ children, variant = 'neutral', className }: BadgeProps) {
-  return <span className={cn('badge', `badge-${variant}`, className)}>{children}</span>
-}
-
-// Hook returning React Query hook
-export function useProjects() {
-  return useQuery<Project[]>({
-    queryKey: ['projects'],
-    queryFn: async () => { ... }
-  })
-}
-
-// Utility function returning primitives
-export function formatRelativeTime(date: string | Date): string {
-  const now = new Date()
-  const target = new Date(date)
-  // calculation logic
-  return 'just now'
-}
+<motion.div
+  initial={{ opacity: 0, y: 12 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+>
+  {/* content */}
+</motion.div>
 ```
 
 ## Module Design
 
 **Exports:**
-- Named exports used consistently (no default exports in hooks or utilities)
-- React components exported as `export function ComponentName() {}`
-- Multiple exports per file when logically grouped (e.g., `Badge.tsx` and `SkeletonBlock.tsx` are separate but could be grouped)
-- Hook files export multiple related hooks (e.g., `useProjects.ts` exports `useProjects`, `useProject`, `useTasks`, `useMilestones`, `useActionItems`, etc.)
+- Named exports only; no default exports in hooks, utilities, or custom components
+- shadcn/ui primitives (`src/components/ui/*.tsx`) use shadcn's own export style (also named)
+- Multiple related hooks grouped in one file (e.g., `useProjects.ts` exports `useProjects`, `useProject`, `useTasks`, `useMilestones`, `useActionItems`, `useProjectNotes`, `useNextSessionPrompt`, `useUpdateTask`, `useAddNote`)
 
-**Barrel Files:**
-- No barrel files (index.ts) observed in codebase
-- Components imported directly from their individual files
-- Hooks imported directly from their specific hook files
+**Barrel files:**
+- No `index.ts` barrel files; always import directly from the source file
 
-**Example file structure for hooks:**
+**Lookup tables at module scope:**
+- Status-to-variant mappings defined as `const` at module scope (outside components):
 ```typescript
-// useProjects.ts - exports 10+ related hooks
-export function useProjects() { ... }
-export function useProject(slug: string) { ... }
-export function useTasks(projectId: string) { ... }
-export function useMilestones(projectId: string) { ... }
-export function useActionItems(projectId?: string) { ... }
-export function useProjectNotes(projectId: string) { ... }
-export function useNextSessionPrompt(projectId: string) { ... }
-export function useUpdateTask() { ... }
-export function useAddNote() { ... }
+const statusVariant: Record<string, 'success' | 'warning' | 'neutral'> = {
+  active: 'success',
+  paused: 'warning',
+  archived: 'neutral',
+}
 ```
+
+## Styling Conventions
+
+**Colors:**
+- Never hardcode hex or rgb values; always use CSS variables: `hsl(var(--accent-coral))`, `hsl(var(--text-primary))`, `hsl(var(--bg-elevated))`
+- Tailwind utility classes used for layout (e.g., `flex`, `flex-col`, `items-center`)
+- Inline `style` props used for spacing and precise layout values
+
+**No spinners:**
+- Loading states use skeleton shimmer only via `<SkeletonBlock>` or `<SkeletonCard>` from `src/components/ui/SkeletonBlock.tsx`
+
+**Framer Motion:**
+- Required for all animated content entrance; use consistent easing `[0.16, 1, 0.3, 1]`
+- Staggered list animations use `delay: index * 0.05` or `delay: index * 0.08` pattern
 
 ---
 

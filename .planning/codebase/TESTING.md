@@ -4,195 +4,143 @@
 
 ## Test Framework
 
-**Status:** Testing infrastructure not yet implemented
-
 **Runner:**
-- Not detected - No Jest, Vitest, or other test runner configured
-- No test configuration files present (`jest.config.*`, `vitest.config.*`)
+- None. No test framework is installed or configured.
+- No Jest, Vitest, Mocha, Playwright, Cypress, or any other test runner detected.
+- No `jest.config.*`, `vitest.config.*`, or test setup files exist.
 
 **Assertion Library:**
-- Not detected
+- None.
 
 **Run Commands:**
 ```bash
-npm run lint              # Run ESLint only (available)
-npm run build             # Compile TypeScript and build
-npm run dev               # Start development server
-npm run preview           # Preview production build
+# No test commands available
+npm run build    # Only quality gate is a successful TypeScript + Vite build
 ```
-
-**Note:** No test script in `package.json`. Testing infrastructure is absent from this codebase.
 
 ## Test File Organization
 
 **Location:**
-- Not applicable - No test files exist in codebase
-- Glob search for `*.test.*` and `*.spec.*` in `/src` directory returned no results
-- Only test files found are in `node_modules` (external dependencies)
+- No test files exist anywhere in the repository.
+- No `*.test.ts`, `*.test.tsx`, `*.spec.ts`, or `*.spec.tsx` files detected.
 
 **Naming:**
-- Not established
-
-**Structure:**
-- Not applicable
+- Not applicable.
 
 ## Test Structure
 
-Not applicable - No tests currently exist in codebase.
+No tests exist. The codebase has no test infrastructure at all.
 
 ## Mocking
 
-**Framework:**
-- React Query provides mock/stale data strategy (no dedicated mocking library)
-- Fallback mock data patterns used in hooks instead of test mocks
+**Framework:** None.
 
-**Patterns:**
+**Mock data pattern (used for development/offline, not testing):**
 
-Mock data is managed through feature flags and fallback data structures:
+The codebase uses a mock data module at `src/data/mock.ts` that serves as offline fallback when Supabase is not configured. Every hook checks `isSupabaseConfigured` and returns mock data when the environment variables are missing:
 
 ```typescript
-// Pattern from useBrainDump.ts
-export function useBrainDumps() {
-  return useQuery<BrainDump[]>({
-    queryKey: ['brain-dumps'],
-    queryFn: async () => {
-      if (!isSupabaseConfigured) return mockBrainDumps  // Fallback to mock data
-      const { data, error } = await supabase
-        .from('brain_dumps')
-        .select('*')
-        .order('created_at', { ascending: false })
-      if (error) throw error
-      return data as BrainDump[]
-    },
-  })
+// Pattern in every hook (src/hooks/useProjects.ts, useContentReviews.ts, etc.)
+queryFn: async () => {
+  if (!isSupabaseConfigured) return mockProjects
+  const { data, error } = await supabase.from('projects').select('*')
+  if (error) throw error
+  return data as Project[]
 }
 ```
 
-Mock data is stored in `/src/data/mock.ts` with exports:
-- `mockProjects: Project[]`
-- `mockTasks: Record<string, Task[]>`
-- `mockMilestones: Record<string, ProjectMilestone[]>`
-- `mockActionItems: Record<string, ProjectActionItem[]>`
-- `mockNotes: Record<string, ProjectNote[]>`
-- `mockNextSessionPrompts: Record<string, NextSessionPrompt>`
-- `mockContentReviews: ContentReview[]`
-- `mockSocialPlatforms: SocialPlatform[]`
-- `mockActivity: ActivityEntry[]`
-- `mockSystemHealth: SystemHealth[]`
-- `mockBrainDumps: BrainDump[]`
-
-**What to Mock (Development):**
-- All database queries when `isSupabaseConfigured` is false
-- Entire hook responses fall back to static mock data
-- No dynamic mock generation or factories
-
-**What NOT to Mock:**
-- React components render with actual mock data instead of mocks
-- Browser APIs (handled natively)
-- Network calls that can fall back to mock data instead
+This is a development convenience pattern, not a test mock. Mock data lives in `src/data/mock.ts` and exports typed instances of all entities: `mockProjects`, `mockTasks`, `mockMilestones`, `mockActionItems`, `mockNotes`, `mockBrainDumps`, `mockContentReviews`, `mockActivity`, `mockSocialPlatforms`, `mockSystemHealth`.
 
 ## Fixtures and Factories
 
 **Test Data:**
-Mock data structures are predefined in `/src/data/mock.ts`:
+- Not applicable (no tests).
 
+**Mock data helpers in `src/data/mock.ts`:**
 ```typescript
-export const mockProjects: Project[] = [
-  {
-    id: 'proj-001',
-    name: 'Ridgeline',
-    slug: 'ridgeline',
-    description: '...',
-    status: 'active',
-    priority: 'high',
-    // ... additional fields
-  },
-  // more projects
-]
+// Date helpers used to generate relative timestamps in mock data
+const now = new Date().toISOString()
+const hoursAgo = (h: number) => new Date(Date.now() - h * 3600_000).toISOString()
+const daysAgo = (d: number) => new Date(Date.now() - d * 86400_000).toISOString()
+const daysFromNow = (d: number) => new Date(Date.now() + d * 86400_000).toISOString()
 ```
-
-**Location:**
-- `/src/data/mock.ts` - Contains all mock data exports
-- Mock data is imported directly in hooks where needed (e.g., `import { mockProjects } from '@/data/mock'`)
-- No factory functions or dynamic fixture generation
 
 ## Coverage
 
-**Requirements:**
-- Not enforced - No coverage configuration present
-- No coverage targets specified in `package.json` or configuration files
+**Requirements:** None enforced.
 
 **View Coverage:**
-- Not applicable - No testing framework configured
+```bash
+# Not available
+```
 
 ## Test Types
 
-**Unit Tests:**
-- Not implemented
-- Would typically test utility functions, hooks, and component logic in isolation
+**Unit Tests:** Not present.
 
-**Integration Tests:**
-- Not implemented
-- React components are rendered against mock data (de facto integration testing through mock fallback)
+**Integration Tests:** Not present.
 
-**E2E Tests:**
-- Not implemented
-- Would be candidates for: navigation flows, form submissions, data mutations
+**E2E Tests:** Not present.
 
-## Common Patterns
+## Quality Gates (Current Substitute for Tests)
 
-Not applicable - No tests exist to demonstrate patterns.
+The only automated quality check is the TypeScript + Vite build:
 
-### Recommended Patterns for Future Testing
-
-**Async Testing (when implemented):**
-```typescript
-// Expected pattern based on existing async code:
-describe('useProjects', () => {
-  it('should fetch projects when Supabase is configured', async () => {
-    // Would test the async queryFn
-  })
-
-  it('should return mock data when Supabase is not configured', async () => {
-    // Test the fallback behavior
-  })
-})
+```bash
+npm run build    # Must pass with zero TypeScript errors
 ```
 
-**Error Testing (when implemented):**
-```typescript
-// Expected pattern based on existing error handling:
-describe('useProjects', () => {
-  it('should throw error when Supabase query fails', async () => {
-    // Test the: if (error) throw error pattern
-  })
+TypeScript is configured with strict mode in `tsconfig.app.json`:
+- `strict: true`
+- `noUnusedLocals: true`
+- `noUnusedParameters: true`
+- `noFallthroughCasesInSwitch: true`
+- `erasableSyntaxOnly: true`
 
-  it('should handle specific error codes', async () => {
-    // Test pattern from useProjects.ts line 129:
-    // if (error && error.code !== 'PGRST116') throw error
-  })
-})
+ESLint runs via:
+```bash
+npm run lint     # ESLint flat config (eslint.config.js)
 ```
 
-## Development vs. Production Data
+These build and lint checks are the only automated correctness guarantees in the project.
 
-**Configuration:**
-- Environment variables for Supabase configuration: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
-- Environment variables for Claude API: `VITE_ANTHROPIC_API_KEY`
-- Configuration checked in `/src/lib/supabase.ts`: `const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)`
+## Adding Tests (Guidance for Future Work)
 
-**Fallback Pattern:**
-When development environment lacks real service credentials, all hooks automatically serve mock data:
-```typescript
-// Universal pattern across all data hooks
-if (!isSupabaseConfigured) return mockData
-// else: query real Supabase
+If tests are introduced, the recommended approach given the existing stack:
+
+**Framework to add:** Vitest (compatible with Vite, no separate config needed)
+```bash
+npm install -D vitest @testing-library/react @testing-library/user-event jsdom
 ```
 
-This allows development and testing without requiring credentials to be configured.
+**Config to add to `vite.config.ts`:**
+```typescript
+test: {
+  environment: 'jsdom',
+  globals: true,
+  setupFiles: ['./src/test/setup.ts'],
+}
+```
+
+**File location convention to follow:**
+- Co-locate test files next to source: `src/hooks/useProjects.test.ts`
+- Or group in `src/__tests__/` directory
+
+**Highest-value test targets (given current code):**
+- `src/lib/utils.ts` -- pure functions (`formatRelativeTime`, `getGreeting`, `formatDate`) are trivially testable
+- `src/hooks/useBrainDump.ts` -- `parseBrainDumpWithClaude` fallback parser logic
+- `src/hooks/useProjects.ts` -- mock data branch logic in `useActionItems` (filtering by projectId)
+- `src/data/mock.ts` -- shape validation against TypeScript interfaces
+
+**Mocking Supabase in tests:**
+```typescript
+// Mock the isSupabaseConfigured flag to force mock data path
+vi.mock('@/lib/supabase', () => ({
+  isSupabaseConfigured: false,
+  supabase: null,
+}))
+```
 
 ---
 
 *Testing analysis: 2026-03-22*
-
-**Note:** Testing infrastructure is not yet established in this project. No test files, test configuration, or testing framework exists. The codebase relies on a mock data fallback pattern for development work rather than formal unit/integration tests. Adding test infrastructure would be a recommended improvement for quality assurance.

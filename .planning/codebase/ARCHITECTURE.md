@@ -4,192 +4,197 @@
 
 ## Pattern Overview
 
-**Overall:** React SPA with React Router for client-side routing, TanStack React Query for server state management, Supabase for backend persistence.
+**Overall:** Single-page application with layered React architecture, hook-based data access, and graceful mock-data degradation.
 
 **Key Characteristics:**
-- Component-based UI with page-level route separation
-- Hook-based data fetching with fallback to mock data
-- Graceful degradation when Supabase is not configured
-- Animation-first design with Framer Motion
-- Tailwind CSS + Radix UI for styling and accessible components
-- TypeScript for type-safe database interactions
+- All server state is owned by TanStack React Query; local state is React `useState` only
+- Every data hook checks `isSupabaseConfigured` and falls back to `src/data/mock.ts` transparently
+- All page transitions are animated via Framer Motion `AnimatePresence` at the router level
+- No global state store (Redux, Zustand, Context) -- Query client is the single server-state authority
+- Access control is a lightweight session-storage gate (`src/components/AccessGate.tsx`), not a full auth system
 
 ## Layers
 
-**Presentation (UI Components):**
-- Purpose: Render user interface and handle user interactions
-- Location: `src/components/`
-- Contains: Page components, layout shells, card components, reusable UI primitives (Badge, SkeletonBlock, StatusDot)
-- Depends on: Hooks, utilities, styling
+**UI Primitives:**
+- Purpose: Low-level reusable elements wrapping shadcn/ui and Radix UI primitives
+- Location: `src/components/ui/`
+- Contains: `Badge`, `SkeletonBlock`, `SkeletonCard`, `StatusDot`, `ErrorFallback`, `PageErrorFallback`, plus shadcn wrappers (`button.tsx`, `card.tsx`, `dialog.tsx`, `input.tsx`, `select.tsx`, `tabs.tsx`, etc.)
+- Depends on: Nothing in src except `@/lib/utils`
+- Used by: All other component layers and pages
+
+**Layout Components:**
+- Purpose: App shell, navigation, and page-level layout structure
+- Location: `src/components/layout/`
+- Contains: `Sidebar.tsx` (fixed left nav, responsive mobile drawer), `PageShell.tsx` (animated page wrapper with header/content slots)
+- Depends on: UI primitives, React Router, Framer Motion
+- Used by: `App.tsx` (Sidebar), all page components (PageShell)
+
+**Feature Components:**
+- Purpose: Domain-specific composable cards and widgets that render fetched data
+- Location: `src/components/dashboard/`, `src/components/activity/`, `src/components/pipeline/`, `src/components/projects/`, `src/components/settings/`, `src/components/social/`
+- Contains: `ActionItemsCard.tsx`, `ContentCalendarStrip.tsx`, `ProjectQuickGlanceCard.tsx`, `StatTilesRow.tsx`, `SystemHealthCard.tsx`, `SystemHealthStrip.tsx`, `UpcomingContentCard.tsx`, `ContentCard.tsx`, `ProjectCard.tsx`
+- Depends on: Hooks, UI primitives
 - Used by: Pages
 
-**Page Layer:**
-- Purpose: Route-specific containers that compose dashboard and feature sections
+**Global Feature Components:**
+- Purpose: App-wide overlay features independent of routing
+- Location: `src/components/`
+- Contains: `AccessGate.tsx` (session-storage PIN gate), `FeedbackWidget.tsx` (floating feedback form using `useSubmitFeedback`)
+- Depends on: Hooks, UI primitives, React Router (for page name detection)
+- Used by: `App.tsx` -- wraps entire app tree
+
+**Pages:**
+- Purpose: Route-bound containers that compose feature components into full page layouts
 - Location: `src/pages/`
-- Contains: Dashboard, Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings
-- Depends on: Components, hooks, PageShell layout wrapper
-- Used by: React Router
+- Contains: `Dashboard.tsx`, `Projects.tsx`, `ProjectDetail.tsx`, `BrainDump.tsx`, `ContentPipeline.tsx`, `SocialMedia.tsx`, `ActivityLog.tsx`, `Settings.tsx`
+- Depends on: Feature components, hooks, `PageShell`, UI primitives, React Router params
+- Used by: React Router (`App.tsx`)
 
-**Data Access (Hooks):**
-- Purpose: Encapsulate data fetching, caching, and mutations
-- Location: `src/hooks/`
-- Contains: `useProjects()`, `useTasks()`, `useBrainDumps()`, `useActivityLog()`, `useSocialPlatforms()`, `useContentReviews()`, `useSystemHealth()`, and related mutations
-- Depends on: Supabase client, TanStack React Query, mock data
-- Used by: Components and pages
+**Hooks:**
+- Purpose: Encapsulate all data fetching, mutation, caching, and mock-fallback logic
+- Location: `src/hooks/` (files located inside `src/pages/` directory due to file system co-location -- hooks are inside `src/hooks/` NOT `src/pages/`)
+- Contains: `useProjects.ts`, `useBrainDump.ts`, `useActivityLog.ts`, `useContentReviews.ts`, `useDashboardStats.ts`, `usePageFeedback.ts`, `useSocialPlatforms.ts`, `useSystemHealth.ts`
+- Depends on: `src/lib/supabase.ts`, `src/lib/queryClient.ts`, `src/data/mock.ts`, TanStack React Query
+- Used by: Pages and feature components
 
-**Infrastructure (Library):**
-- Purpose: Provide client configuration, utilities, and service integrations
+**Library / Services:**
+- Purpose: Client initialization, query configuration, and shared utility functions
 - Location: `src/lib/`
-- Contains: `supabase.ts` (Supabase client initialization), `queryClient.ts` (TanStack React Query config), `utils.ts` (formatting and helper functions)
-- Depends on: External SDKs (Supabase, React Query)
+- Contains: `supabase.ts` (Supabase client with `isSupabaseConfigured` flag), `queryClient.ts` (React Query client, 2-min stale time, 1 retry), `utils.ts` (cn, formatRelativeTime, formatDate, formatTime, formatShortDate, getGreeting)
+- Depends on: External SDKs only
 - Used by: Hooks and components
 
-**Data Models & Types:**
-- Purpose: Define TypeScript types for database entities and validation
+**Types:**
+- Purpose: Single source of truth for all TypeScript types and the Supabase Database interface
 - Location: `src/types/database.ts`
-- Contains: Zod-like Database interface mapping, entity types (Project, Task, BrainDump, etc.), status enums
+- Contains: `Database` interface (Supabase-typed schema), entity interfaces (`Project`, `Task`, `BrainDump`, `ContentReview`, `ActivityEntry`, `SystemHealth`, `Setting`, etc.), status union types (`ProjectStatus`, `TaskStatus`, `ContentStatus`, etc.)
 - Depends on: Nothing
-- Used by: All layers for type safety
+- Used by: All layers
 
 **Mock Data:**
-- Purpose: Fallback data for offline/unconfigured environments
+- Purpose: Offline/unconfigured fallback data matching production entity shapes
 - Location: `src/data/mock.ts`
-- Contains: Mock instances of all major entities (mockProjects, mockTasks, mockBrainDumps, etc.)
-- Depends on: Nothing
-- Used by: Hooks when Supabase is not configured
+- Contains: `mockProjects`, `mockTasks`, `mockMilestones`, `mockActionItems`, `mockNotes`, `mockBrainDumps`, `mockActivity`, `mockSystemHealth`, `mockNextSessionPrompts`
+- Depends on: Types
+- Used by: All hooks (when `isSupabaseConfigured` is false)
 
 ## Data Flow
 
-**Fetch Data (Read-Heavy Flow):**
+**Server State (read):**
 
-1. Page or component mounts and calls a hook (e.g., `useProjects()`)
-2. Hook checks if `isSupabaseConfigured` flag is true
-3. If configured: Query hits Supabase via authenticated client (`supabase.from('table').select()`)
-4. If not configured: Hook returns mock data from `src/data/mock.ts`
-5. TanStack React Query caches the result with a queryKey (e.g., `['projects']`)
-6. Component renders with data; loading state shows `<SkeletonBlock />` while fetching
-7. Subsequent page navigations reuse cached data; stale data refetches after 2 minutes
+1. Page or feature component calls a hook (e.g., `useProjects()`)
+2. Hook calls `useQuery` with a stable `queryKey`
+3. `queryFn` checks `isSupabaseConfigured`; if false, returns mock data immediately
+4. If configured, `queryFn` executes Supabase client query, throws on error
+5. React Query caches result, marks stale after 2 minutes
+6. Component receives `{ data, isLoading, isError }` and renders accordingly
+7. While loading, component renders `<SkeletonBlock>` or `<SkeletonCard>` (no spinners)
 
-**Mutation Flow (Write):**
+**Server State (write/mutation):**
 
-1. User action (form submission, checkbox toggle) calls mutation hook (e.g., `useUpdateTask()`)
-2. Hook wraps mutation in `useMutation()` which calls Supabase `.insert()` or `.update()`
-3. On success: `queryClient.invalidateQueries()` with matching queryKey triggers refetch
-4. Component automatically re-renders with new data from fresh query
-5. Error state handled by React Query (retry once by default)
+1. Component calls mutation hook (e.g., `useUpdateTask()`)
+2. `mutationFn` checks `isSupabaseConfigured`; returns early if not configured
+3. Supabase client runs `update`/`insert`/`delete`
+4. `onSuccess` calls `queryClient.invalidateQueries()` to trigger refetch
+5. `onSuccess` fires `toast.success()` via sonner; `onError` fires `toast.error()`
 
-**Brain Dump AI Flow:**
+**Brain Dump special flow:**
 
-1. User submits raw text via BrainDump form
-2. `useSubmitBrainDump()` mutation calls `parseBrainDumpWithClaude()` function
-3. Function checks for Anthropic API key; if missing, uses simple local parse fallback
-4. Claude API parses text into structured tasks with project hints and priorities
-5. Parsed result inserted into Supabase `brain_dumps` table
-6. Query invalidation triggers `useBrainDumps()` refetch
+1. User submits raw text via `useSubmitBrainDump()`
+2. `mutationFn` calls `parseBrainDumpWithClaude()` -- direct `fetch` to Anthropic API
+3. If `VITE_ANTHROPIC_API_KEY` is absent, falls back to local sentence-splitting parser
+4. Parsed result is inserted into Supabase `brain_dumps` table
+5. Query cache for `['brain-dumps']` is invalidated
+
+**Page Transitions:**
+
+1. React Router location changes
+2. `AnimatePresence mode="wait"` in `App.tsx` unmounts outgoing page
+3. Incoming page's `PageShell` runs Framer Motion `initial -> animate` (opacity 0->1, y 8->0, 220ms)
 
 **State Management:**
-- Server state (data from Supabase): Managed by TanStack React Query with automatic caching and invalidation
-- Local UI state (form inputs, modal open/close): React `useState()` at component level
-- No global state management library (Redux, Zustand); Query client serves as single source of truth for server data
+- Server/async state: TanStack React Query (single `queryClient` instance, `src/lib/queryClient.ts`)
+- Local UI state: `useState` at component level (modals, form inputs, toggles)
+- Auth/session: `sessionStorage` key `forge_authenticated` (via `AccessGate.tsx`)
+- No shared client-side state store
 
 ## Key Abstractions
 
-**Hook-Based Data Access:**
-- Purpose: Encapsulate Supabase queries and provide consistent caching interface
-- Examples: `src/hooks/useProjects.ts`, `src/hooks/useBrainDump.ts`, `src/hooks/useActivityLog.ts`
-- Pattern: Each hook exports `useXxx()` query hook + `useXxxMutation()` mutation hook; gracefully falls back to mock data
-
-**Card Components:**
-- Purpose: Reusable dashboard widget containers with consistent styling and animation
-- Examples: `src/components/dashboard/ActionItemsCard.tsx`, `src/components/dashboard/SystemHealthCard.tsx`
-- Pattern: Accept data via props, show loading skeleton while fetching, render motion-animated content
-
-**UI Primitives:**
-- Purpose: Low-level reusable UI elements wrapping Radix UI or custom implementations
-- Examples: `src/components/ui/Badge.tsx`, `src/components/ui/SkeletonBlock.tsx`, `src/components/ui/StatusDot.tsx`
-- Pattern: Accept variant prop for styling (error, warning, success, neutral), compose into higher-level components
+**Data Hooks:**
+- Purpose: Typed interface to Supabase with transparent mock fallback
+- Examples: `src/hooks/useProjects.ts`, `src/hooks/useBrainDump.ts`, `src/hooks/useActivityLog.ts`, `src/hooks/useSystemHealth.ts`
+- Pattern: Each hook file exports one or more `useXxx()` query hooks and optionally `useXxxMutation()` mutation hooks. Query keys are arrays. All queries check `isSupabaseConfigured` as the first line of `queryFn`.
 
 **PageShell:**
-- Purpose: Consistent page layout wrapper with header, title, subtitle, action buttons, and animated transition
+- Purpose: Uniform animated wrapper for every page, providing consistent header/content layout
 - Location: `src/components/layout/PageShell.tsx`
-- Pattern: All pages wrap content in `<PageShell>` for consistent styling and page transition animations
+- Pattern: All pages wrap their entire JSX in `<PageShell title="..." subtitle="..." actions={...}>`. Max-width 1280px, responsive padding.
 
-**Configuration Gradual Degradation:**
-- Purpose: Allow app to function with or without Supabase backend
-- Examples: Every hook checks `isSupabaseConfigured` before calling Supabase
-- Pattern: Hooks return mock data when backend is unavailable; UI remains fully functional
+**SkeletonBlock / SkeletonCard:**
+- Purpose: Loading state placeholders -- no spinners allowed per project rules
+- Location: `src/components/ui/SkeletonBlock.tsx`
+- Pattern: Feature components use `if (isLoading) return <SkeletonCard />` or inline `<SkeletonBlock height={N} width="X%" />` for granular shimmer effects.
+
+**isSupabaseConfigured flag:**
+- Purpose: Enables fully functional offline/local mode without any code-path changes
+- Location: `src/lib/supabase.ts` (line 7)
+- Pattern: Exported boolean; every `queryFn` checks it as first conditional and returns mock data when false.
+
+**Database interface:**
+- Purpose: Supabase client typing that gives compile-time safety on all `.from()` table calls
+- Location: `src/types/database.ts`
+- Pattern: `SupabaseClient<Database>` generic ensures table names, column names, and row shapes are type-checked.
 
 ## Entry Points
 
-**Root Mount Point:**
+**`src/main.tsx`:**
 - Location: `src/main.tsx`
-- Triggers: Browser DOM load
-- Responsibilities: Creates React root and renders `<App />` component
+- Triggers: Browser DOM load (`document.getElementById('root')`)
+- Responsibilities: Creates React root in StrictMode, imports global CSS and Inter font faces, renders `<App />`
 
-**App Component:**
+**`src/App.tsx` -- App component:**
 - Location: `src/App.tsx`
-- Triggers: Mounted by main.tsx
-- Responsibilities: Wraps entire app with `<QueryClientProvider>` and `<BrowserRouter>`; renders `<AppRoutes />`
+- Triggers: Rendered by `main.tsx`
+- Responsibilities: Wraps everything with `QueryClientProvider`, `BrowserRouter`, `ErrorBoundary` (using `PageErrorFallback`), `AccessGate`, and `Toaster`; renders `AppRoutes` and `FeedbackWidget`
 
-**AppRoutes Component:**
-- Location: `src/App.tsx` (nested in App)
+**`src/App.tsx` -- AppRoutes component:**
+- Location: `src/App.tsx` (lines 20-55)
 - Triggers: Router initialization
-- Responsibilities: Defines all route `<Route>` definitions; renders `<Sidebar />` and `<main>` layout; manages page transitions via `<AnimatePresence>`
+- Responsibilities: Fixed sidebar + main content layout; `AnimatePresence` wrapping all `<Routes>`; defines all 8 routes
 
-**Page Components:**
+**Page components:**
 - Location: `src/pages/*.tsx`
-- Triggers: Route navigation
-- Responsibilities: Fetch page-specific data, compose dashboard cards or detail components, wrap in `<PageShell>`
+- Triggers: Route match
+- Responsibilities: Fetch data via hooks, compose feature cards, render inside `PageShell`
+
+**`index.html`:**
+- Location: `index.html`
+- Triggers: Browser request / Cloudflare Pages CDN
+- Responsibilities: Root HTML, mounts `<div id="root">`, loads Vite entry (`src/main.tsx`)
 
 ## Error Handling
 
-**Strategy:** Fail gracefully with user-visible fallbacks; no hard crashes.
+**Strategy:** Errors propagate upward; React Query surfaces them via `isError` flag; global React ErrorBoundary catches unhandled render errors.
 
 **Patterns:**
-
-**Supabase Errors:**
-- Caught in hook `queryFn`; thrown to React Query
-- React Query shows error state in UI (component handles via `isError` state)
-- User sees error message in card footer or toast notification (not yet implemented, needs CONCERNS)
-
-**Claude API Errors:**
-- Network errors caught in `parseBrainDumpWithClaude()` fetch
-- Falls back to simple local parsing (split by sentence, assign generic metadata)
-- User sees parsed result even if Claude fails
-
-**Missing Configuration:**
-- `isSupabaseConfigured` flag (environment variables missing) → app uses mock data transparently
-- `VITE_ANTHROPIC_API_KEY` missing → brain dump parsing uses fallback parser
-- No error thrown; feature degrades gracefully
-
-**Type Safety:**
-- TypeScript enforces correct data shape via Database interface
-- Supabase client typed with `SupabaseClient<Database>`
-- Mutations require correctly-shaped input (no runtime surprises)
+- Query errors: `queryFn` throws; React Query sets `isError = true`; components conditionally render error UI
+- Mutation errors: `mutationFn` throws; `onError` callback fires `toast.error()` via sonner
+- Expected Supabase 404: `PGRST116` error code is checked and swallowed (e.g., `useNextSessionPrompt` for optional rows)
+- Anthropic API failure: `parseBrainDumpWithClaude()` falls back to local parser on network error or missing key
+- Render errors: `ErrorBoundary` at app root renders `PageErrorFallback` component (`src/components/ui/PageErrorFallback.tsx`)
+- No configured Supabase: `isSupabaseConfigured = false` → all hooks return mock data, no error thrown
 
 ## Cross-Cutting Concerns
 
-**Logging:** None configured; could use browser console or external service
+**Styling:** CSS custom properties (HSL tokens) in `src/styles/globals.css`; all colors reference `hsl(var(--token-name))`, no hardcoded hex/rgb values in components. Tailwind utilities compose with inline `style` props for spacing.
 
-**Validation:**
-- Form validation: Ad-hoc in component (not yet centralized)
-- API response validation: Implicit via TypeScript types; no Zod runtime validation
+**Animation:** Framer Motion used exclusively for all motion. Page transitions in `App.tsx`, micro-interactions (whileTap scale) in `Sidebar.tsx`, section fade-ins in `ProjectDetail.tsx`. No CSS `transition` for layout animations.
 
-**Authentication:**
-- Not implemented; assumes public/demo environment
-- Supabase supports auth but not wired up in hooks
-- Environment variable exists for API key but auth layer not present
+**Logging:** `sonner` toast library used for user-facing mutation feedback. No console logging in production code. React Query DevTools available in development.
 
-**Caching & Revalidation:**
-- TanStack React Query handles all caching
-- Stale time: 2 minutes (queries marked stale after 2min idle)
-- Retry strategy: 1 automatic retry on failure
-- Manual invalidation: Mutations call `queryClient.invalidateQueries()` to refetch related queries
+**Validation:** TypeScript compile-time only; no runtime schema validation (no Zod). Supabase Database interface enforces shape at the type level.
 
-**Loading States:**
-- Components show `<SkeletonBlock />` while data is loading
-- No global loading overlay; granular per-component
-- Framer Motion provides smooth fade-in transitions on data arrival
+**Authentication:** `AccessGate.tsx` provides a PIN-code gate backed by `sessionStorage`. Configured via `VITE_ACCESS_CODE` env var. If env var is absent, gate is bypassed (local dev mode).
 
 ---
 

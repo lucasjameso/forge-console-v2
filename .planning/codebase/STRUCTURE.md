@@ -7,245 +7,219 @@
 ```
 forge-console-v2/
 ├── src/
-│   ├── assets/               # SVG icons, images, static files
-│   ├── components/           # Reusable React components organized by feature
-│   │   ├── ui/              # Primitive UI components (Badge, SkeletonBlock, StatusDot)
-│   │   ├── layout/          # Layout wrappers (Sidebar, PageShell)
-│   │   ├── dashboard/       # Dashboard-specific cards (ActionItemsCard, SystemHealthCard)
-│   │   ├── projects/        # Project-related components (ProjectCard)
-│   │   ├── pipeline/        # Content pipeline components (ContentCard)
-│   │   ├── activity/        # Activity log components
+│   ├── assets/              # Static assets (images, svgs)
+│   ├── components/
+│   │   ├── ui/              # Low-level shadcn/ui + custom primitives
+│   │   ├── layout/          # Sidebar, PageShell
+│   │   ├── dashboard/       # Dashboard-specific cards and strips
+│   │   ├── activity/        # Activity log feature components
+│   │   ├── pipeline/        # Content pipeline cards
+│   │   ├── projects/        # Project card components
 │   │   ├── settings/        # Settings page components
-│   │   └── social/          # Social media components
-│   ├── data/                # Mock data and fixtures
-│   │   └── mock.ts          # Mock projects, tasks, brain dumps, etc.
-│   ├── hooks/               # Custom React hooks for data fetching
-│   │   ├── useProjects.ts   # Fetch projects, tasks, milestones, notes
-│   │   ├── useBrainDump.ts  # Brain dump queries and AI parsing
-│   │   ├── useActivityLog.ts # Activity log queries with filters
-│   │   ├── useContentReviews.ts
-│   │   ├── useSocialPlatforms.ts
-│   │   └── useSystemHealth.ts
-│   ├── lib/                 # Utility libraries and configuration
-│   │   ├── supabase.ts      # Supabase client initialization
-│   │   ├── queryClient.ts   # TanStack React Query client config
-│   │   └── utils.ts         # Formatting helpers (formatDate, formatRelativeTime, cn)
-│   ├── pages/               # Route-specific page components
-│   │   ├── Dashboard.tsx    # Home page with dashboard cards
-│   │   ├── Projects.tsx     # Projects list
-│   │   ├── ProjectDetail.tsx # Single project detail view
-│   │   ├── BrainDump.tsx    # Brain dump input and review
-│   │   ├── ContentPipeline.tsx # Content review workflow
-│   │   ├── SocialMedia.tsx  # Social media management
-│   │   ├── ActivityLog.tsx  # Activity history view
-│   │   └── Settings.tsx     # User settings
-│   ├── styles/              # Global CSS and Tailwind configuration
-│   │   └── globals.css      # Global styles, CSS variables, theme
-│   ├── types/               # TypeScript type definitions
-│   │   └── database.ts      # Database schema types (Project, Task, etc.)
-│   ├── App.tsx              # Root component with routing setup
-│   └── main.tsx             # React root and DOM mount
-├── public/                  # Static assets served at root
-├── dist/                    # Built output (gitignored)
-├── supabase/                # Supabase configuration and migrations
+│   │   ├── social/          # Social media feature components
+│   │   ├── AccessGate.tsx   # PIN auth gate (app-wide)
+│   │   └── FeedbackWidget.tsx # Floating feedback form (app-wide)
+│   ├── data/
+│   │   └── mock.ts          # Offline fallback data for all entities
+│   ├── hooks/               # TanStack React Query data hooks
+│   ├── lib/                 # Supabase client, queryClient, utils
+│   ├── pages/               # Route-bound page components
+│   ├── styles/
+│   │   └── globals.css      # CSS custom properties (design tokens) + Tailwind base
+│   ├── types/
+│   │   └── database.ts      # All TypeScript interfaces and the Supabase Database type
+│   ├── App.tsx              # Root component, router, providers
+│   └── main.tsx             # ReactDOM entry point
+├── supabase/
+│   ├── schema.sql           # Full Supabase table definitions
+│   └── seed.sql             # Seed data for development
+├── prompts/                 # AI prompt files for project data collection
+├── public/                  # Static public assets served at root
+├── dist/                    # Vite build output (generated, not committed)
+├── .planning/               # GSD workflow planning artifacts
+│   ├── codebase/            # Codebase map documents (this file lives here)
+│   ├── phases/              # Phase plans by number
+│   ├── feedback/            # Page feedback captures
+│   ├── research/            # Research notes
+│   └── todos/               # Pending and done task lists
 ├── index.html               # HTML entry point
-├── vite.config.ts           # Vite bundler configuration
-├── tsconfig.json            # TypeScript root config (delegates to app/node)
-├── tsconfig.app.json        # TypeScript config for src/
-├── tsconfig.node.json       # TypeScript config for build files
-├── tailwind.config.ts       # Tailwind CSS configuration
-├── postcss.config.js        # PostCSS configuration for Tailwind
-├── eslint.config.js         # ESLint configuration
+├── vite.config.ts           # Vite config with @ path alias
+├── tailwind.config.ts       # Tailwind theme with design tokens
+├── tsconfig.app.json        # TypeScript strict config for src/
 ├── package.json             # Dependencies and scripts
-└── .env.local               # Environment variables (DO NOT COMMIT)
+├── eslint.config.js         # ESLint flat config
+└── components.json          # shadcn/ui config (component install target)
 ```
 
 ## Directory Purposes
 
-**src/assets/:**
-- Purpose: Static images and icons
-- Contains: SVG files, PNG images
-- Key files: None documented yet
+**`src/components/ui/`:**
+- Purpose: Atomic, reusable UI building blocks
+- Contains: shadcn/ui-generated components (button, card, dialog, input, select, tabs, badge, etc.) plus custom primitives (`SkeletonBlock.tsx`, `SkeletonCard.tsx`, `StatusDot.tsx`, `ErrorFallback.tsx`, `PageErrorFallback.tsx`)
+- Key files: `src/components/ui/SkeletonBlock.tsx`, `src/components/ui/badge.tsx`, `src/components/ui/card.tsx`
 
-**src/components/:**
-- Purpose: All React components organized by functional domain
-- Contains: Reusable and page-specific React components
-- Key files: See subdirectories below
+**`src/components/layout/`:**
+- Purpose: App shell scaffolding -- navigation and page frame
+- Contains: `Sidebar.tsx` (fixed 220px left nav with mobile Sheet drawer), `PageShell.tsx` (animated page wrapper with title/subtitle/actions header)
+- Key files: `src/components/layout/PageShell.tsx`, `src/components/layout/Sidebar.tsx`
 
-**src/components/ui/:**
-- Purpose: Primitive, domain-agnostic UI components
-- Contains: Badge, SkeletonBlock, StatusDot (small, reusable)
-- Key files: `Badge.tsx`, `SkeletonBlock.tsx`, `StatusDot.tsx`
+**`src/components/dashboard/`:**
+- Purpose: Dashboard page widgets -- each is a self-contained card that calls its own hook
+- Contains: `ActionItemsCard.tsx`, `ContentCalendarStrip.tsx`, `ProjectQuickGlanceCard.tsx`, `StatTilesRow.tsx`, `SystemHealthCard.tsx`, `SystemHealthStrip.tsx`, `UpcomingContentCard.tsx`
+- Key files: `src/components/dashboard/StatTilesRow.tsx`, `src/components/dashboard/ActionItemsCard.tsx`
 
-**src/components/layout/:**
-- Purpose: Structural layout components used across pages
-- Contains: Sidebar, PageShell
-- Key files: `Sidebar.tsx` (navigation), `PageShell.tsx` (page wrapper)
+**`src/components/pipeline/` and `src/components/projects/`:**
+- Purpose: Feature-specific card components used within their respective pages
+- Contains: `ContentCard.tsx` (content review card), `ProjectCard.tsx` (project list card)
 
-**src/components/dashboard/:**
-- Purpose: Dashboard page-specific card components
-- Contains: ActionItemsCard, SystemHealthCard, ProjectQuickGlanceCard, UpcomingContentCard
-- Key files: All dashboard cards
+**`src/hooks/`:**
+- Purpose: All data access -- queries and mutations wired to Supabase with mock fallback
+- Contains: One file per domain area; each exports named hook functions
+- Key files: `src/hooks/useProjects.ts`, `src/hooks/useBrainDump.ts`, `src/hooks/useActivityLog.ts`, `src/hooks/useContentReviews.ts`, `src/hooks/useDashboardStats.ts`, `src/hooks/usePageFeedback.ts`, `src/hooks/useSocialPlatforms.ts`, `src/hooks/useSystemHealth.ts`
 
-**src/components/projects/, pipeline/, activity/, etc.:**
-- Purpose: Feature-specific UI components
-- Contains: Cards and component trees for that feature
-- Key files: Organized by feature name
+**`src/lib/`:**
+- Purpose: Singleton service instances and pure utility functions
+- Key files: `src/lib/supabase.ts` (Supabase client + `isSupabaseConfigured` flag), `src/lib/queryClient.ts` (React Query client singleton), `src/lib/utils.ts` (cn, date/time formatters, getGreeting)
 
-**src/data/:**
-- Purpose: Mock data for offline/demo mode
-- Contains: Fallback data matching database schema exactly
-- Key files: `mock.ts` (all mock data fixtures)
+**`src/types/`:**
+- Purpose: Shared TypeScript type definitions -- single file for entire codebase
+- Key files: `src/types/database.ts` (all entity interfaces, status unions, Supabase Database generic)
 
-**src/hooks/:**
-- Purpose: Custom React hooks encapsulating data fetching and mutations
-- Contains: One file per major domain (projects, brain dump, activity, etc.)
-- Key files: `useProjects.ts`, `useBrainDump.ts`, `useActivityLog.ts`, `useContentReviews.ts`, `useSocialPlatforms.ts`, `useSystemHealth.ts`
+**`src/data/`:**
+- Purpose: Static mock data matching all entity shapes for offline/unconfigured use
+- Key files: `src/data/mock.ts`
 
-**src/lib/:**
-- Purpose: Shared utility code and configuration
-- Contains: Client initialization, query setup, formatting functions
-- Key files: `supabase.ts`, `queryClient.ts`, `utils.ts`
+**`src/pages/`:**
+- Purpose: Route-level containers that compose feature components into complete views
+- Key files: `src/pages/Dashboard.tsx`, `src/pages/ProjectDetail.tsx`, `src/pages/ContentPipeline.tsx` (503 lines -- most complex), `src/pages/Settings.tsx`, `src/pages/BrainDump.tsx`
 
-**src/pages/:**
-- Purpose: Route handlers; one component per route
-- Contains: Top-level page components that compose features
-- Key files: One `.tsx` per route (Dashboard, Projects, ProjectDetail, BrainDump, ContentPipeline, SocialMedia, ActivityLog, Settings)
+**`src/styles/`:**
+- Purpose: Global CSS with design tokens and Tailwind base layer
+- Key files: `src/styles/globals.css` (CSS custom properties for colors, spacing, shadows, radius, sidebar width; shadcn/ui variable bridge)
 
-**src/styles/:**
-- Purpose: Global CSS and design tokens
-- Contains: CSS variables, Tailwind directives, global class definitions
-- Key files: `globals.css` (single file with all global styles)
+**`supabase/`:**
+- Purpose: Database schema definitions and seed data (not auto-generated -- hand-authored)
+- Key files: `supabase/schema.sql`, `supabase/seed.sql`
 
-**src/types/:**
-- Purpose: Shared TypeScript type definitions
-- Contains: Database entity types, status enums, interface definitions
-- Key files: `database.ts` (all type definitions sourced from Supabase schema)
-
-**supabase/:**
-- Purpose: Supabase configuration and SQL migrations
-- Contains: Database schema migrations, RLS policies, edge functions
-- Key files: Not yet explored
-
-**Root configuration files:**
-- `package.json`: npm dependencies and build scripts
-- `vite.config.ts`: Bundler config with React plugin and path alias (`@` → `src/`)
-- `tsconfig.json`: TypeScript root config
-- `tailwind.config.ts`: Tailwind CSS color tokens and custom theme
-- `eslint.config.js`: Code quality rules
-- `postcss.config.js`: Tailwind processing setup
+**`.planning/`:**
+- Purpose: GSD workflow artifacts -- planning, phase execution, todos, research
+- Generated: No (hand-maintained)
+- Committed: Yes
 
 ## Key File Locations
 
 **Entry Points:**
-- `src/main.tsx`: React root initialization; mounts App to #root DOM element
-- `src/App.tsx`: Root component; provides QueryClientProvider and BrowserRouter
-- `index.html`: HTML entry point; defines #root div
+- `src/main.tsx`: ReactDOM root mount, global CSS import, font imports
+- `src/App.tsx`: Provider tree, error boundary, access gate, routing, page transitions
+- `index.html`: HTML shell, mounts `#root`
 
 **Configuration:**
-- `vite.config.ts`: Build tool config with `@` alias pointing to `src/`
-- `tsconfig.app.json`: Source code TypeScript settings
-- `tailwind.config.ts`: Design token colors and theme customization
-- `.env.local`: Runtime environment variables (never committed)
+- `vite.config.ts`: Vite plugins, `@` path alias pointing to `./src`
+- `tailwind.config.ts`: Custom theme with coral/navy accent palette
+- `tsconfig.app.json`: Strict TypeScript settings (ES2023, strict mode, noUnusedLocals)
+- `eslint.config.js`: ESLint flat config with TypeScript ESLint and React Hooks rules
+- `components.json`: shadcn/ui configuration (paths, style, base color)
+- `src/styles/globals.css`: All CSS design tokens and Tailwind directives
 
 **Core Logic:**
-- `src/lib/supabase.ts`: Initializes Supabase client; exports `isSupabaseConfigured` flag
-- `src/lib/queryClient.ts`: TanStack React Query configuration (2min stale time, 1 retry)
-- `src/hooks/useProjects.ts`: Primary data-fetching hook for projects, tasks, milestones, notes
-- `src/data/mock.ts`: Fallback mock data used when Supabase is unconfigured
+- `src/lib/supabase.ts`: Supabase client initialization and `isSupabaseConfigured` export
+- `src/lib/queryClient.ts`: React Query client with 2-minute stale time, 1 retry
+- `src/lib/utils.ts`: `cn()`, date/time formatting utilities
+- `src/types/database.ts`: All entity types and Supabase Database interface
+- `src/data/mock.ts`: All mock data for offline mode
 
-**Testing:**
-- No test files present; testing infrastructure not yet set up
+**Data Hooks (domain-by-domain):**
+- `src/hooks/useProjects.ts`: `useProjects`, `useProject`, `useTasks`, `useMilestones`, `useActionItems`, `useProjectNotes`, `useNextSessionPrompt`, `useUpdateTask`, `useAddNote`
+- `src/hooks/useBrainDump.ts`: `useBrainDumps`, `useSubmitBrainDump`, `parseBrainDumpWithClaude`
+- `src/hooks/useActivityLog.ts`: `useActivityLog` (with filter params)
+- `src/hooks/useContentReviews.ts`: `useContentReviews`
+- `src/hooks/useDashboardStats.ts`: `useDashboardStats`
+- `src/hooks/usePageFeedback.ts`: `useSubmitFeedback`
+- `src/hooks/useSocialPlatforms.ts`: `useSocialPlatforms`
+- `src/hooks/useSystemHealth.ts`: `useSystemHealth`
 
 ## Naming Conventions
 
 **Files:**
-- React components: PascalCase (e.g., `Dashboard.tsx`, `ActionItemsCard.tsx`)
-- Hooks: `use` prefix + camelCase (e.g., `useProjects.ts`, `useBrainDump.ts`)
-- Utilities: camelCase (e.g., `utils.ts`, `queryClient.ts`, `supabase.ts`)
-- Types/interfaces: Located in `src/types/database.ts` with PascalCase (e.g., `Project`, `Task`, `BrainDump`)
-- Constants/enums: UPPER_CASE or camelCase depending on usage
+- React components: PascalCase `.tsx` (e.g., `ProjectCard.tsx`, `PageShell.tsx`)
+- Hooks: camelCase with `use` prefix `.ts` (e.g., `useProjects.ts`, `useBrainDump.ts`)
+- Utilities and lib modules: camelCase `.ts` (e.g., `utils.ts`, `queryClient.ts`, `supabase.ts`)
+- Type files: camelCase `.ts` (e.g., `database.ts`)
+- Mock/data files: camelCase `.ts` (e.g., `mock.ts`)
+- shadcn-generated UI: lowercase with hyphens `.tsx` (e.g., `dropdown-menu.tsx`, `scroll-area.tsx`)
 
 **Directories:**
-- Feature domains: lowercase plural (e.g., `components/dashboard/`, `components/projects/`)
-- Internal structure: flat within feature (no nested folders; one component per file unless very small)
+- Feature component groups: lowercase (e.g., `dashboard/`, `pipeline/`, `projects/`)
+- Top-level src directories: lowercase (e.g., `components/`, `hooks/`, `pages/`, `lib/`, `types/`, `data/`)
 
-**Functions:**
-- Event handlers: `handle` prefix (not yet seen, but convention)
-- Hooks: `use` prefix + PascalCase return type (e.g., `useProjects()` returns `Project[]`)
-- Utilities: Descriptive verb + noun (e.g., `formatRelativeTime()`, `getGreeting()`)
+**React Components:**
+- PascalCase `export function` declarations (e.g., `export function ProjectCard() {}`)
+- No default exports in components
 
-**Variables:**
-- State: `data`, `isLoading`, `error` (React Query conventions)
-- Derived: descriptive camelCase (e.g., `openItems`, `getProjectBadge`)
-- Temporal: `now`, `hoursAgo`, `daysAgo` (consistent date helpers)
-
-**Types:**
-- Database rows: Entity names without suffix (e.g., `Project`, `Task`)
-- Status enums: Suffixed with `Status` (e.g., `ProjectStatus = 'active' | 'paused'`)
-- Input types: Optional `Insert`, `Update` variants in Database interface
-- Response wrapper: None; hooks return `T | null | undefined`
+**Hooks:**
+- camelCase with `use` prefix (e.g., `function useProjects()`)
+- Named exports only
 
 ## Where to Add New Code
 
-**New Feature (e.g., new dashboard card):**
-- Primary code: Create `.tsx` file in `src/components/[feature]/` (e.g., `src/components/dashboard/NewCard.tsx`)
-- Styles: Use Tailwind classes inline; if many rules, add class in `src/styles/globals.css`
-- Data fetching: If new table, add hook in `src/hooks/useNewFeature.ts` following `useProjects.ts` pattern
-- Types: Add type definition to `src/types/database.ts` Database interface
-- Mock data: Add mock array to `src/data/mock.ts`
+**New Page:**
+- Page component: `src/pages/NewPageName.tsx` -- wrap content in `<PageShell title="..." subtitle="...">`
+- Route: Add `<Route path="/new-path" element={<NewPageName />} />` in `src/App.tsx` AppRoutes
+- Nav link: Add entry to `navItems` array in `src/components/layout/Sidebar.tsx`
 
-**New Page/Route:**
-- Implementation: Create `.tsx` file in `src/pages/RouteName.tsx`
-- Add route: Insert `<Route path="/route-path" element={<RouteName />} />` in `src/App.tsx` AppRoutes component
-- Wrap content: Use `<PageShell title="..." subtitle="...">` for consistent header and transitions
-- Compose: Import feature cards/components and arrange in layout
-
-**New Utility Function:**
-- Shared helpers: Add to `src/lib/utils.ts` (e.g., date formatting, class name combining)
-- Client config: Add to `src/lib/supabase.ts` (Supabase initialization) or `src/lib/queryClient.ts` (React Query setup)
-- Export: Named export from file; import in consumers via `@/lib/utils`
+**New Feature Component (dashboard widget, feature card):**
+- Implementation: `src/components/{feature-area}/ComponentName.tsx`
+- Example: A new dashboard card goes in `src/components/dashboard/NewCard.tsx`
+- Import into the relevant page
 
 **New Data Hook:**
-- Location: Create file in `src/hooks/use[Feature].ts`
-- Pattern: Copy structure from `src/hooks/useProjects.ts`:
-  - Define `useQuery()` with queryKey (e.g., `['feature']`)
-  - Check `isSupabaseConfigured` to decide between Supabase or mock
-  - Return Supabase query result or mock data
-  - Export mutations as separate hooks (e.g., `useAddFeature()`, `useUpdateFeature()`)
-- Cache invalidation: Always call `qc.invalidateQueries({ queryKey: ['feature'] })` on mutation success
+- Implementation: `src/hooks/useNewDomain.ts`
+- Pattern: Check `isSupabaseConfigured`, return mock data if false, otherwise query Supabase
+- Export named hook functions (no default exports)
+- Add corresponding mock data to `src/data/mock.ts`
+- Add entity interfaces to `src/types/database.ts`
 
 **New UI Primitive:**
-- Location: Create file in `src/components/ui/ComponentName.tsx`
-- Pattern: Small, reusable component with variant prop (e.g., `variant="error" | "warning" | "success"`)
-- Export: From `src/components/ui/` for import in higher-level components
+- Custom primitives: `src/components/ui/ComponentName.tsx`
+- shadcn/ui components: Run `npx shadcn@latest add component-name` (writes to `src/components/ui/`)
+
+**New Entity / Database Table:**
+1. Add TypeScript interface to `src/types/database.ts`
+2. Add table mapping to the `Database` interface in `src/types/database.ts`
+3. Add mock data entry to `src/data/mock.ts`
+4. Create hook in `src/hooks/useNewEntity.ts`
+5. Add table to `supabase/schema.sql`
+
+**Shared Utility Functions:**
+- Add to `src/lib/utils.ts`
+- Export as named function
 
 ## Special Directories
 
-**node_modules/:**
+**`dist/`:**
+- Purpose: Vite production build output
+- Generated: Yes (`npm run build`)
+- Committed: No (in `.gitignore`)
+
+**`node_modules/`:**
 - Purpose: npm package dependencies
-- Generated: Yes (generated by `npm install`)
-- Committed: No (in .gitignore)
+- Generated: Yes (`npm install`)
+- Committed: No
 
-**dist/:**
-- Purpose: Built JavaScript, CSS, and assets (Vite output)
-- Generated: Yes (generated by `npm run build`)
-- Committed: No (in .gitignore)
+**`.planning/`:**
+- Purpose: GSD workflow planning artifacts (phases, todos, research, codebase docs)
+- Generated: No (maintained via GSD commands and manually)
+- Committed: Yes
 
-**.planning/codebase/:**
-- Purpose: Architecture and planning documents (this file lives here)
-- Generated: No (hand-written by GSD analysis tools)
-- Committed: Yes (documents future work)
+**`.wrangler/`:**
+- Purpose: Wrangler (Cloudflare) temporary deployment artifacts
+- Generated: Yes
+- Committed: No
 
-**.git/:**
-- Purpose: Git version control metadata
-- Generated: Yes (generated by `git init`)
-- Committed: No (.gitignore irrelevant; git manages itself)
-
-**supabase/:**
-- Purpose: Supabase backend configuration and migrations
-- Generated: Partially (migrations auto-generated by Supabase CLI)
-- Committed: Yes (migrations need version control)
+**`supabase/`:**
+- Purpose: Hand-authored schema and seed SQL files for Supabase project setup
+- Generated: No
+- Committed: Yes
 
 ---
 
