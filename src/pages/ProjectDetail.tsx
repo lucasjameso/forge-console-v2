@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { PageShell } from '@/components/layout/PageShell'
 import { Badge } from '@/components/ui/badge'
+import { PriorityBadge } from '@/components/ui/PriorityBadge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { SkeletonCard } from '@/components/ui/SkeletonBlock'
@@ -35,17 +36,18 @@ import {
 import { useActivityLog } from '@/hooks/useActivityLog'
 import { formatRelativeTime, formatShortDate } from '@/lib/utils'
 import type { Task, TaskStatus, MilestoneStatus } from '@/types/database'
+import type { Priority } from '@/lib/colors'
 
 // ----- Section wrapper -----
-function Section({ icon: Icon, title, children }: { icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>; title: string; children: React.ReactNode }) {
+function Section({ icon: Icon, title, children }: { icon: React.ComponentType<{ size?: number; className?: string }>; title: string; children: React.ReactNode }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-        <Icon size={15} style={{ color: 'hsl(var(--text-tertiary))' }} />
+      <div className="flex items-center gap-2 mb-3.5">
+        <Icon size={15} className="text-[hsl(var(--text-tertiary))]" />
         <span className="text-section-header">{title}</span>
       </div>
       {children}
@@ -54,69 +56,55 @@ function Section({ icon: Icon, title, children }: { icon: React.ComponentType<{ 
 }
 
 // ----- Kanban Column -----
-function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: Task[]; status: TaskStatus; onDrop: (taskId: string, newStatus: TaskStatus) => void }) {
-  const statusColors: Record<TaskStatus, string> = {
-    todo: 'hsl(var(--text-tertiary))',
-    in_progress: 'hsl(var(--status-warning))',
-    done: 'hsl(var(--status-success))',
-  }
+const statusDotClass: Record<TaskStatus, string> = {
+  todo: 'bg-[hsl(var(--text-tertiary))]',
+  in_progress: 'bg-[hsl(var(--status-warning))]',
+  done: 'bg-[hsl(var(--status-success))]',
+}
 
+function KanbanColumn({ title, tasks, status, onDrop }: { title: string; tasks: Task[]; status: TaskStatus; onDrop: (taskId: string, newStatus: TaskStatus) => void }) {
   return (
     <div
-      style={{ flex: 1, minWidth: 0 }}
+      className="flex-1 min-w-0"
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         const taskId = e.dataTransfer.getData('taskId')
         if (taskId) onDrop(taskId, status)
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: statusColors[status] }} />
-        <span className="text-body-sm font-semibold" style={{ color: 'hsl(var(--text-primary))' }}>{title}</span>
+      <div className="flex items-center gap-2 mb-2.5">
+        <div className={`w-2 h-2 rounded-full ${statusDotClass[status]}`} />
+        <span className="text-body-sm font-semibold text-[hsl(var(--text-primary))]">{title}</span>
         <span className="text-caption">({tasks.length})</span>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-          minHeight: 60,
-          padding: 8,
-          borderRadius: 10,
-          backgroundColor: 'hsl(var(--bg-elevated))',
-          border: '1px dashed var(--border-subtle)',
-        }}
-      >
+      <div className="flex flex-col gap-2 min-h-[60px] p-2 rounded-[10px] bg-[hsl(var(--bg-elevated))] border border-dashed border-[hsl(var(--border-subtle))]">
         {tasks.map((task) => (
           <div
             key={task.id}
             draggable
             onDragStart={(e) => e.dataTransfer.setData('taskId', task.id)}
-            className="text-body-sm font-medium"
-            style={{
-              padding: '10px 12px',
-              borderRadius: 8,
-              backgroundColor: 'hsl(var(--bg-surface))',
-              border: '1px solid hsl(var(--border-subtle))',
-              cursor: 'grab',
-              color: 'hsl(var(--text-primary))',
-            }}
+            className="text-body-sm font-medium py-2.5 px-3 rounded-lg bg-[hsl(var(--bg-surface))] border border-[hsl(var(--border-subtle))] cursor-grab text-[hsl(var(--text-primary))]"
           >
-            <div style={{ marginBottom: 4 }}>{task.title}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Badge variant={task.priority === 'high' ? 'coral' : task.priority === 'medium' ? 'warning' : 'neutral'}>
-                {task.priority}
-              </Badge>
+            <div className="mb-1">{task.title}</div>
+            <div className="flex items-center gap-1.5">
+              <PriorityBadge priority={task.priority as Priority} />
               {task.assignee && <span className="text-caption">{task.assignee}</span>}
             </div>
           </div>
         ))}
         {tasks.length === 0 && (
-          <p className="text-caption" style={{ textAlign: 'center', padding: 8 }}>No tasks</p>
+          <p className="text-caption text-center p-2">No tasks</p>
         )}
       </div>
     </div>
   )
+}
+
+// ----- Milestone status -----
+const milestoneNodeClass: Record<MilestoneStatus, string> = {
+  done: 'bg-[hsl(var(--status-success))]',
+  in_progress: 'bg-[hsl(var(--accent-coral))]',
+  upcoming: 'bg-[hsl(var(--text-tertiary))]',
 }
 
 // ----- Main component -----
@@ -140,7 +128,7 @@ export function ProjectDetail() {
   if (loadingProject) {
     return (
       <PageShell title="Loading...">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div className="flex flex-col gap-6">
           {[0, 1, 2].map(i => <SkeletonCard key={i} />)}
         </div>
       </PageShell>
@@ -150,9 +138,9 @@ export function ProjectDetail() {
   if (!project) {
     return (
       <PageShell title="Project Not Found">
-        <Card className="p-6" style={{ textAlign: 'center', padding: '48px 24px' }}>
+        <Card className="p-6 text-center py-12">
           <p className="text-body">No project found with slug "{slug}".</p>
-          <Link to="/projects" className="text-body" style={{ color: 'hsl(var(--accent-coral))', marginTop: 12, display: 'inline-block' }}>
+          <Link to="/projects" className="text-body text-[hsl(var(--accent-coral))] mt-3 inline-block no-underline">
             Back to Projects
           </Link>
         </Card>
@@ -184,12 +172,6 @@ export function ProjectDetail() {
     }
   }
 
-  const milestoneStatusColor: Record<MilestoneStatus, string> = {
-    done: 'hsl(var(--status-success))',
-    in_progress: 'hsl(var(--accent-coral))',
-    upcoming: 'hsl(var(--text-tertiary))',
-  }
-
   return (
     <PageShell
       title={project.name}
@@ -197,14 +179,7 @@ export function ProjectDetail() {
       actions={
         <Link
           to="/projects"
-          className="text-body-sm"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            color: 'hsl(var(--text-secondary))',
-            textDecoration: 'none',
-          }}
+          className="text-body-sm flex items-center gap-1.5 text-[hsl(var(--text-secondary))] no-underline"
         >
           <ArrowLeft size={14} />
           Back to Projects
@@ -216,22 +191,17 @@ export function ProjectDetail() {
         {/* Row 1: Action Items */}
         {openActions.length > 0 && (
           <Section icon={AlertCircle} title="Needs Your Attention">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="flex flex-col gap-2">
               {openActions.map((item) => (
                 <div
                   key={item.id}
-                  style={{
-                    padding: '12px 16px',
-                    borderRadius: 10,
-                    border: '1px solid hsl(var(--border-subtle))',
-                    backgroundColor: item.urgency === 'high' ? 'hsl(var(--status-error-bg))' : 'hsl(var(--bg-elevated))',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 12,
-                  }}
+                  className={`py-3 px-4 rounded-[10px] border border-[hsl(var(--border-subtle))] flex items-center justify-between gap-3 ${
+                    item.urgency === 'high'
+                      ? 'bg-[hsl(var(--status-error-bg))]'
+                      : 'bg-[hsl(var(--bg-elevated))]'
+                  }`}
                 >
-                  <p className="text-body-sm font-medium" style={{ color: 'hsl(var(--text-primary))', margin: 0 }}>
+                  <p className="text-body-sm font-medium text-[hsl(var(--text-primary))] m-0">
                     {item.description}
                   </p>
                   <Badge variant={item.urgency === 'high' ? 'error' : item.urgency === 'medium' ? 'warning' : 'neutral'}>
@@ -247,69 +217,49 @@ export function ProjectDetail() {
         <Section icon={Target} title="Progress">
           <Card className="p-6">
             {/* Progress bar */}
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-body">{project.current_phase ?? 'No phase set'}</span>
-                <span className="text-xl font-bold" style={{ color: 'hsl(var(--text-primary))' }}>{project.progress_pct}%</span>
+                <span className="text-xl font-bold text-[hsl(var(--text-primary))]">{project.progress_pct}%</span>
               </div>
-              <div style={{ width: '100%', height: 10, borderRadius: 5, backgroundColor: 'hsl(var(--bg-elevated))', overflow: 'hidden' }}>
+              <div className="w-full h-2.5 rounded-[5px] bg-[hsl(var(--bg-elevated))] overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${project.progress_pct}%` }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ height: '100%', borderRadius: 5, backgroundColor: 'hsl(var(--accent-coral))' }}
+                  className="h-full rounded-[5px] bg-[hsl(var(--accent-coral))]"
                 />
               </div>
             </div>
 
             {/* Milestone timeline */}
             {milestones && milestones.length > 0 && (
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 0, position: 'relative' }}>
+              <div className="flex items-start relative">
                 {/* Connecting line */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 10,
-                    left: 10,
-                    right: 10,
-                    height: 2,
-                    backgroundColor: 'hsl(var(--bg-elevated))',
-                    zIndex: 0,
-                  }}
-                />
+                <div className="absolute top-[10px] left-[10px] right-[10px] h-0.5 bg-[hsl(var(--bg-elevated))] z-0" />
                 {milestones.map((ms, idx) => (
                   <div
                     key={ms.id}
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: idx === 0 ? 'flex-start' : idx === milestones.length - 1 ? 'flex-end' : 'center',
-                      position: 'relative',
-                      zIndex: 1,
-                    }}
+                    className={`flex-1 flex flex-col relative z-[1] ${
+                      idx === 0
+                        ? 'items-start'
+                        : idx === milestones.length - 1
+                        ? 'items-end'
+                        : 'items-center'
+                    }`}
                   >
                     <div
-                      style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: '50%',
-                        backgroundColor: milestoneStatusColor[ms.status],
-                        border: '3px solid hsl(var(--bg-surface))',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
+                      className={`w-5 h-5 rounded-full border-[3px] border-[hsl(var(--bg-surface))] flex items-center justify-center ${milestoneNodeClass[ms.status]}`}
                     >
                       {ms.status === 'done' && (
-                        <Check size={10} style={{ color: 'white' }} />
+                        <Check size={10} className="text-white" />
                       )}
                     </div>
-                    <span className="text-caption font-medium" style={{ color: 'hsl(var(--text-primary))', marginTop: 6, textAlign: 'center' }}>
+                    <span className="text-caption font-medium text-[hsl(var(--text-primary))] mt-1.5 text-center">
                       {ms.title}
                     </span>
                     {ms.target_date && (
-                      <span className="text-caption" style={{ marginTop: 2 }}>
+                      <span className="text-caption mt-0.5">
                         {formatShortDate(ms.target_date)}
                       </span>
                     )}
@@ -322,29 +272,26 @@ export function ProjectDetail() {
 
         {/* Row 3: Recent Activity */}
         <Section icon={Activity} title="Recent Activity">
-          <Card style={{ padding: 0 }}>
+          <Card className="p-0">
             {recentActivity.length === 0 ? (
-              <p className="text-caption" style={{ textAlign: 'center', padding: 24 }}>No recent activity</p>
+              <p className="text-caption text-center p-6">No recent activity</p>
             ) : (
               recentActivity.map((entry, idx) => (
                 <div
                   key={entry.id}
-                  style={{
-                    padding: '12px 20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 12,
-                    borderBottom: idx < recentActivity.length - 1 ? '1px solid hsl(var(--border-subtle))' : 'none',
-                  }}
+                  className={`py-3 px-5 flex items-center justify-between gap-3 ${
+                    idx < recentActivity.length - 1
+                      ? 'border-b border-[hsl(var(--border-subtle))]'
+                      : ''
+                  }`}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
+                  <div className="flex items-center gap-2.5 flex-1 min-w-0">
                     <Badge variant="navy">{entry.tool ?? entry.session_type}</Badge>
-                    <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p className="text-body-sm text-[hsl(var(--text-primary))] m-0 overflow-hidden text-ellipsis whitespace-nowrap">
                       {entry.summary}
                     </p>
                   </div>
-                  <span className="text-caption" style={{ flexShrink: 0 }}>{formatRelativeTime(entry.created_at)}</span>
+                  <span className="text-caption shrink-0">{formatRelativeTime(entry.created_at)}</span>
                 </div>
               ))
             )}
@@ -353,7 +300,7 @@ export function ProjectDetail() {
 
         {/* Row 4: Mini Kanban */}
         <Section icon={Columns3} title="Tasks">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          <div className="grid grid-cols-3 gap-4">
             <KanbanColumn title="To Do" tasks={todoTasks} status="todo" onDrop={handleDrop} />
             <KanbanColumn title="In Progress" tasks={inProgressTasks} status="in_progress" onDrop={handleDrop} />
             <KanbanColumn title="Done" tasks={doneTasks} status="done" onDrop={handleDrop} />
@@ -362,35 +309,27 @@ export function ProjectDetail() {
 
         {/* Row 5: Notes */}
         <Section icon={StickyNote} title="Notes & Decisions">
-          <Card className="p-6" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <Card className="p-6 flex flex-col gap-3">
             {(notes ?? []).map((note) => (
               <div
                 key={note.id}
-                style={{
-                  padding: '10px 14px',
-                  borderRadius: 8,
-                  backgroundColor: 'hsl(var(--bg-elevated))',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'space-between',
-                  gap: 10,
-                }}
+                className="py-2.5 px-3.5 rounded-lg bg-[hsl(var(--bg-elevated))] flex items-start justify-between gap-2.5"
               >
-                <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', margin: 0, lineHeight: 1.5 }}>
+                <p className="text-body-sm text-[hsl(var(--text-primary))] m-0 leading-relaxed">
                   {note.content}
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                <div className="flex items-center gap-1.5 shrink-0">
                   {note.tag && <Badge variant="navy">{note.tag}</Badge>}
                   <span className="text-caption">{formatRelativeTime(note.created_at)}</span>
                 </div>
               </div>
             ))}
             {(notes ?? []).length === 0 && (
-              <p className="text-caption" style={{ textAlign: 'center', padding: 12 }}>No notes yet</p>
+              <p className="text-caption text-center p-3">No notes yet</p>
             )}
 
             {/* Add note form */}
-            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+            <div className="flex gap-2 mt-1">
               <input
                 className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-coral focus:ring-2 focus:ring-coral/10 placeholder:text-muted-foreground font-[inherit]"
                 placeholder="Add a note..."
@@ -408,7 +347,7 @@ export function ProjectDetail() {
 
         {/* Row 6: Quick Actions / Linked Resources */}
         <Section icon={Zap} title="Linked Resources">
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div className="flex gap-3">
             {project.github_url && (
               <Button variant="outline" asChild>
                 <a href={project.github_url} target="_blank" rel="noopener noreferrer">
@@ -446,24 +385,18 @@ export function ProjectDetail() {
         {sessionPrompt && (
           <Section icon={Copy} title="Next Session Prompt">
             <Card
-              className="p-6"
-              style={{ cursor: 'pointer', position: 'relative' }}
+              className="p-6 cursor-pointer relative"
               onClick={handleCopyPrompt}
             >
-              <p className="text-body-sm" style={{ color: 'hsl(var(--text-primary))', lineHeight: 1.6, margin: 0, paddingRight: 32 }}>
+              <p className="text-body-sm text-[hsl(var(--text-primary))] leading-relaxed m-0 pr-8">
                 {sessionPrompt.prompt_text}
               </p>
               <div
-                className="text-caption"
-                style={{
-                  position: 'absolute',
-                  top: 16,
-                  right: 16,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  color: copied ? 'hsl(var(--status-success))' : 'hsl(var(--text-tertiary))',
-                }}
+                className={`text-caption absolute top-4 right-4 flex items-center gap-1 ${
+                  copied
+                    ? 'text-[hsl(var(--status-success))]'
+                    : 'text-[hsl(var(--text-tertiary))]'
+                }`}
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
                 {copied ? 'Copied' : 'Click to copy'}

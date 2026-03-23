@@ -9,7 +9,7 @@ export function Projects() {
 
   return (
     <PageShell title="Projects" subtitle="Your three active builds.">
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {isLoading ? (
           [0, 1, 2].map(i => <SkeletonCard key={i} />)
         ) : (
@@ -18,7 +18,7 @@ export function Projects() {
           ))
         )}
         {!isLoading && (projects ?? []).length === 0 && (
-          <Card className="p-6" style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <Card className="p-6 text-center py-12">
             <p className="text-body">No projects yet.</p>
           </Card>
         )}
