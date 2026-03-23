@@ -80,6 +80,7 @@ Plans:
 **Depends on**: Phase 3
 **Requirements**: VISL-05, VISL-06, VISL-07, VISL-08, VISL-09, VISL-10, VISL-11, DFIX-01 through DFIX-08, BFIX-01 through BFIX-08, CFIX-01 through CFIX-12, SFIX-01 through SFIX-12, STFIX-01 through STFIX-12, AFIX-01 through AFIX-12
 **Feedback Spec**: `.planning/feedback/PHASE-04-FIXES-SPEC.md` (64 items)
+**Plans:** 6 plans
 **Success Criteria** (what must be TRUE):
   1. Dashboard: priority badges use correct colors (red/amber/green), progress bars reflect project health, content calendar shows intelligent week, greeting is contextual
   2. Brain Dump: project selector on input, history grouped by day with project colors, expanded entries show parsed output properly, processing shimmer visible
@@ -90,9 +91,12 @@ Plans:
   7. All pages use consistent project badge colors, recency indicators, and status badge styling
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md -- Shared foundation: project colors, brand icons, badge components, utilities
+- [ ] 04-02-PLAN.md -- Dashboard fixes (DFIX-01-08) + Projects/ProjectDetail polish (VISL-05, VISL-06)
+- [ ] 04-03-PLAN.md -- Brain Dump fixes (BFIX-01-08) + page polish (VISL-07)
+- [ ] 04-04-PLAN.md -- Content Pipeline fixes (CFIX-01-12) + page polish (VISL-08)
+- [ ] 04-05-PLAN.md -- Social Media fixes (SFIX-01-12) + Settings fixes (STFIX-01-12) + polish (VISL-09, VISL-11)
+- [ ] 04-06-PLAN.md -- Activity Log fixes (AFIX-01-12) + page polish (VISL-10)
 
 ### Phase 5: Brain Dump Depth
 **Goal**: Transform Brain Dump from a simple capture tool into a full thought-to-action pipeline with project routing, AI refinement, task creation, and analytics
@@ -190,7 +194,7 @@ Note: Phases 5, 6, 7, 8 all depend on Phase 4 but not on each other. Phase 9 dep
 | 1. Component Foundation | 3/3 | Complete | 2026-03-22 |
 | 2. Global Design Standards | 3/3 | Complete | 2026-03-22 |
 | 3. Dashboard Redesign | 2/2 | Complete | 2026-03-22 |
-| 4. Visual Polish (All Pages) | 0/0 | Not started | - |
+| 4. Visual Polish (All Pages) | 0/6 | Not started | - |
 | 5. Brain Dump Depth | 0/0 | Not started | - |
 | 6. Content Pipeline Depth | 0/0 | Not started | - |
 | 7. Social Media + Activity Log | 0/0 | Not started | - |
