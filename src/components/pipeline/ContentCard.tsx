@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
-import { Layers, Linkedin, BookOpen, FileText, ShoppingBag } from 'lucide-react'
+import { Layers, Linkedin, BookOpen, FileText, ShoppingBag, Star } from 'lucide-react'
 import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview } from '@/types/database'
@@ -17,6 +18,7 @@ interface ContentCardProps {
   index: number
   onClick?: () => void
   compact?: boolean
+  isTopPerformer?: boolean
 }
 
 function SlideLabel({ count }: { count: number }) {
@@ -31,7 +33,7 @@ function SlideLabel({ count }: { count: number }) {
   )
 }
 
-export function ContentCard({ item, index, onClick, compact }: ContentCardProps) {
+export function ContentCard({ item, index, onClick, compact, isTopPerformer = false }: ContentCardProps) {
   const PlatformIcon = item.platforms[0]
     ? platformIcons[item.platforms[0]] ?? FileText
     : FileText
@@ -44,7 +46,13 @@ export function ContentCard({ item, index, onClick, compact }: ContentCardProps)
       onClick={onClick}
       className={onClick ? 'cursor-pointer' : undefined}
     >
-      <Card className={`transition-shadow hover:shadow-card-hover ${compact ? 'px-4 py-3' : 'px-5 py-4'}`}>
+      <Card className={`transition-shadow hover:shadow-card-hover relative ${compact ? 'px-4 py-3' : 'px-5 py-4'}`}>
+        {isTopPerformer && (
+          <Badge variant="outline" className="absolute top-3 right-3 text-[10px] gap-0.5 border-[hsl(var(--status-success))] text-[hsl(var(--status-success))] bg-[hsl(var(--status-success)/0.08)]">
+            <Star size={10} className="fill-current" />
+            Top
+          </Badge>
+        )}
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className={`flex items-center gap-2 ${compact ? 'mb-1' : 'mb-1.5'}`}>

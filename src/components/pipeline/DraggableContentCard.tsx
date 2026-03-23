@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
-import { Layers } from 'lucide-react'
+import { Layers, Star } from 'lucide-react'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
@@ -42,6 +42,7 @@ interface DraggableContentCardProps {
   onToggleSelect: (id: string) => void
   showCheckbox: 'always' | 'hover' | 'none'
   enableDrag?: boolean
+  isTopPerformer?: boolean
   children?: React.ReactNode
 }
 
@@ -52,6 +53,7 @@ export function DraggableContentCard({
   onToggleSelect,
   showCheckbox,
   enableDrag = true,
+  isTopPerformer = false,
   children,
 }: DraggableContentCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -72,6 +74,14 @@ export function DraggableContentCard({
       className={`group relative ${isDragging ? 'opacity-50 z-50' : ''}`}
     >
       <Card className="bg-[hsl(var(--bg-surface))] border border-[hsl(var(--border-subtle))] rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
+        {/* Top Performer badge */}
+        {isTopPerformer && (
+          <Badge variant="outline" className="absolute top-2 right-2 z-10 text-[10px] gap-0.5 border-[hsl(var(--status-success))] text-[hsl(var(--status-success))] bg-[hsl(var(--status-success)/0.08)]">
+            <Star size={10} className="fill-current" />
+            Top
+          </Badge>
+        )}
+
         {/* Checkbox */}
         {showCheckbox !== 'none' && (
           <div

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   DndContext,
   DragOverlay,
@@ -531,7 +531,7 @@ function MonthView({
   selection: { isSelected: (id: string) => boolean; toggle: (id: string) => void }
 }) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [direction, setDirection] = useState<'next' | 'prev'>('next')
+  const [slideDirection, setSlideDirection] = useState<1 | -1>(1)
 
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -559,18 +559,19 @@ function MonthView({
   }, [items])
 
   const goNext = () => {
-    setDirection('next')
+    setSlideDirection(1)
     setCurrentMonth(prev => addMonths(prev, 1))
   }
 
   const goPrev = () => {
-    setDirection('prev')
+    setSlideDirection(-1)
     setCurrentMonth(prev => subMonths(prev, 1))
   }
 
   const goToday = () => {
-    setDirection('next')
-    setCurrentMonth(new Date())
+    const now = new Date()
+    setSlideDirection(now > currentMonth ? 1 : -1)
+    setCurrentMonth(now)
   }
 
   return (
@@ -598,53 +599,57 @@ function MonthView({
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
       >
-        <motion.div
-          key={format(currentMonth, 'yyyy-MM')}
-          initial={{ x: direction === 'next' ? 20 : -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.2 }}
-        >
-          {/* Day headers */}
-          <div className="grid grid-cols-7 mb-1">
-            {days.map(d => (
-              <div key={d} className="text-center text-xs uppercase font-medium text-[hsl(var(--text-tertiary))] py-2">
-                {d}
-              </div>
-            ))}
-          </div>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={format(currentMonth, 'yyyy-MM')}
+            initial={{ x: slideDirection * 60, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: slideDirection * -60, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30, duration: 0.2 }}
+          >
+            {/* Day headers */}
+            <div className="grid grid-cols-7 mb-1">
+              {days.map(d => (
+                <div key={d} className="text-center text-xs uppercase font-medium text-[hsl(var(--text-tertiary))] py-2">
+                  {d}
+                </div>
+              ))}
+            </div>
 
-          {/* Day cells */}
-          <div className="grid grid-cols-7 gap-px w-full">
-            {calendarDays.map((day) => {
-              const dateKey = format(day, 'yyyy-MM-dd')
-              const dayItems = itemsByDate.get(dateKey) ?? []
-              const inMonth = isSameMonth(day, currentMonth)
-              const todayCell = isToday(day)
+            {/* Day cells */}
+            <div className="grid grid-cols-7 gap-px w-full">
+              {calendarDays.map((day) => {
+                const dateKey = format(day, 'yyyy-MM-dd')
+                const dayItems = itemsByDate.get(dateKey) ?? []
+                const inMonth = isSameMonth(day, currentMonth)
+                const todayCell = isToday(day)
 
-              return (
-                <DroppableDateCell
-                  key={dateKey}
-                  dateKey={dateKey}
-                  isCurrentMonth={inMonth}
-                  isToday={todayCell}
-                  dayNumber={format(day, 'd')}
-                >
-                  {dayItems.map(item => (
-                    <DraggableContentCard
-                      key={item.id}
-                      item={item}
-                      onSelect={onSelect}
-                      isSelected={selection.isSelected(item.id)}
-                      onToggleSelect={selection.toggle}
-                      showCheckbox="hover"
-                      enableDrag={true}
-                    />
-                  ))}
-                </DroppableDateCell>
-              )
-            })}
-          </div>
-        </motion.div>
+                return (
+                  <DroppableDateCell
+                    key={dateKey}
+                    dateKey={dateKey}
+                    isCurrentMonth={inMonth}
+                    isToday={todayCell}
+                    dayNumber={format(day, 'd')}
+                  >
+                    {dayItems.map(item => (
+                      <DraggableContentCard
+                        key={item.id}
+                        item={item}
+                        onSelect={onSelect}
+                        isSelected={selection.isSelected(item.id)}
+                        onToggleSelect={selection.toggle}
+                        showCheckbox="hover"
+                        enableDrag={true}
+                        isTopPerformer={false}
+                      />
+                    ))}
+                  </DroppableDateCell>
+                )
+              })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
         <DragOverlay>
           {activeItem && <DragOverlayCard item={activeItem} />}
