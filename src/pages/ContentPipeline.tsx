@@ -57,16 +57,19 @@ import {
 import { toast } from 'sonner'
 import { useContentReviews, useUpdateContentStatus, useCreateContent } from '@/hooks/useContentReviews'
 import { ContentReviewModal } from '@/components/pipeline/ContentReviewModal'
+import { TemplatesTab } from '@/components/pipeline/TemplatesTab'
+import { AnalyticsStrip } from '@/components/pipeline/AnalyticsStrip'
 import { formatShortDate } from '@/lib/utils'
 import type { ContentReview, ContentStatus, ContentType } from '@/types/database'
 
-type ViewMode = 'list' | 'week' | 'month' | 'kanban'
+type ViewMode = 'list' | 'week' | 'month' | 'kanban' | 'templates'
 
 const viewModes: { key: ViewMode; label: string; icon: React.ComponentType<{ size?: number; className?: string }> }[] = [
   { key: 'list', label: 'List', icon: List },
   { key: 'week', label: 'Week', icon: Calendar },
   { key: 'month', label: 'Month', icon: LayoutGrid },
   { key: 'kanban', label: 'Kanban', icon: Columns3 },
+  { key: 'templates', label: 'Templates', icon: Layers },
 ]
 
 
@@ -763,6 +766,11 @@ export function ContentPipeline() {
         </div>
       }
     >
+      {/* Analytics Strip */}
+      {!isLoading && items.length > 0 && (
+        <AnalyticsStrip items={items} currentMonth={new Date()} />
+      )}
+
       {isLoading ? (
         <div className="flex flex-col gap-3">
           {[0, 1, 2, 3].map(i => (
@@ -773,6 +781,8 @@ export function ContentPipeline() {
             </Card>
           ))}
         </div>
+      ) : view === 'templates' ? (
+        <TemplatesTab />
       ) : items.length === 0 ? (
         <Card className="p-6 text-center py-12">
           <p className="text-sm text-[hsl(var(--text-secondary))]">No content in the pipeline yet.</p>
