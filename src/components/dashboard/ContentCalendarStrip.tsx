@@ -40,20 +40,23 @@ function ContentItemCard({ item }: { item: ContentReview }) {
   return (
     <Link to="/pipeline" className="no-underline block">
       <div
-        className="px-2 py-1.5 rounded-sm bg-[hsl(var(--bg-surface))] border border-[hsl(var(--border-subtle))] cursor-pointer relative"
+        className="px-2 py-2 rounded-sm bg-[hsl(var(--bg-surface))] border border-[hsl(var(--border-subtle))] cursor-pointer relative min-h-[80px] flex flex-col"
       >
         {isPosted && (
           <div className="absolute top-1 right-1">
             <CheckCircle size={12} className="text-[hsl(var(--status-success))]" />
           </div>
         )}
-        <div className="flex items-center justify-between gap-1 mb-0.5">
+        <div className="flex items-center justify-between gap-1 mb-1">
           <PlatformIcon size={16} className="text-[hsl(var(--text-tertiary))] shrink-0" />
           <Badge variant={badge.variant} className="text-[10px] px-1.5 py-0">{badge.label}</Badge>
         </div>
-        <p className="text-caption overflow-hidden text-ellipsis whitespace-nowrap text-[hsl(var(--text-primary))]">
+        <p className="text-caption text-[hsl(var(--text-primary))] line-clamp-2 flex-1">
           {item.post_title}
         </p>
+        <span className="text-[11px] text-[hsl(var(--text-tertiary))] capitalize mt-1">
+          {item.slide_count > 1 ? 'Carousel' : 'Post'}
+        </span>
       </div>
     </Link>
   )
